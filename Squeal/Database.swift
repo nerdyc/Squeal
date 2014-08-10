@@ -295,6 +295,31 @@ public class Statement : NSObject {
     
     public let parameterCount : Int
     
+    public func clearParameters() {
+        if sqliteStatement != nil {
+            sqlite3_clear_bindings(sqliteStatement)
+        }
+    }
+    
+    public func indexOfParameterNamed(name:String) -> Int? {
+        if let cString = name.cStringUsingEncoding(NSUTF8StringEncoding) {
+            let index = sqlite3_bind_parameter_index(sqliteStatement, cString)
+            if index > 0 {
+                return Int(index)
+            }
+        }
+        
+        return nil
+    }
+    
+    private func unknownBindParameterError(name:String) -> NSError {
+        let localizedDescription = SquealErrorCode.UnknownBindParameter.localizedDescription + ": " + name
+        return NSError(domain:  SquealErrorDomain,
+            code:    SquealErrorCode.UnknownBindParameter.toRaw(),
+            userInfo:[ NSLocalizedDescriptionKey : localizedDescription ])
+        
+    }
+    
     public func bind(parameters:[Any?], error:NSErrorPointer) -> Bool {
         for parameterIndex in (0..<parameters.count) {
             let bindIndex = parameterIndex + 1 // parameters are bound with 1-based indices
@@ -302,43 +327,43 @@ public class Statement : NSObject {
             if let parameter = parameters[parameterIndex] {
                 switch parameter {
                 case let stringParameter as String:
-                    return bindStringAtIndex(stringParameter, index: bindIndex, error: error)
+                    return bindStringParameter(stringParameter, atIndex: bindIndex, error: error)
                     
                 case let intParameter as Int:
-                    return bindInt64AtIndex(Int64(intParameter), index: bindIndex, error: error)
+                    return bindIntValue(intParameter, atIndex: bindIndex, error: error)
                     
                 case let boolParameter as Bool:
-                    return bindBoolAtIndex(boolParameter, index: bindIndex, error: error)
+                    return bindBoolValue(boolParameter, atIndex: bindIndex, error: error)
                     
                 case let int64Parameter as Int64:
-                    return bindInt64AtIndex(int64Parameter, index: bindIndex, error: error)
+                    return bindInt64Value(int64Parameter, atIndex: bindIndex, error: error)
                     
                 case let doubleParameter as Double:
-                    return bindDoubleAtIndex(doubleParameter, index: bindIndex, error: error)
+                    return bindDoubleValue(doubleParameter, atIndex: bindIndex, error: error)
                     
                 case let floatParameter as Float:
-                    return bindDoubleAtIndex(Double(floatParameter), index: bindIndex, error: error)
+                    return bindDoubleValue(Double(floatParameter), atIndex: bindIndex, error: error)
                     
                 case let int32Parameter as Int32:
-                    return bindIntAtIndex(Int(int32Parameter), index: bindIndex, error: error)
+                    return bindIntValue(Int(int32Parameter), atIndex: bindIndex, error: error)
                     
                 case let int16Parameter as Int16:
-                    return bindIntAtIndex(Int(int16Parameter), index: bindIndex, error: error)
+                    return bindIntValue(Int(int16Parameter), atIndex: bindIndex, error: error)
                     
                 case let int8Parameter as Int8:
-                    return bindIntAtIndex(Int(int8Parameter), index: bindIndex, error: error)
+                    return bindIntValue(Int(int8Parameter), atIndex: bindIndex, error: error)
                     
                 case let uint64Parameter as UInt64:
-                    return bindInt64AtIndex(Int64(uint64Parameter), index: bindIndex, error: error)
+                    return bindInt64Value(Int64(uint64Parameter), atIndex: bindIndex, error: error)
                     
                 case let uint32Parameter as UInt32:
-                    return bindInt64AtIndex(Int64(uint32Parameter), index: bindIndex, error: error)
+                    return bindInt64Value(Int64(uint32Parameter), atIndex: bindIndex, error: error)
                     
                 case let uint16Parameter as UInt16:
-                    return bindIntAtIndex(Int(uint16Parameter), index: bindIndex, error: error)
+                    return bindIntValue(Int(uint16Parameter), atIndex: bindIndex, error: error)
                     
                 case let uint8Parameter as UInt8:
-                    return bindIntAtIndex(Int(uint8Parameter), index: bindIndex, error: error)
+                    return bindIntValue(Int(uint8Parameter), atIndex: bindIndex, error: error)
                     
                 default:
                     if error != nil {
@@ -350,7 +375,7 @@ public class Statement : NSObject {
                     return false
                 }
             } else {
-                return bindNullAtIndex(bindIndex, error: error)
+                return bindNullParameter(atIndex:bindIndex, error: error)
             }
             
         }
@@ -358,8 +383,11 @@ public class Statement : NSObject {
         return true
     }
 
-    public func bindStringAtIndex(parameter:String, index:Int, error:NSErrorPointer) -> Bool {
-        let cString = parameter.cStringUsingEncoding(NSUTF8StringEncoding)
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  String Parameters
+    
+    public func bindStringParameter(stringValue:String, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
         
         let negativeOne = UnsafeMutablePointer<Int>(-1)
         let opaquePointer = COpaquePointer(negativeOne)
@@ -376,8 +404,30 @@ public class Statement : NSObject {
         return true
     }
     
-    public func bindInt64AtIndex(parameter:Int64, index:Int, error:NSErrorPointer) -> Bool {
-        let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), parameter)
+    public func bindStringParameter(stringValue:String, named name:String, error:NSErrorPointer) -> Bool {
+        if let parameterIndex = indexOfParameterNamed(name) {
+            return bindStringParameter(stringValue, atIndex: parameterIndex, error: error)
+        } else {
+            if error != nil {
+                error.memory = unknownBindParameterError(name)
+            }
+            return false
+        }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Int Parameters
+    
+    public func bindIntValue(intValue:Int, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return bindInt64Value(Int64(intValue), atIndex: index, error: error)
+    }
+    
+    public func bindIntValue(intValue:Int, named name:String, error:NSErrorPointer) -> Bool {
+        return bindInt64Value(Int64(intValue), named: name, error: error)
+    }
+
+    public func bindInt64Value(int64Value:Int64, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
             if error != nil {
                 error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
@@ -388,8 +438,22 @@ public class Statement : NSObject {
         return true
     }
     
-    public func bindIntAtIndex(parameter:Int, index:Int, error:NSErrorPointer) -> Bool {
-        let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), Int64(parameter))
+    public func bindInt64Value(int64Value:Int64, named name:String, error:NSErrorPointer) -> Bool {
+        if let parameterIndex = indexOfParameterNamed(name) {
+            return bindInt64Value(int64Value, atIndex: parameterIndex, error: error)
+        } else {
+            if error != nil {
+                error.memory = unknownBindParameterError(name)
+            }
+            return false
+        }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Double Parameters
+    
+    public func bindDoubleValue(doubleValue:Double, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
             if error != nil {
                 error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
@@ -400,8 +464,22 @@ public class Statement : NSObject {
         return true
     }
     
-    public func bindDoubleAtIndex(parameter:Double, index:Int, error:NSErrorPointer) -> Bool {
-        let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), parameter)
+    public func bindDoubleValue(doubleValue:Double, named name:String, error:NSErrorPointer) -> Bool {
+        if let parameterIndex = indexOfParameterNamed(name) {
+            return bindDoubleValue(doubleValue, atIndex: parameterIndex, error: error)
+        } else {
+            if error != nil {
+                error.memory = unknownBindParameterError(name)
+            }
+            return false
+        }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Bool Parameters
+    
+    public func bindBoolValue(boolValue:Bool, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
         if resultCode != SQLITE_OK {
             if error != nil {
                 error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
@@ -412,19 +490,21 @@ public class Statement : NSObject {
         return true
     }
     
-    public func bindBoolAtIndex(parameter:Bool, index:Int, error:NSErrorPointer) -> Bool {
-        let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(parameter ? 1 : 0))
-        if resultCode != SQLITE_OK {
+    public func bindBoolValue(boolValue:Bool, named name:String, error:NSErrorPointer) -> Bool {
+        if let parameterIndex = indexOfParameterNamed(name) {
+            return bindBoolValue(boolValue, atIndex: parameterIndex, error: error)
+        } else {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = unknownBindParameterError(name)
             }
             return false
         }
-        
-        return true
     }
     
-    public func bindNullAtIndex(index:Int, error:NSErrorPointer) -> Bool {
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Null Parameters
+    
+    public func bindNullParameter(atIndex index:Int, error:NSErrorPointer) -> Bool {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
             if error != nil {
@@ -436,9 +516,14 @@ public class Statement : NSObject {
         return true
     }
     
-    public func clearParameters() {
-        if sqliteStatement != nil {
-            sqlite3_clear_bindings(sqliteStatement)
+    public func bindNullParameter(name:String, error:NSErrorPointer) -> Bool {
+        if let parameterIndex = indexOfParameterNamed(name) {
+            return bindNullParameter(atIndex:parameterIndex, error: error)
+        } else {
+            if error != nil {
+                error.memory = unknownBindParameterError(name)
+            }
+            return false
         }
     }
     

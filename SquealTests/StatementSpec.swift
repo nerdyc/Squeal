@@ -240,6 +240,49 @@ class StatementSpec: QuickSpec {
             
         }
         
+        // =============================================================================================================
+        // MARK:- Named Parameters
+        
+        describe("indexOfParameterNamed(name:)") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
+            }
+            
+            it("returns the index of the parameter when it exists") {
+                expect(statement.indexOfParameterNamed("$NAME")).to(equal(1))
+            }
+            
+            it("returns nil when it doesn't exist") {
+                expect(statement.indexOfParameterNamed("$NOPE")).to(beNil())
+            }
+        }
+        
+        describe("bindStringValue(named:error:)") {
+            
+            var result : Bool = false
+            
+            beforeEach {
+                statement = database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
+            }
+            
+            it("binds the parameter when the parameter exists") {
+                var result = statement.bindStringParameter("Amelia", named:"$NAME", error:&error)
+
+                expect(result).to(beTruthy())
+                expect(error).to(beNil())
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Amelia"))
+            }
+            
+            it("provides an error when it doesn't exist") {
+                var result = statement.bindStringParameter("Amelia", named:"$dfsdf", error:&error)
+                
+                expect(result).to(beFalsy())
+                expect(error).notTo(beNil())
+            }
+
+        }
+        
     }
 }
 
