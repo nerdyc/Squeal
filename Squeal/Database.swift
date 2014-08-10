@@ -41,11 +41,26 @@ private func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32
                    userInfo:[ NSLocalizedDescriptionKey:NSString(UTF8String: errorMsg) ])
 }
 
-// =================================================================================================================
+// =====================================================================================================================
 // MARK:- Database
 
 public class Database: NSObject {
-
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Initialization
+    
+    public class func newInMemoryDatabase() -> Database {
+        return Database()
+    }
+    
+    public class func newTemporaryDatabase() -> Database {
+        return Database(path:"")
+    }
+    
+    public convenience override init() {
+        self.init(path:":memory:")
+    }
+    
     public init(path:String) {
         self.path = path
     }
@@ -61,6 +76,18 @@ public class Database: NSObject {
     // MARK:  Path
     
     public let path : String
+    
+    public var isInMemoryDatabase : Bool {
+        return path == ":memory:"
+    }
+
+    public var isTemporaryDatabase : Bool {
+        return path == ""
+    }
+    
+    public var isPersistentDatabase : Bool {
+        return !(isInMemoryDatabase || isTemporaryDatabase)
+    }
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Open

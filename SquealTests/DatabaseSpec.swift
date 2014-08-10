@@ -14,6 +14,39 @@ class DatabaseSpec: QuickSpec {
             tempPath = createTemporaryDirectory()
             database = Database(path:tempPath + "/Squeal")
         }
+
+        // =============================================================================================================
+        // MARK:- Initialization
+        
+        describe("newInMemoryDatabase()") {
+            
+            it("returns an in-memory database") {
+                var inMemoryDB = Database.newInMemoryDatabase()
+                expect(inMemoryDB.isInMemoryDatabase).to(beTruthy())
+                expect(inMemoryDB.isTemporaryDatabase).to(beFalsy())
+                expect(inMemoryDB.isPersistentDatabase).to(beFalsy())
+            }
+            
+        }
+        
+        describe("newTemporaryDatabase()") {
+            
+            it("returns a temporary database") {
+                var temporaryDB = Database.newTemporaryDatabase()
+                expect(temporaryDB.isInMemoryDatabase).to(beFalsy())
+                expect(temporaryDB.isTemporaryDatabase).to(beTruthy())
+                expect(temporaryDB.isPersistentDatabase).to(beFalsy())
+            }
+            
+        }
+
+        describe("isPersistentDatabase") {
+            it("returns true for non-temporary, on-disk databases") {
+                expect(database.isInMemoryDatabase).to(beFalsy())
+                expect(database.isTemporaryDatabase).to(beFalsy())
+                expect(database.isPersistentDatabase).to(beTruthy())
+            }
+        }
         
         // =============================================================================================================
         // MARK:- Open
