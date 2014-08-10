@@ -12,6 +12,11 @@
 		CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481219968D4000151E1E /* DatabaseSpec.swift */; };
 		CD7248381996A7E800151E1E /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7248311996A5AB00151E1E /* Nimble.framework */; };
 		CD7248391996A7E800151E1E /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD72481E1996A59C00151E1E /* Quick.framework */; };
+		CD72483E1996BC0100151E1E /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CD72483D1996BC0100151E1E /* libsqlite3.dylib */; };
+		CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
+		CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7248431996BE0400151E1E /* Foundation.framework */; };
+		CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
+		CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248681996D6CC00151E1E /* SpecHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +91,10 @@
 		CD7248341996A5D100151E1E /* module.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = module.map; path = modules/module.map; sourceTree = SOURCE_ROOT; };
 		CD7248351996A5F700151E1E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		CD72483A1996A95C00151E1E /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		CD72483D1996BC0100151E1E /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		CD7248431996BE0400151E1E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CD7248661996D4F700151E1E /* StatementSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpec.swift; sourceTree = "<group>"; };
+		CD7248681996D6CC00151E1E /* SpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +102,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */,
+				CD72483E1996BC0100151E1E /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */,
 				CD7248381996A7E800151E1E /* Nimble.framework in Frameworks */,
 				CD7248391996A7E800151E1E /* Quick.framework in Frameworks */,
 			);
@@ -111,6 +123,8 @@
 		CD7247ED1996880300151E1E = {
 			isa = PBXGroup;
 			children = (
+				CD7248431996BE0400151E1E /* Foundation.framework */,
+				CD72483D1996BC0100151E1E /* libsqlite3.dylib */,
 				CD7247F91996880300151E1E /* Squeal */,
 				CD7248031996880300151E1E /* SquealTests */,
 				CD7248141996A54B00151E1E /* Externals */,
@@ -152,6 +166,8 @@
 			isa = PBXGroup;
 			children = (
 				CD72481219968D4000151E1E /* DatabaseSpec.swift */,
+				CD7248681996D6CC00151E1E /* SpecHelpers.swift */,
+				CD7248661996D4F700151E1E /* StatementSpec.swift */,
 				CD7248041996880300151E1E /* Supporting Files */,
 			);
 			path = SquealTests;
@@ -379,6 +395,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */,
+				CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */,
 				CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -556,6 +574,7 @@
 				CD72480C1996880400151E1E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CD72480D1996880400151E1E /* Build configuration list for PBXNativeTarget "SquealTests" */ = {
 			isa = XCConfigurationList;
@@ -564,6 +583,7 @@
 				CD72480F1996880400151E1E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

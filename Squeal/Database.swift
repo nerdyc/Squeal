@@ -9,6 +9,7 @@ public enum SquealErrorCode: Int {
     case Success = 0
     case DatabaseNotOpen
     case DatabaseClosed
+    case StatementClosed
     case UnknownBindArgument
     
     public var localizedDescription : String {
@@ -21,6 +22,8 @@ public enum SquealErrorCode: Int {
                 return "Database has been closed"
             case .UnknownBindArgument:
                 return "Unknown argument to bind"
+            case .StatementClosed:
+                return "Statement has been closed"
         }
     }
     
@@ -29,9 +32,7 @@ public enum SquealErrorCode: Int {
                        code:    toRaw(),
                        userInfo:[ NSLocalizedDescriptionKey:localizedDescription])
     }
-    
 }
-
 
 private func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32) -> NSError {
     var errorMsg = sqlite3_errmsg(database)
@@ -40,15 +41,8 @@ private func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32
                    userInfo:[ NSLocalizedDescriptionKey:NSString(UTF8String: errorMsg) ])
 }
 
-class WeakResultSet {
-    
-    private weak var resultSet : ResultSet?
-    
-    init(_ resultSet:ResultSet) {
-        self.resultSet = resultSet
-    }
-    
-}
+// =================================================================================================================
+// MARK:- Database
 
 public class Database: NSObject {
 
@@ -57,24 +51,24 @@ public class Database: NSObject {
     }
     
     deinit {
-        if database != nil {
-            sqlite3_close(database)
-            database = nil
+        if sqliteDatabase != nil {
+            sqlite3_close(sqliteDatabase)
+            sqliteDatabase = nil
         }
     }
     
-    // =================================================================================================================
-    // MARK:- Path
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Path
     
     public let path : String
     
-    // =================================================================================================================
-    // MARK:- Open
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Open
     
-    private var database : COpaquePointer = nil
+    private var sqliteDatabase : COpaquePointer = nil
     
     public var isOpen : Bool {
-        return database != nil
+        return sqliteDatabase != nil
     }
     
     public func open(error:NSErrorPointer) -> Bool {
@@ -92,147 +86,167 @@ public class Database: NSObject {
                                    code: Int(result),
                                    userInfo: [ NSLocalizedDescriptionKey:NSString(UTF8String: errorMsg) ])
 
-            error.memory = errorObj
+            if error != nil {
+                error.memory = errorObj
+            }
             
             sqlite3_close(sqliteDb)
             sqliteDb = nil
         }
         
-        database = sqliteDb
+        sqliteDatabase = sqliteDb
         return result == SQLITE_OK
     }
     
     public func close(error:NSErrorPointer) -> Bool {
         if !isOpen {
-            error.memory = SquealErrorCode.DatabaseClosed.asError()
+            if error != nil {
+                error.memory = SquealErrorCode.DatabaseClosed.asError()
+            }
             return false
         }
         
-        // close all result sets
-        for weakResultSet in resultSets {
-            if let resultSet = weakResultSet.resultSet {
-                if resultSet.isOpen {
-                    resultSet.close()
+        // close all prepared statements
+        for weakStatement in statements {
+            if let statement = weakStatement.statement {
+                if statement.isOpen {
+                    statement.close()
                 }
             }
         }
         
-        resultSets.removeAll(keepCapacity: true)
+        statements.removeAll(keepCapacity: true)
         
-        let result = sqlite3_close(database)
+        let result = sqlite3_close(sqliteDatabase)
         if result != SQLITE_OK {
-            error.memory = errorFromSqliteResultCode(database, result)
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(sqliteDatabase, result)
+            }
             return false
         }
         
-        database = nil
+        sqliteDatabase = nil
         return true
     }
     
-    // =================================================================================================================
-    // MARK:- Execute
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Statements
     
-    private func prepareStatement(sqlString:String, error:NSErrorPointer) -> COpaquePointer {
-        var cString = sqlString.cStringUsingEncoding(NSUTF8StringEncoding)
-        var statement : COpaquePointer = nil
-        
-        var resultCode = sqlite3_prepare_v2(database,
-                                            cString!,
-                                            -1,
-                                            &statement,
-                                            nil)
-        if resultCode != SQLITE_OK {
-            error.memory = errorFromSqliteResultCode(database, resultCode)
+    private var statements = [WeakStatement]()
+    
+    private func statementWillClose(statement:Statement) {
+        statements = statements.filter {
+            $0.statement != nil && $0.statement != statement
+        }
+    }
+
+    private func prepareSqliteStatement(sqlString:String, error:NSErrorPointer) -> COpaquePointer {
+        if sqliteDatabase == nil {
+            if error != nil {
+                error.memory = SquealErrorCode.DatabaseClosed.asError()
+            }
+            return nil
         }
         
+        var cString = sqlString.cStringUsingEncoding(NSUTF8StringEncoding)
+        var sqliteStatement : COpaquePointer = nil
+        
+        var resultCode = sqlite3_prepare_v2(sqliteDatabase,
+                                            cString!,
+                                            -1,
+                                            &sqliteStatement,
+                                            nil)
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(sqliteDatabase, resultCode)
+            }
+            return nil
+        }
+        
+        return sqliteStatement
+    }
+    
+    public func prepareStatement(sqlString:String, error:NSErrorPointer) -> Statement? {
+        let sqliteStatement = prepareSqliteStatement(sqlString, error:error)
+        if sqliteStatement == nil {
+            return nil
+        }
+        
+        let statement = Statement(database: self, sqliteStatement: sqliteStatement)
+        statements.append(WeakStatement(statement))
         return statement
     }
     
     public func execute(sqlString:String, error:NSErrorPointer) -> Bool {
-        var statement = prepareStatement(sqlString, error:error)
-        if statement == nil {
+        if let statement = prepareStatement(sqlString, error:error) {
+            let result = statement.execute(error)
+            statement.close()
+            return result
+        } else {
             return false
         }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Query
+    
+    public func query(sqlString:String, error:NSErrorPointer) -> Statement? {
+        let sqliteStatement = prepareSqliteStatement(sqlString, error:error)
+        if sqliteStatement == nil {
+            return nil
+        }
         
-        // execute the statement
-        while true {
-            var stepResult = sqlite3_step(statement)
-            if stepResult == SQLITE_DONE || stepResult == SQLITE_OK {
-                break
+        var statement = Statement(database: self, sqliteStatement: sqliteStatement)
+        statements.append(WeakStatement(statement))
+        return statement
+    }
+    
+    public func query(sqlString:String, arguments:[Any?]?, error:NSErrorPointer) -> Statement? {
+        if let statement = query(sqlString, error:error) {
+            if arguments?.count > 0 {
+                var boundSuccessfully = statement.bindArguments(arguments!, error:error)
+                if !boundSuccessfully {
+                    statement.close()
+                    return nil
+                }
             }
             
-            if stepResult != SQLITE_ROW {
-                error.memory = errorFromSqliteResultCode(database, stepResult)
-                sqlite3_finalize(statement)
-                return false
-            }
-        }
-        
-        sqlite3_finalize(statement)
-        return true
-    }
-    
-    // =================================================================================================================
-    // MARK:- Query
-    
-    private var resultSets = [WeakResultSet]()
-    
-    private func resultSetWillClose(resultSet:ResultSet) {
-        resultSets = resultSets.filter {
-            $0.resultSet != nil && $0.resultSet != resultSet
-        }
-    }
-    
-    public func query(sqlString:String, error:NSErrorPointer) -> ResultSet? {
-        var statement = prepareStatement(sqlString, error:error)
-        if statement == nil {
+            return statement;
+        } else {
             return nil
         }
-        
-        var resultSet = ResultSet(database: self, statement: statement)
-        resultSets.append(WeakResultSet(resultSet))
-        
-        return resultSet
-    }
-    
-    public func query(sqlString:String, arguments:[Any?]?, error:NSErrorPointer) -> ResultSet? {
-        let resultSet = query(sqlString, error:error)
-        if resultSet == nil {
-            return nil
-        }
-        
-        if arguments?.count > 0 {
-            var boundSuccessfully = resultSet!.bindArguments(arguments!, error:error)
-            if !boundSuccessfully {
-                resultSet!.close()
-                return nil
-            }
-        }
-        
-        return resultSet;
     }
     
 }
 
-public enum Result {
-    case Advanced
-    case End
-    case Error
+// =================================================================================================================
+// MARK:- Statement
+
+private class WeakStatement {
+    
+    private weak var statement : Statement?
+    
+    init(_ statement:Statement) {
+        self.statement = statement
+    }
+    
 }
 
-public class ResultSet : NSObject {
+public class Statement : NSObject {
     
     private weak var database : Database?
-    private var statement : COpaquePointer
+    private var sqliteStatement : COpaquePointer
     
-    private init(database:Database, statement:COpaquePointer) {
+    private init(database:Database, sqliteStatement:COpaquePointer) {
         self.database = database
-        self.statement = statement
+        self.sqliteStatement = sqliteStatement
+        
+        argumentCount = Int(sqlite3_bind_parameter_count(sqliteStatement))
         
         var columnNames = [String]()
-        var columnCount = sqlite3_column_count(statement)
+        var columnCount = sqlite3_column_count(sqliteStatement)
         for columnIndex in 0..<columnCount {
-            let columnName = sqlite3_column_name(statement, columnIndex)
+            let columnName = sqlite3_column_name(sqliteStatement, columnIndex)
             if columnName != nil {
                 columnNames.append(NSString(UTF8String: columnName))
             } else {
@@ -243,130 +257,257 @@ public class ResultSet : NSObject {
     }
     
     deinit {
-        if statement != nil {
-            sqlite3_finalize(statement)
+        if sqliteStatement != nil {
+            sqlite3_finalize(sqliteStatement)
+        }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  State
+    
+    private func ensureIsOpen(error:NSErrorPointer) -> Bool {
+        if sqliteStatement == nil {
+            if error != nil {
+                error.memory = SquealErrorCode.StatementClosed.asError()
+            }
+            return false
+        } else {
+            return true
         }
     }
     
     public var isOpen : Bool {
-        return database != nil && statement != nil
+        return database != nil && sqliteStatement != nil
     }
     
     public func close() {
         if database != nil {
-            database?.resultSetWillClose(self)
+            database?.statementWillClose(self)
             
-            sqlite3_finalize(statement)
-            statement = nil
+            sqlite3_finalize(sqliteStatement)
+            sqliteStatement = nil
             database = nil
         }
     }
     
-    // =================================================================================================================
-    // MARK:- Arguments
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Arguments
     
-    func bindArguments(arguments:[Any?], error:NSErrorPointer) -> Bool {
+    public let argumentCount : Int
+    
+    public func bindArguments(arguments:[Any?], error:NSErrorPointer) -> Bool {
         for argumentIndex in (0..<arguments.count) {
-            let bindIndex = Int32(argumentIndex + 1) // parameters are bound with 1-based indices
+            let bindIndex = argumentIndex + 1 // parameters are bound with 1-based indices
             
-            var resultCode = SQLITE_OK
             if let argument = arguments[argumentIndex] {
                 switch argument {
                 case let stringArgument as String:
-                    let cString = stringArgument.cStringUsingEncoding(NSUTF8StringEncoding)
-                    
-                    var negativeOne = UnsafeMutablePointer<Int>(-1)
-                    var opaquePointer = COpaquePointer(negativeOne)
-                    var transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
-                    resultCode = sqlite3_bind_text(statement, bindIndex, cString!, -1, transient)
+                    return bindStringArgumentAtIndex(stringArgument, index: bindIndex, error: error)
                     
                 case let intArgument as Int:
-                    resultCode = sqlite3_bind_int64(statement, bindIndex, Int64(intArgument))
+                    return bindInt64ArgumentAtIndex(Int64(intArgument), index: bindIndex, error: error)
                     
                 case let boolArgument as Bool:
-                    resultCode = sqlite3_bind_int(statement, bindIndex, Int32(boolArgument ? 1 : 0))
+                    return bindBoolArgumentAtIndex(boolArgument, index: bindIndex, error: error)
                     
                 case let int64Argument as Int64:
-                    resultCode = sqlite3_bind_int64(statement, bindIndex, int64Argument)
+                    return bindInt64ArgumentAtIndex(int64Argument, index: bindIndex, error: error)
                     
                 case let doubleArgument as Double:
-                    resultCode = sqlite3_bind_double(statement, bindIndex, doubleArgument)
+                    return bindDoubleArgumentAtIndex(doubleArgument, index: bindIndex, error: error)
                     
                 case let floatArgument as Float:
-                    resultCode = sqlite3_bind_double(statement, bindIndex, Double(floatArgument))
+                    return bindDoubleArgumentAtIndex(Double(floatArgument), index: bindIndex, error: error)
                     
                 case let intArgument as Int32:
-                    resultCode = sqlite3_bind_int(statement, bindIndex, intArgument)
+                    return bindIntArgumentAtIndex(Int(intArgument), index: bindIndex, error: error)
                     
                 case let intArgument as Int16:
-                    resultCode = sqlite3_bind_int(statement, bindIndex, Int32(intArgument))
+                    return bindIntArgumentAtIndex(Int(intArgument), index: bindIndex, error: error)
                     
                 case let intArgument as Int8:
-                    resultCode = sqlite3_bind_int(statement, bindIndex, Int32(intArgument))
-                
+                    return bindIntArgumentAtIndex(Int(intArgument), index: bindIndex, error: error)
+                    
                 case let int64Argument as UInt64:
-                    resultCode = sqlite3_bind_int64(statement, bindIndex, Int64(int64Argument))
+                    return bindInt64ArgumentAtIndex(Int64(int64Argument), index: bindIndex, error: error)
                     
                 case let intArgument as UInt32:
-                    resultCode = sqlite3_bind_int64(statement, bindIndex, Int64(intArgument))
-                
+                    return bindInt64ArgumentAtIndex(Int64(intArgument), index: bindIndex, error: error)
+                    
                 case let intArgument as UInt16:
-                    resultCode = sqlite3_bind_int(statement, bindIndex, Int32(intArgument))
+                    return bindIntArgumentAtIndex(Int(intArgument), index: bindIndex, error: error)
                     
                 case let intArgument as UInt8:
-                    resultCode = sqlite3_bind_int(statement, bindIndex, Int32(intArgument))
+                    return bindIntArgumentAtIndex(Int(intArgument), index: bindIndex, error: error)
                     
                 default:
-                    let localizedDescription = "Unsupported bind argument (\(argument)) at index \(argumentIndex)"
-                    error.memory = NSError(domain:  SquealErrorDomain,
-                                           code:    SquealErrorCode.UnknownBindArgument.toRaw(),
-                                           userInfo:[ NSLocalizedDescriptionKey:localizedDescription])
+                    if error != nil {
+                        let localizedDescription = "Unsupported bind argument (\(argument)) at index \(argumentIndex)"
+                        error.memory = NSError(domain:  SquealErrorDomain,
+                                               code:    SquealErrorCode.UnknownBindArgument.toRaw(),
+                                               userInfo:[ NSLocalizedDescriptionKey:localizedDescription])
+                    }
                     return false
                 }
             } else {
-                resultCode = sqlite3_bind_null(statement, bindIndex)
+                return bindNullArgumentAtIndex(bindIndex, error: error)
             }
-    
-            if resultCode != SQLITE_OK {
-                error.memory = errorFromSqliteResultCode(database!.database, resultCode)
-                return false
+            
+        }
+        
+        return true
+    }
+
+    public func bindStringArgumentAtIndex(stringArgument:String, index:Int, error:NSErrorPointer) -> Bool {
+        let cString = stringArgument.cStringUsingEncoding(NSUTF8StringEncoding)
+        
+        let negativeOne = UnsafeMutablePointer<Int>(-1)
+        let opaquePointer = COpaquePointer(negativeOne)
+        let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
+        
+        let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, transient)
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
             }
+            return false
         }
         
         return true
     }
     
-    // =================================================================================================================
-    // MARK:- Iteration
-    
-    public private(set) var error : NSError?
-    
-    public func next(error:NSErrorPointer) -> Bool? {
-        if statement == nil {
-            // closed
+    public func bindInt64ArgumentAtIndex(int64Argument:Int64, index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Argument)
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
             return false
         }
         
-        var result = sqlite3_step(statement)
-        if result == SQLITE_DONE {
-            return false
-        }
-        
-        if result == SQLITE_ROW {
-            return true
-        }
-        
-        error.memory = errorFromSqliteResultCode(database!.database, result)
-        return false
+        return true
     }
     
-    // =================================================================================================================
-    // MARK:- COLUMNS
+    public func bindIntArgumentAtIndex(intArgument:Int, index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), Int64(intArgument))
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
+            return false
+        }
+        
+        return true
+    }
+    
+    public func bindDoubleArgumentAtIndex(doubleArgument:Double, index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleArgument)
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
+            return false
+        }
+        
+        return true
+    }
+    
+    public func bindBoolArgumentAtIndex(boolArgument:Bool, index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolArgument ? 1 : 0))
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
+            return false
+        }
+        
+        return true
+    }
+    
+    public func bindNullArgumentAtIndex(index:Int, error:NSErrorPointer) -> Bool {
+        let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
+            return false
+        }
+        
+        return true
+    }
+    
+    public func clearArguments() {
+        if sqliteStatement != nil {
+            sqlite3_clear_bindings(sqliteStatement)
+        }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Execute
+    
+    public func next(error:NSErrorPointer) -> Bool? {
+        if !ensureIsOpen(error) {
+            return nil
+        }
+        
+        switch sqlite3_step(sqliteStatement) {
+        case SQLITE_DONE:
+            // no more steps
+            return false
+        case SQLITE_ROW:
+            // more rows to process
+            return true
+        case let (stepResult):
+            // error
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, stepResult)
+            }
+            return nil
+        }
+    }
+    
+    public func execute(error:NSErrorPointer) -> Bool {
+        if !ensureIsOpen(error) {
+            return false
+        }
+        
+        // continue stepping until statement completes or encounters an error
+        while true {
+            if let hasMore = next(error) {
+                if !hasMore {
+                    return true;
+                }
+            } else {
+                reset(nil)
+                sqlite3_reset(sqliteStatement)
+                return false
+            }
+        }
+    }
+    
+    public func reset(error:NSErrorPointer) -> Bool {
+        if !ensureIsOpen(error) {
+            return false
+        }
+        
+        var resultCode = sqlite3_reset(sqliteStatement)
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
+            return false
+        }
+        
+        return true
+    }
+        
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Columns
     
     public let columnNames : [String]
     
     public var columnCount : Int {
-        if statement == nil {
+        if sqliteStatement == nil {
             return 0
         }
         
@@ -393,15 +534,15 @@ public class ResultSet : NSObject {
     }
     
     public func integerValueAtIndex(columnIndex:Int) -> Int64? {
-        if statement == nil {
+        if sqliteStatement == nil {
             return nil
         }
         
-        if sqlite3_column_type(statement, Int32(columnIndex)) == SQLITE_NULL {
+        if sqlite3_column_type(sqliteStatement, Int32(columnIndex)) == SQLITE_NULL {
             return nil
         }
         
-        return sqlite3_column_int64(statement, Int32(columnIndex))
+        return sqlite3_column_int64(sqliteStatement, Int32(columnIndex))
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -416,15 +557,15 @@ public class ResultSet : NSObject {
     }
 
     public func realValueAtIndex(columnIndex:Int) -> Double? {
-        if statement == nil {
+        if sqliteStatement == nil {
             return nil
         }
         
-        if sqlite3_column_type(statement, Int32(columnIndex)) == SQLITE_NULL {
+        if sqlite3_column_type(sqliteStatement, Int32(columnIndex)) == SQLITE_NULL {
             return nil
         }
 
-        return sqlite3_column_double(statement, Int32(columnIndex))
+        return sqlite3_column_double(sqliteStatement, Int32(columnIndex))
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -439,11 +580,11 @@ public class ResultSet : NSObject {
     }
     
     public func stringValueAtIndex(columnIndex:Int) -> String? {
-        if statement == nil {
+        if sqliteStatement == nil {
             return nil
         }
         
-        let columnText = sqlite3_column_text(statement, Int32(columnIndex))
+        let columnText = sqlite3_column_text(sqliteStatement, Int32(columnIndex))
         if columnText == nil {
             return nil
         }

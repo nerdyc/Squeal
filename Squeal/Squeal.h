@@ -1,12 +1,4 @@
-//
-//  Squeal.h
-//  Squeal
-//
-//  Created by Christian Niles on 8/9/14.
-//  Copyright (c) 2014 Vulpine Labs LLC. All rights reserved.
-//
-
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for Squeal.
 FOUNDATION_EXPORT double SquealVersionNumber;
