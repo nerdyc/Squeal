@@ -79,13 +79,13 @@ class StatementSpec: QuickSpec {
         }
         
         // =============================================================================================================
-        // MARK:- Arguments
+        // MARK:- Parameters
         
-        describe("bindArguments(arguments:error:)") {
+        describe("bind(parameters:error:)") {
             
             it("binds String values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS ?")
-                statement.bindArguments("Brian")
+                statement.bind("Brian")
             
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -95,7 +95,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Int values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(Int(1))
+                statement.bind(Int(1))
 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -104,7 +104,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Int64 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(Int64(1))
+                statement.bind(Int64(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -113,7 +113,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Int32 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(Int32(1))
+                statement.bind(Int32(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -122,7 +122,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Int16 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(Int16(1))
+                statement.bind(Int16(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -131,7 +131,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Int8 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(Int8(1))
+                statement.bind(Int8(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -140,7 +140,7 @@ class StatementSpec: QuickSpec {
             
             it("binds UInt64 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(UInt64(1))
+                statement.bind(UInt64(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -149,7 +149,7 @@ class StatementSpec: QuickSpec {
             
             it("binds UInt32 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(UInt32(1))
+                statement.bind(UInt32(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -158,7 +158,7 @@ class StatementSpec: QuickSpec {
             
             it("binds UInt16 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(UInt16(1))
+                statement.bind(UInt16(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -167,7 +167,7 @@ class StatementSpec: QuickSpec {
             
             it("binds UInt8 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bindArguments(UInt8(1))
+                statement.bind(UInt8(1))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -176,7 +176,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Double values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE age > ?")
-                statement.bindArguments(Double(43.374))
+                statement.bind(Double(43.374))
 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -185,7 +185,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Float values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE age > ?")
-                statement.bindArguments(Float(43.374))
+                statement.bind(Float(43.374))
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -194,7 +194,7 @@ class StatementSpec: QuickSpec {
             
             it("binds Bool values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE is_adult IS ?")
-                statement.bindArguments(false)
+                statement.bind(false)
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -203,7 +203,7 @@ class StatementSpec: QuickSpec {
             
             it("binds nil values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE age IS ?")
-                statement.bindArguments([nil], error:&error)
+                statement.bind([nil], error:&error)
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Cara"))
@@ -216,7 +216,7 @@ class StatementSpec: QuickSpec {
             
             beforeEach {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS ?")
-                statement.bindArguments("Brian")
+                statement.bind("Brian")
                 statement.next()
                 statement.reset()
             }
@@ -228,14 +228,14 @@ class StatementSpec: QuickSpec {
             
         }
         
-        describe("argumentCount") {
+        describe("parameterCount") {
             
             beforeEach {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS ? AND age > ?")
             }
             
-            it("returns the number of arguments") {
-                expect(statement.argumentCount).to(equal(2))
+            it("returns the number of parameters") {
+                expect(statement.parameterCount).to(equal(2))
             }
             
         }

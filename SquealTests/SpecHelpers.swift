@@ -92,12 +92,12 @@ extension Statement {
         }
     }
     
-    func bindArguments(arguments:Any?...) {
+    func bind(parameters:Any?...) {
         var error : NSError? = nil
-        let result = self.bindArguments(arguments, error: &error)
+        let result = self.bind(parameters, error: &error)
         if result == false {
             NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to bind arguments (\(arguments)): \(error?.localizedDescription)",
+                        reason:     "Failed to bind parameters (\(parameters)): \(error?.localizedDescription)",
                         userInfo:   nil).raise()
         }
     }
