@@ -2,6 +2,32 @@
 
 Squeal allows [sqlite](http://www.sqlite.org/) databases to be created and accessed with [Swift](https://developer.apple.com/swift/).
 
+## Installation
+
+1.  Clone this project into your project directory. E.g.:
+
+    ```bash
+    cd ~/SampleProject
+    mkdir Externals
+    git clone git@github.com:nerdyc/Squeal.git Externals/Squeal
+    ```
+
+2.  Add `Squeal.xcodeproj` to your project by selecting the 'Add files to ...' item in the 'File' menu.
+
+3.  Add Squeal's `module.map` to your project's `Import Paths`.
+    
+    You can do this by selecting your project in XCode's Project navigator (the sidebar on the left), then select
+    `Build Settings` for your app target.
+    
+    Within `Build Settings`, set the `Import Paths` setting to `$(PROJECT_DIR)/Externals/Squeal/modules`. If you cloned
+    `Squeal` to a different location, then modify the example value to match.
+
+4.  Build and run.
+
+
+Step #3 is necessary because `sqlite` is a library not a module. Swift can only import modules, and the `module.map` 
+defines a module for sqlite so it can be imported into Swift code.
+
 ## Use the Database class to create and open databases
 
 Databases are accessed through the `Database` class. Squeal supports creating on-disk, temporary, and in-memory 
