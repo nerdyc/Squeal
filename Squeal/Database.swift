@@ -585,11 +585,15 @@ public class Statement : NSObject {
         
         // continue stepping until statement completes or encounters an error
         while true {
-            if let hasMore = next(error) {
-                if !hasMore {
-                    return true;
-                }
-            } else {
+            switch next(error) {
+            case .Some(true):
+                // more steps
+                continue
+            case .Some(false):
+                // no more steps
+                return true
+            default:
+                // error!
                 reset(nil)
                 sqlite3_reset(sqliteStatement)
                 return false
