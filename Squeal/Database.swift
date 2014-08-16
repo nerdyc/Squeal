@@ -246,7 +246,7 @@ public class Database: NSObject {
     
 }
 
-// =================================================================================================================
+// =====================================================================================================================
 // MARK:- Statement
 
 private class WeakStatement {
@@ -641,15 +641,36 @@ public class Statement : NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Integer
     
-    public func integerValue(columnName:String) -> Int64? {
+    public func intValue(columnName:String) -> Int? {
         if let columnIndex = indexOfColumnNamed(columnName) {
-            return integerValueAtIndex(columnIndex)
+            return intValueAtIndex(columnIndex)
         } else {
             return nil
         }
     }
     
-    public func integerValueAtIndex(columnIndex:Int) -> Int64? {
+    public func intValueAtIndex(columnIndex:Int) -> Int? {
+        if sqliteStatement == nil {
+            return nil
+        }
+        
+        if sqlite3_column_type(sqliteStatement, Int32(columnIndex)) == SQLITE_NULL {
+            return nil
+        }
+        
+        return Int(sqlite3_column_int64(sqliteStatement, Int32(columnIndex)))
+    }
+
+    
+    public func int64Value(columnName:String) -> Int64? {
+        if let columnIndex = indexOfColumnNamed(columnName) {
+            return int64ValueAtIndex(columnIndex)
+        } else {
+            return nil
+        }
+    }
+    
+    public func int64ValueAtIndex(columnIndex:Int) -> Int64? {
         if sqliteStatement == nil {
             return nil
         }
@@ -707,6 +728,25 @@ public class Statement : NSObject {
         
         let columnTextI = UnsafePointer<Int8>(columnText)
         return NSString.stringWithUTF8String(columnTextI)
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Boolean
+    
+    public func boolValue(columnName:String) -> Bool? {
+        if let columnIndex = indexOfColumnNamed(columnName) {
+            return boolValueAtIndex(columnIndex)
+        } else {
+            return nil
+        }
+    }
+    
+    public func boolValueAtIndex(columnIndex:Int) -> Bool? {
+        if let intValue = intValueAtIndex(columnIndex) {
+            return intValue != 0
+        } else {
+            return nil
+        }
     }
     
 }

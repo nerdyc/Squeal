@@ -98,7 +98,7 @@ class DatabaseSpec: QuickSpec {
                 
                 expect(statement!.isOpen).to(beFalsy())
                 expect(statement!.columnCount).to(equal(0))
-                expect(statement!.integerValueAtIndex(0)).to(beNil())
+                expect(statement!.intValueAtIndex(0)).to(beNil())
                 expect(statement!.stringValueAtIndex(1)).to(beNil())
             }
             

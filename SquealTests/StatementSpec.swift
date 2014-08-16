@@ -7,14 +7,11 @@ class StatementSpec: QuickSpec {
         
         var database : Database!
         var statement : Statement!
-        var tempPath : String!
         var error : NSError?
         
         beforeEach {
-            tempPath = createTemporaryDirectory()
-            database = Database(path:tempPath + "/Squeal")
+            database = Database.newTemporaryDatabase()
             database.open()
-            
             database.execute("CREATE TABLE people (personId INTEGER PRIMARY KEY, name TEXT, age REAL, is_adult INTEGER)")
             database.execute("INSERT INTO people (name, age, is_adult) VALUES (\"Amelia\", 1.5, 0),(\"Brian\", 43.375, 1),(\"Cara\", NULL, 1)")
         }
@@ -48,8 +45,8 @@ class StatementSpec: QuickSpec {
                 expect(statement.nameOfColumnAtIndex(2)).to(equal("age"));
                 
                 // 0: id:1, name:Amelia, age:1.5
-                expect(statement.integerValueAtIndex(0)).to(equal(1))
-                expect(statement.integerValue("personId")).to(equal(1))
+                expect(statement.intValueAtIndex(0)).to(equal(1))
+                expect(statement.intValue("personId")).to(equal(1))
                 expect(statement.stringValueAtIndex(1)).to(equal("Amelia"))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
                 expect(statement.realValueAtIndex(2)).to(equal(1.5))
@@ -57,8 +54,8 @@ class StatementSpec: QuickSpec {
                 
                 // 1: id:2, Brian, age:43.375
                 expect(statement.next()).to(beTruthy())
-                expect(statement.integerValueAtIndex(0)).to(equal(2))
-                expect(statement.integerValue("personId")).to(equal(2))
+                expect(statement.intValueAtIndex(0)).to(equal(2))
+                expect(statement.intValue("personId")).to(equal(2))
                 expect(statement.stringValueAtIndex(1)).to(equal("Brian"))
                 expect(statement.stringValue("name")).to(equal("Brian"))
                 expect(statement.realValueAtIndex(2)).to(equal(43.375))
@@ -66,8 +63,8 @@ class StatementSpec: QuickSpec {
                 
                 // 2: id:3, name:Cara, age:nil
                 expect(statement.next()).to(beTruthy())
-                expect(statement.integerValueAtIndex(0)).to(equal(3))
-                expect(statement.integerValue("personId")).to(equal(3))
+                expect(statement.intValueAtIndex(0)).to(equal(3))
+                expect(statement.intValue("personId")).to(equal(3))
                 expect(statement.stringValueAtIndex(1)).to(equal("Cara"))
                 expect(statement.stringValue("name")).to(equal("Cara"))
                 expect(statement.realValueAtIndex(2)).to(beNil())
