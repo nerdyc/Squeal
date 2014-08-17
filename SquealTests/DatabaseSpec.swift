@@ -9,10 +9,20 @@ class DatabaseSpec: QuickSpec {
         
         var database : Database!
         var tempPath : String!
+        var error : NSError?
         
         beforeEach {
             tempPath = createTemporaryDirectory()
             database = Database(path:tempPath + "/Squeal")
+        }
+        
+        afterEach {
+            if database != nil && database.isOpen {
+                database.close(nil)
+            }
+            database = nil
+            tempPath = nil
+            error = nil
         }
 
         // =============================================================================================================
@@ -56,7 +66,6 @@ class DatabaseSpec: QuickSpec {
             context("when the database doesn't exist") {
                 
                 beforeEach {
-                    var error : NSError?
                     if !database.open(&error) {
                         NSException(name: NSInternalInconsistencyException,
                                     reason: "Unable to open database \(error)",
@@ -79,7 +88,6 @@ class DatabaseSpec: QuickSpec {
         describe("close()") {
             
             var result: Bool = false
-            var error: NSError?
             var statement: Statement?
             
             beforeEach {
@@ -131,5 +139,6 @@ class DatabaseSpec: QuickSpec {
             }
             
         }
+        
     }
 }

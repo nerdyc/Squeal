@@ -17,6 +17,8 @@
 		CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7248431996BE0400151E1E /* Foundation.framework */; };
 		CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
 		CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248681996D6CC00151E1E /* SpecHelpers.swift */; };
+		CD9F4CD619A12967003CC387 /* DatabaseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DatabaseContent.swift */; };
+		CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */; };
 		CDD59C26199C69F500FB662D /* DatabaseSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* DatabaseSchema.swift */; };
 		CDD59C30199C6A5300FB662D /* DatabaseSchemaSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */; };
 /* End PBXBuildFile section */
@@ -97,6 +99,8 @@
 		CD7248431996BE0400151E1E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CD7248661996D4F700151E1E /* StatementSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpec.swift; sourceTree = "<group>"; };
 		CD7248681996D6CC00151E1E /* SpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecHelpers.swift; sourceTree = "<group>"; };
+		CD9F4CD519A12967003CC387 /* DatabaseContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseContent.swift; sourceTree = "<group>"; };
+		CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseContentSpec.swift; sourceTree = "<group>"; };
 		CDD59C25199C69F500FB662D /* DatabaseSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSchema.swift; sourceTree = "<group>"; };
 		CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSchemaSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -151,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				CD72481019968D3100151E1E /* Database.swift */,
+				CD9F4CD519A12967003CC387 /* DatabaseContent.swift */,
 				CDD59C25199C69F500FB662D /* DatabaseSchema.swift */,
 				CD7247FC1996880300151E1E /* Squeal.h */,
 				CD7247FA1996880300151E1E /* Supporting Files */,
@@ -170,6 +175,7 @@
 		CD7248031996880300151E1E /* SquealTests */ = {
 			isa = PBXGroup;
 			children = (
+				CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */,
 				CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */,
 				CD72481219968D4000151E1E /* DatabaseSpec.swift */,
 				CD7248681996D6CC00151E1E /* SpecHelpers.swift */,
@@ -393,6 +399,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD9F4CD619A12967003CC387 /* DatabaseContent.swift in Sources */,
 				CD72481119968D3100151E1E /* Database.swift in Sources */,
 				CDD59C26199C69F500FB662D /* DatabaseSchema.swift in Sources */,
 			);
@@ -405,6 +412,7 @@
 				CDD59C30199C6A5300FB662D /* DatabaseSchemaSpec.swift in Sources */,
 				CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */,
 				CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */,
+				CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */,
 				CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

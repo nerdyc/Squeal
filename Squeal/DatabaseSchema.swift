@@ -10,7 +10,7 @@ public func escapeIdentifier(identifier:String) -> String {
 }
 
 // =====================================================================================================================
-// MARK:- Schema Extensions
+// MARK:- Schema
 
 public class Schema : NSObject {
     
@@ -117,6 +117,9 @@ public class SchemaEntry : NSObject {
 
 }
 
+// =====================================================================================================================
+// MARK:- Table
+
 public class TableInfo : NSObject {
     
     public init(name:String, columns:[ColumnInfo]) {
@@ -159,6 +162,9 @@ public class ColumnInfo : NSObject {
     public let primaryKeyIndex: Int
     
 }
+
+// =====================================================================================================================
+// MARK:- Database
 
 extension Database {
     

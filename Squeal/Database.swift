@@ -211,6 +211,14 @@ public class Database: NSObject {
         }
     }
     
+    public var lastInsertedRowId : Int64 {
+        if !isOpen {
+            return 0
+        }
+            
+        return sqlite3_last_insert_rowid(self.sqliteDatabase)
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Query
     
@@ -594,7 +602,7 @@ public class Statement : NSObject {
         
         return true
     }
-        
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Columns
     
