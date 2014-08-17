@@ -207,6 +207,15 @@ class StatementSpec: QuickSpec {
                 expect(statement.next()).to(beFalsy())
             }
             
+            it("binds multiple values") {
+                statement = database.prepareStatement("SELECT * FROM people WHERE personId > ? AND personId < ?")
+                statement.bind([1, 3], error:&error)
+                
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Brian"))
+                expect(statement.next()).to(beFalsy())
+            }
+            
         }
         
         describe("reset()") {
@@ -254,30 +263,26 @@ class StatementSpec: QuickSpec {
             }
         }
         
-        describe("bindStringValue(named:error:)") {
+        describe("bind(namedParameters:error:)") {
             
-            var result : Bool = false
-            
-            beforeEach {
+            it("binds named values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
-            }
-            
-            it("binds the parameter when the parameter exists") {
-                var result = statement.bindStringParameter("Amelia", named:"$NAME", error:&error)
-
-                expect(result).to(beTruthy())
-                expect(error).to(beNil())
-                expect(statement.next()).to(beTruthy())
-                expect(statement.stringValue("name")).to(equal("Amelia"))
-            }
-            
-            it("provides an error when it doesn't exist") {
-                var result = statement.bindStringParameter("Amelia", named:"$dfsdf", error:&error)
+                statement.bind(namedParameters:[ "$NAME": "Brian" ], error:nil)
                 
-                expect(result).to(beFalsy())
-                expect(error).notTo(beNil())
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Brian"))
+                expect(statement.next()).to(beFalsy())
             }
-
+            
+            it("binds multiple values") {
+                statement = database.prepareStatement("SELECT * FROM people WHERE personId > $MIN_ID AND personId < $MAX_ID")
+                statement.bind(namedParameters:["$MIN_ID": 1, "$MAX_ID": 3], error:&error)
+                
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Brian"))
+                expect(statement.next()).to(beFalsy())
+            }
+            
         }
         
     }

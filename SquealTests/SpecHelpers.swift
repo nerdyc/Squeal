@@ -92,7 +92,7 @@ extension Statement {
         }
     }
     
-    func bind(parameters:Any?...) {
+    func bind(parameters:Bindable?...) {
         var error : NSError? = nil
         let result = self.bind(parameters, error: &error)
         if result == false {

@@ -7,7 +7,6 @@ let SquealErrorDomain = "Squeal"
 public enum SquealErrorCode: Int {
     
     case Success = 0
-    case DatabaseNotOpen
     case DatabaseClosed
     case StatementClosed
     case UnknownBindParameter
@@ -16,14 +15,12 @@ public enum SquealErrorCode: Int {
         switch self {
             case .Success:
                 return "Success"
-            case .DatabaseNotOpen:
-                return "Database must be open"
             case .DatabaseClosed:
                 return "Database has been closed"
-            case .UnknownBindParameter:
-                return "Unknown parameter to bind"
             case .StatementClosed:
                 return "Statement has been closed"
+            case .UnknownBindParameter:
+                return "Unknown parameter to bind"
         }
     }
     
@@ -228,7 +225,7 @@ public class Database: NSObject {
         return statement
     }
     
-    public func query(sqlString:String, parameters:[Any?]?, error:NSErrorPointer) -> Statement? {
+    public func query(sqlString:String, parameters:[Bindable?]?, error:NSErrorPointer) -> Statement? {
         if let statement = query(sqlString, error:error) {
             if parameters?.count > 0 {
                 var boundSuccessfully = statement.bind(parameters!, error:error)
@@ -347,58 +344,13 @@ public class Statement : NSObject {
         
     }
     
-    public func bind(parameters:[Any?], error:NSErrorPointer) -> Bool {
+    public func bind(parameters:[Bindable?], error:NSErrorPointer) -> Bool {
         for parameterIndex in (0..<parameters.count) {
             let bindIndex = parameterIndex + 1 // parameters are bound with 1-based indices
             
             if let parameter = parameters[parameterIndex] {
-                switch parameter {
-                case let stringParameter as String:
-                    return bindStringParameter(stringParameter, atIndex: bindIndex, error: error)
-                    
-                case let intParameter as Int:
-                    return bindIntValue(intParameter, atIndex: bindIndex, error: error)
-                    
-                case let boolParameter as Bool:
-                    return bindBoolValue(boolParameter, atIndex: bindIndex, error: error)
-                    
-                case let int64Parameter as Int64:
-                    return bindInt64Value(int64Parameter, atIndex: bindIndex, error: error)
-                    
-                case let doubleParameter as Double:
-                    return bindDoubleValue(doubleParameter, atIndex: bindIndex, error: error)
-                    
-                case let floatParameter as Float:
-                    return bindDoubleValue(Double(floatParameter), atIndex: bindIndex, error: error)
-                    
-                case let int32Parameter as Int32:
-                    return bindIntValue(Int(int32Parameter), atIndex: bindIndex, error: error)
-                    
-                case let int16Parameter as Int16:
-                    return bindIntValue(Int(int16Parameter), atIndex: bindIndex, error: error)
-                    
-                case let int8Parameter as Int8:
-                    return bindIntValue(Int(int8Parameter), atIndex: bindIndex, error: error)
-                    
-                case let uint64Parameter as UInt64:
-                    return bindInt64Value(Int64(uint64Parameter), atIndex: bindIndex, error: error)
-                    
-                case let uint32Parameter as UInt32:
-                    return bindInt64Value(Int64(uint32Parameter), atIndex: bindIndex, error: error)
-                    
-                case let uint16Parameter as UInt16:
-                    return bindIntValue(Int(uint16Parameter), atIndex: bindIndex, error: error)
-                    
-                case let uint8Parameter as UInt8:
-                    return bindIntValue(Int(uint8Parameter), atIndex: bindIndex, error: error)
-                    
-                default:
-                    if error != nil {
-                        let localizedDescription = "Unsupported parameter (\(parameter)) at index \(parameterIndex)"
-                        error.memory = NSError(domain:  SquealErrorDomain,
-                                               code:    SquealErrorCode.UnknownBindParameter.toRaw(),
-                                               userInfo:[ NSLocalizedDescriptionKey:localizedDescription])
-                    }
+                var wasBound = parameter.bindToStatement(self, atIndex: bindIndex, error: error)
+                if !wasBound {
                     return false
                 }
             } else {
@@ -410,6 +362,32 @@ public class Statement : NSObject {
         return true
     }
 
+    public func bind(#namedParameters:[String:Bindable?], error:NSErrorPointer) -> Bool {
+        for (name, value) in namedParameters {
+            var success = bindParameter(name, value: value, error: error)
+            if !success {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    public func bindParameter(name:String, value:Bindable?, error:NSErrorPointer) -> Bool {
+        if let bindIndex = indexOfParameterNamed(name) {
+            if value != nil {
+                let bound = value!.bindToStatement(self, atIndex: bindIndex, error: error)
+                if !bound {
+                    return false
+                }
+            } else {
+                return bindNullParameter(atIndex:bindIndex, error: error)
+            }
+        }
+        
+        return true
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  String Parameters
     
@@ -747,6 +725,117 @@ public class Statement : NSObject {
         } else {
             return nil
         }
+    }
+    
+}
+
+// =====================================================================================================================
+// MARK:- Bindable
+
+public protocol Bindable {
+    func bindToStatement(statement:Statement, atIndex:Int, error:NSErrorPointer) -> Bool
+}
+
+extension String : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindStringParameter(self, atIndex: index, error: error)
+    }
+    
+}
+
+extension Int : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindIntValue(self, atIndex: index, error: error)
+    }
+    
+}
+
+extension Int64 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindInt64Value(self, atIndex: index, error: error)
+    }
+    
+}
+
+extension Int32 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindIntValue(Int(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension Int16 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindIntValue(Int(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension Int8 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindIntValue(Int(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension UInt64 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindInt64Value(Int64(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension UInt32 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindInt64Value(Int64(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension UInt16 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindIntValue(Int(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension UInt8 : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindIntValue(Int(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension Bool : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindBoolValue(self, atIndex: index, error: error)
+    }
+    
+}
+
+extension Double : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindDoubleValue(self, atIndex: index, error: error)
+    }
+    
+}
+
+extension Float : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindDoubleValue(Double(self), atIndex: index, error: error)
     }
     
 }
