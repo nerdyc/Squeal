@@ -65,6 +65,16 @@ extension Database {
         return statement!
     }
     
+    func dropTable(tableName:String) {
+        var error : NSError? = nil
+        let result = dropTable(tableName, error:&error)
+        if !result {
+            NSException(name:       NSInternalInconsistencyException,
+                        reason:     "Failed to drop table: \(error?.localizedDescription)",
+                        userInfo:   nil).raise()
+        }
+    }
+    
 }
 
 extension Statement {

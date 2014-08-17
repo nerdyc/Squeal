@@ -234,8 +234,26 @@ extension Database {
     // MARK:  CREATE TABLE
     
     public func createTable(tableName:String, definitions:[String], error:NSErrorPointer) -> Bool {
-        var createTableSql = "CREATE TABLE " + escapeIdentifier(tableName) + " (" + join(",", definitions) + ")"
+        let createTableSql = "CREATE TABLE " + escapeIdentifier(tableName) + " (" + join(",", definitions) + ")"
         return execute(createTableSql, error: error)
+    }
+
+    public func createTableIfNotExists(tableName:String, definitions:[String], error:NSErrorPointer) -> Bool {
+        let createTableSql = "CREATE TABLE IF NOT EXISTS " + escapeIdentifier(tableName) + " (" + join(",", definitions) + ")"
+        return execute(createTableSql, error: error)
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  DROP TABLE
+    
+    public func dropTable(tableName:String, error:NSErrorPointer) -> Bool {
+        let dropTableSql = "DROP TABLE " + escapeIdentifier(tableName)
+        return execute(dropTableSql, error: error)
+    }
+    
+    public func dropTableIfExists(tableName:String, error:NSErrorPointer) -> Bool {
+        let dropTableSql = "DROP TABLE IF EXISTS " + escapeIdentifier(tableName)
+        return execute(dropTableSql, error: error)
     }
     
 }
