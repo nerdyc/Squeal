@@ -25,10 +25,12 @@ Squeal allows [sqlite](http://www.sqlite.org/) databases to be created and acces
 4.  Build and run.
 
 
-Step #3 is necessary because `sqlite` is a library not a module. Swift can only import modules, and the `module.map` 
+Step #3 is necessary because sqlite is a library not a module. Swift can only import modules, and the `module.map` 
 defines a module for sqlite so it can be imported into Swift code.
 
-## Use the Database class to create and open databases
+## Usage
+
+### Use the Database class to create and open databases
 
 Databases are accessed through the `Database` class. Squeal supports creating on-disk, temporary, and in-memory 
 databases:
@@ -58,10 +60,10 @@ if !database.close(&error) {
 }
 ```
 
-Closing a database will attempt to close all outstanding `Statement` objects, but may fail if the database is still
-being used elsewhere in your app.
+Closing a database will attempt to close all outstanding `Statement` objects, but may fail if the `Database` object is 
+still being used elsewhere in your app.
 
-## Prepare Statement objects to execute SQL
+### Prepare Statement objects to execute SQL
 
 Once a database has been opened, SQL commands and queries can be executed through `Statement` objects.
 
@@ -76,7 +78,7 @@ if statement == nil {
 }
 ```
 
-Preparing a statement compiles and validates the SQL string, but does not execute it. `sqlite` compiles SQL strings into
+Preparing a statement compiles and validates the SQL string, but does not execute it. sqlite compiles SQL strings into
 an internal executable representation. Think of `Statement` objects like mini computer programs.
 
 Once prepared, statements are executed through the `Statement.execute(error:)` or `Statement.query(error:)` methods. `Statement` objects are reusable, and are more efficient when reused. See below for details.
@@ -89,15 +91,15 @@ statement.close()
 
 After closing a `Statement`, it is unusable and should be discarded.
 
-## Use `Statement.execute(:error)` to perform updates
+### Use `Statement.execute(:error)` to perform updates
 
-Any SQL statement that is not a `SELECT` should use the `execute(error:)` method:
+Any SQL statement that is not a `SELECT` should use the `Statement.execute(error:)` method:
 
 ```swift
 let executeSucceeded = statement.execute(&error)
 ```
 
-## Use `Statement.next(:error)` to query the database
+### Use `Statement.next(:error)` to query the database
 
 `SELECT` statements are special because they return data. To execute a query and iterate through the results, use the
 `Statement.next(error:)` method after preparing a statement:
@@ -125,9 +127,9 @@ through that program in a debugger. At each step, we call `next(error:)` to adva
 returned to indicate whether another row was returned (`true`), all data has been consumed (`false`), or an error 
 occured (`nil`).
 
-## Use parameters in SQL to simplify escaping and avoid injection attacks
+### Use parameters in SQL to simplify escaping and avoid injection attacks
 
-`sqlite` supports parameratized SQL statements, like `SELECT * FROM contacts WHERE name = ?`. When compiled into a `Statement` object, you can specify the value for the `?` separately by *binding* a value for it. This help to avoid the need to escape values when constructing SQL, and allows compiled statements to be reused many times.
+sqlite supports parameratized SQL statements, like `SELECT * FROM contacts WHERE name = ?`. When compiled into a `Statement` object, you can specify the value for the `?` separately by *binding* a value for it. This help to avoid the need to escape values when constructing SQL, and allows compiled statements to be reused many times.
 
 For example:
 
@@ -151,17 +153,18 @@ if let statement = database.prepareStatement("SELECT * FROM contacts WHERE name 
 
 Note that **parameters are 1-based**. Binding a parameter at index '0' will always fail.
 
-`sqlite` also supports inserting an indexed parameter multiple times. This is best shown by example: 
+sqlite also supports inserting an indexed parameter multiple times. This is best shown by example: 
 
 ```sql
 SELECT * FROM contacts WHERE name = ?1 OR email = ?1
 ```
 
-This statment only one parameter, and will match any contact whose name or email matches the first parameter. 
+This statement has a single parameter that is inserted multiple times. It will match any contact whose name or email 
+matches the first parameter. 
 
-### Named Parameters
+#### Named Parameters
 
-`sqlite` supports parameters like `$NAME`, which can make longer queries more comprehensible. For example, this query is
+sqlite supports parameters like `$NAME`, which can make longer queries more comprehensible. For example, this query is
 equivalent to the previous example:
 
 ```SQL
@@ -174,9 +177,9 @@ Rather than binding an index, you bind it's name:
 statement.bindStringParameter("johnny.appleseed@apple.com", named:"$searchString", error:&error)
 ```
 
-Note that the `$` character must be included. sqlite also supports named parameters of the form `:NAME` or `@NAME`. See the [sqlite documentation](http://www.sqlite.org/docs.html) for authoritative details.
+Note that the `$` character must be included. sqlite also supports named parameters of the form `:NAME` or `@NAME`. See the [sqlite documentation](http://www.sqlite.org/lang_expr.html#varparam) for authoritative details.
 
-## Reuse statements for efficiency
+### Reuse statements for efficiency
 
 `Statement` objects can be re-executed multiple times. If your app executes the same queries many times, this will increase performance by reducing the amount of time spent parsing SQL. Different parameters can be set each time a statement is executed. 
 
@@ -193,9 +196,12 @@ statement.reset(&error)
 statement.clearParameters()
 ```
 
-## Use Squeal from the command line, or a Playground
+### Use Squeal from the command line, or a Playground
 
 Accessing Squeal from a playground, or the command-line REPL isn't possible right now. Squeal relies on a custom module.map to access sqlite from Swift, and this isn't supported in the XCode betas (yet?).
 
 Any suggestions for a workaround would be appreciated!
 
+## License
+
+Squeal is released under the MIT License. Details are in the `LICENSE.txt` file in the project.
