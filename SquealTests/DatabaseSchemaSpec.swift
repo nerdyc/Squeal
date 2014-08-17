@@ -14,6 +14,20 @@ class DatabaseSchemaSpec: QuickSpec {
             database.open()
         }
         
+        afterEach {
+            if (statement != nil && statement.isOpen) {
+                statement.close()
+            }
+            statement = nil
+            
+            if database.isOpen {
+                database.close(nil)
+            }
+            database = nil
+            
+            error = nil
+        }
+        
         // =============================================================================================================
         // MARK:- Schema & Table Info
         
@@ -148,7 +162,7 @@ class DatabaseSchemaSpec: QuickSpec {
                 beforeEach {
                     database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
                     database.createTableIfNotExists("contacts",
-                                                    definitions:[ "contactId  INTEGER PRIMARY KEY" ],
+                                                    definitions:[ "contactId INTEGER PRIMARY KEY" ],
                                                     error:&error)
                 }
                 
@@ -171,7 +185,6 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("drops the table from the database") {
-                var error : NSError?
                 var result = database.dropTableIfExists("contacts", error: &error)
 
                 expect(result).to(beTruthy())
@@ -180,7 +193,6 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("provides an error if the table doesn't exist") {
-                var error : NSError?
                 var result = database.dropTable("phones", error: &error)
                 
                 expect(result).to(beFalsy())
@@ -196,7 +208,6 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("drops the table from the database") {
-                var error : NSError?
                 var result = database.dropTableIfExists("contacts", error: &error)
                 
                 expect(result).to(beTruthy())
@@ -205,11 +216,38 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("doesn't provide an error if the table doesn't exist") {
-                var error : NSError?
                 var result = database.dropTableIfExists("phones", error: &error)
                 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
+            }
+        }
+
+        // =================================================================================================================
+        // MARK:- Rename Table
+        
+        describe(".renameTable(tableName:to:") {
+            beforeEach {
+                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+                database.renameTable("contacts", to:"people")
+            }
+            
+            it("renames the table") {
+                expect(database.schema.tableNames).to(equal(["people"]))
+            }
+        }
+
+        describe(".addColumnToTable(tableName:column:") {
+            beforeEach {
+                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+            }
+            
+            it("adds a column to a table") {
+                var result = database.addColumnToTable("contacts", column:"name TEXT", error:&error)
+                
+                expect(result).to(beTruthy())
+                expect(error).to(beNil())
+                expect(database.tableInfoForTableNamed("contacts")?.columnNames).to(equal(["contactId", "name"]))
             }
         }
 

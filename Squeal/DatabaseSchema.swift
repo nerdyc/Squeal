@@ -256,4 +256,21 @@ extension Database {
         return execute(dropTableSql, error: error)
     }
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  ALTER TABLE
+    
+    public func renameTable(tableName:String, to:String, error:NSErrorPointer = nil) -> Bool {
+        let renameTableSql = "ALTER TABLE " + escapeIdentifier(tableName)
+                                + " RENAME TO " + escapeIdentifier(to)
+        
+        return execute(renameTableSql, error: error)
+    }
+    
+    public func addColumnToTable(tableName:String, column:String, error:NSErrorPointer = nil) -> Bool {
+        let addColumnSql = "ALTER TABLE " + escapeIdentifier(tableName)
+                                + " ADD COLUMN " + column
+        
+        return execute(addColumnSql, error: error)
+    }
+    
 }
