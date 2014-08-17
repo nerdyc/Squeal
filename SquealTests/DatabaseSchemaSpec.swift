@@ -106,20 +106,28 @@ class DatabaseSchemaSpec: QuickSpec {
             context("when the table already exists") {
                 
                 beforeEach {
-                    database.createTable("contacts",
-                                         definitions:[ "contactId  INTEGER PRIMARY KEY" ],
-                                         error:&error)
-                    
-                    result = database.createTable("contacts",
-                                                  definitions:[ "contactId  INTEGER PRIMARY KEY" ],
-                                                  error:&error)
+                    database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
                 }
                 
-                it("returns false and provides an error") {
+                it("returns false and provides an error by default") {
+                    result = database.createTable("contacts",
+                                                  definitions:[ "contactId INTEGER PRIMARY KEY" ],
+                                                  error:&error)
+                    
                     expect(result).to(beFalsy())
                     expect(error).notTo(beNil())
                 }
-                
+
+                it("doesn't error if ifNotExists is true") {
+                    result = database.createTable("contacts",
+                                                  definitions:[ "contactId INTEGER PRIMARY KEY" ],
+                                                  ifNotExists:true,
+                                                  error:&error)
+                    
+                    expect(result).to(beTruthy())
+                    expect(error).to(beNil())
+                }
+
             }
             
             context("when the table definition is invalid") {
@@ -139,42 +147,7 @@ class DatabaseSchemaSpec: QuickSpec {
             
         }
 
-        describe(".createTableIfNotExists(name:columns:error:)") {
-            
-            var result : Bool = false
-            
-            context("when the table definition is valid") {
-                beforeEach {
-                    result = database.createTableIfNotExists("contacts",
-                                                             definitions:[ "contactId INTEGER PRIMARY KEY" ],
-                                                             error:&error)
-                }
-                
-                it("creates the table") {
-                    expect(result).to(beTruthy())
-                    expect(error).to(beNil())
-                    expect(database.schema.tableNames).to(equal(["contacts"]))
-                }
-            }
-            
-            context("when the table already exists") {
-                
-                beforeEach {
-                    database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
-                    database.createTableIfNotExists("contacts",
-                                                    definitions:[ "contactId INTEGER PRIMARY KEY" ],
-                                                    error:&error)
-                }
-                
-                it("doesn't create an error") {
-                    expect(result).to(beTruthy())
-                    expect(error).to(beNil())
-                }
-            }
-            
-        }
-
-        // =================================================================================================================
+        // =============================================================================================================
         // MARK:- Drop Table
         
         describe(".dropTable(name:error:)") {
@@ -185,7 +158,7 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("drops the table from the database") {
-                var result = database.dropTableIfExists("contacts", error: &error)
+                var result = database.dropTable("contacts", error: &error)
 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
@@ -198,58 +171,138 @@ class DatabaseSchemaSpec: QuickSpec {
                 expect(result).to(beFalsy())
                 expect(error).notTo(beNil())
             }
-        }
-
-        describe(".dropTableIfExists(name:error:)") {
             
-            beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
-                database.execute("CREATE TABLE emails (emailId INTEGER PRIMARY KEY)")
-            }
-            
-            it("drops the table from the database") {
-                var result = database.dropTableIfExists("contacts", error: &error)
-                
-                expect(result).to(beTruthy())
-                expect(error).to(beNil())
-                expect(database.schema.tableNames).to(equal(["emails"]))
-            }
-            
-            it("doesn't provide an error if the table doesn't exist") {
-                var result = database.dropTableIfExists("phones", error: &error)
+            it("doesn't error if the table doesn't exist and ifExists is true") {
+                var result = database.dropTable("phones", ifExists:true, error: &error)
                 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
             }
-        }
 
+        }
+        
         // =================================================================================================================
         // MARK:- Rename Table
         
-        describe(".renameTable(tableName:to:") {
+        describe(".renameTable(tableName:to:error:)") {
+            var result : Bool = false
+            
             beforeEach {
                 database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
-                database.renameTable("contacts", to:"people")
+                result = database.renameTable("contacts", to:"people", error:&error)
             }
             
             it("renames the table") {
+                expect(result).to(beTruthy())
+                expect(error).to(beNil())
+                
                 expect(database.schema.tableNames).to(equal(["people"]))
             }
         }
 
-        describe(".addColumnToTable(tableName:column:") {
+        describe(".addColumnToTable(tableName:column:error:") {
+            var result : Bool = false
+            
             beforeEach {
                 database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+                result = database.addColumnToTable("contacts", column:"name TEXT", error:&error)
             }
             
             it("adds a column to a table") {
-                var result = database.addColumnToTable("contacts", column:"name TEXT", error:&error)
-                
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
+                
                 expect(database.tableInfoForTableNamed("contacts")?.columnNames).to(equal(["contactId", "name"]))
             }
         }
 
+        // =================================================================================================================
+        // MARK:- Create Index
+        
+        describe(".createIndex(name:tableName:columns:error:)") {
+            var result : Bool = false
+            
+            beforeEach {
+                database.execute("CREATE TABLE contacts (contactId INTEGER, name TEXT)")
+            }
+            
+            context("when the index doesn't exist") {
+                beforeEach {
+                    result = database.createIndex("contacts_name",
+                                                  tableName:    "contacts",
+                                                  columns:      ["name"],
+                                                  error:        &error)
+                }
+            
+                it("creates an index over the given columns") {
+                    expect(result).to(beTruthy())
+                    expect(error).to(beNil())
+                    
+                    expect(database.schema.indexesOnTable("contacts").map { $0.name }).to(equal(["contacts_name"]))
+                }
+            }
+            
+            context("when the index already exists") {
+                
+                beforeEach {
+                    database.execute("CREATE INDEX contacts_name ON contacts (name)")
+                }
+                
+                it("returns an error") {
+                    result = database.createIndex("contacts_name",
+                                                  tableName:    "contacts",
+                                                  columns:      ["name"],
+                                                  error:        &error)
+                    
+                    expect(result).to(beFalsy())
+                    expect(error).notTo(beNil())
+                }
+
+                it("doesn't return an error if ifNotExists is true") {
+                    result = database.createIndex("contacts_name",
+                                                  tableName:    "contacts",
+                                                  columns:      ["name"],
+                                                  ifNotExists:  true,
+                                                  error:        &error)
+                    
+                    expect(result).to(beTruthy())
+                    expect(error).to(beNil())
+                }
+
+            }
+            
+        }
+        
+        describe(".dropIndex(name:ifExists:error:)") {
+            
+            beforeEach {
+                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+                database.execute("CREATE INDEX contacts_name ON contacts (name)")
+            }
+            
+            it("drops the index from the database") {
+                var result = database.dropIndex("contacts_name", error: &error)
+                
+                expect(result).to(beTruthy())
+                expect(error).to(beNil())
+                expect(database.schema.indexNames).to(equal([]))
+            }
+            
+            it("provides an error if the index doesn't exist") {
+                var result = database.dropIndex("contacts_not_an_index", error: &error)
+                
+                expect(result).to(beFalsy())
+                expect(error).notTo(beNil())
+            }
+            
+            it("doesn't error if the index doesn't exist and ifExists is true") {
+                var result = database.dropIndex("contacts_not_an_index", ifExists:true, error: &error)
+                
+                expect(result).to(beTruthy())
+                expect(error).to(beNil())
+            }
+            
+        }
+        
     }
 }
