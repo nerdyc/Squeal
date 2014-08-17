@@ -76,6 +76,26 @@ class DatabaseSchemaSpec: QuickSpec {
             
         }
         
+        describe(".queryUserVersionNumber(error:)") {
+            
+            beforeEach {
+                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+            }
+            
+            it("is 0 when database is created") {
+                expect(database.queryUserVersionNumber()).to(equal(0))
+            }
+            
+            it("is non-zero when set by the developer") {
+                var result = database.updateUserVersionNumber(123, error:&error)
+                expect(result).to(beTruthy())
+                expect(error).to(beNil())
+                
+                expect(database.queryUserVersionNumber()).to(equal(123))
+            }
+            
+        }
+        
         // =============================================================================================================
         // MARK:- Create Table
         

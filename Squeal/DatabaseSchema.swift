@@ -230,6 +230,30 @@ extension Database {
         }
     }
     
+    public func queryUserVersionNumber(error:NSErrorPointer = nil) -> Int32? {
+        let userViewSql = "PRAGMA user_version"
+        if let statement = prepareStatement(userViewSql, error:error) {
+            switch statement.next(error) {
+            case .Some(true):
+                if let intValue = statement.intValueAtIndex(0) {
+                    return Int32(intValue)
+                } else {
+                    return 0
+                }
+            case .Some(false):
+                return 0
+            default:
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+
+    public func updateUserVersionNumber(number:Int32, error:NSErrorPointer = nil) -> Bool {
+        return execute("PRAGMA user_version=\(number)", error: error)
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  CREATE TABLE
     
