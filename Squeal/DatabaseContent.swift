@@ -46,16 +46,16 @@ extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Select
     
-    public func selectFrom(from:        String,
-                           columns:     [String]? = nil,
-                           whereExpr:   String? = nil,
-                           groupBy:     String? = nil,
-                           having:      String? = nil,
-                           orderBy:     String? = nil,
-                           limit:       Int? = nil,
-                           offset:      Int? = nil,
-                           parameters:  [Bindable?] = [],
-                           error:       NSErrorPointer = nil) -> Statement? {
+    public func prepareSelectFrom(from:        String,
+                                  columns:     [String]? = nil,
+                                  whereExpr:   String? = nil,
+                                  groupBy:     String? = nil,
+                                  having:      String? = nil,
+                                  orderBy:     String? = nil,
+                                  limit:       Int? = nil,
+                                  offset:      Int? = nil,
+                                  parameters:  [Bindable?] = [],
+                                  error:       NSErrorPointer = nil) -> Statement? {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
@@ -106,6 +106,38 @@ extension Database {
         }
         
         return statement
+    }
+    
+    public func selectFrom<T>(from:        String,
+                              columns:     [String]? = nil,
+                              whereExpr:   String? = nil,
+                              groupBy:     String? = nil,
+                              having:      String? = nil,
+                              orderBy:     String? = nil,
+                              limit:       Int? = nil,
+                              offset:      Int? = nil,
+                              parameters:  [Bindable?] = [],
+                              error:       NSErrorPointer = nil,
+                              collector:   (Statement)->(T?)) -> [T?]? {
+        
+        if let statement = prepareSelectFrom(from,
+                                             columns:   columns,
+                                             whereExpr: whereExpr,
+                                             groupBy:   groupBy,
+                                             having:    having,
+                                             orderBy:   orderBy,
+                                             limit:     limit,
+                                             offset:    offset,
+                                             parameters:parameters,
+                                             error:     error) {
+                
+            var values = statement.collect(error, collector:collector)
+            statement.close()
+            return values
+                
+        } else {
+            return nil
+        }
     }
     
 }

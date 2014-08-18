@@ -82,7 +82,7 @@ class DatabaseContentSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- Select
         
-        describe(".selectFrom(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:") {
+        describe(".select(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:") {
             
             beforeEach {
                 database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
@@ -93,22 +93,45 @@ class DatabaseContentSpec: QuickSpec {
             
             context("when the statement is valid") {
                 
+                var values : [String?]?
+                
                 beforeEach {
-                    statement = database.selectFrom("contacts",
-                                                    whereExpr:  "contactId > ?",
-                                                    orderBy:    "name",
-                                                    parameters: [1],
-                                                    error:      &error)
+                    values = database.selectFrom("contacts", collector:{ $0.stringValue("name") })
                 }
                 
-                it("returns the statement") {
-                    expect(statement).notTo(beNil())
+                it("returns the collected values") {
+                    expect(values).notTo(beNil())
                     expect(error).to(beNil())
-                    if statement != nil {
-                        var names = statement.collect { $0.stringValue("name") }
-                        expect(names.count).to(equal(2))
-                        expect(names[0]).to(equal("Brian"))
-                        expect(names[1]).to(equal("Cara"))
+                    if values != nil {
+                        expect(values!.count).to(equal(3))
+                        expect(values![0]).to(equal("Amelia"))
+                        expect(values![1]).to(equal("Brian"))
+                        expect(values![2]).to(equal("Cara"))
+                    }
+                }
+                
+            }
+
+            
+            context("when the statement has a where clause") {
+                
+                var values : [String?]?
+                
+                beforeEach {
+                    values = database.selectFrom("contacts",
+                                                 whereExpr:  "contactId > ?",
+                                                 orderBy:    "name",
+                                                 parameters: [1],
+                                                 error:      &error) { $0.stringValue("name") }
+                }
+                
+                it("returns the collected values") {
+                    expect(values).notTo(beNil())
+                    expect(error).to(beNil())
+                    if values != nil {
+                        expect(values!.count).to(equal(2))
+                        expect(values![0]).to(equal("Brian"))
+                        expect(values![1]).to(equal("Cara"))
                     }
                 }
                 
@@ -116,14 +139,16 @@ class DatabaseContentSpec: QuickSpec {
             
             context("when the statement is invalid") {
                 
+                var values : [String?]?
+                
                 beforeEach {
-                    statement = database.selectFrom("contacts",
-                                                    whereExpr:  "sdfsdfsf IS NULL",
-                                                    error:      &error)
+                    values = database.selectFrom("contacts",
+                                                 whereExpr:   "sdfsdfsf IS NULL",
+                                                 error:       &error)  { $0.stringValue("name") }
                 }
                 
                 it("provides an error") {
-                    expect(statement).to(beNil())
+                    expect(values).to(beNil())
                     expect(error).notTo(beNil())
                 }
                 
