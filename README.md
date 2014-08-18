@@ -99,37 +99,36 @@ Any SQL statement that is not a `SELECT` should use the `Statement.execute(error
 let executeSucceeded = statement.execute(&error)
 ```
 
-### Use `Statement.next(:error)` to query the database
+### Iterate a Statement when querying the database
 
-`SELECT` statements are special because they return data. To execute a query and iterate through the results, use the
-`Statement.next(error:)` method after preparing a statement:
+`SELECT` statements are special because they return data. To execute a query and iterate through the results, just use
+a for loop after preparing a statement:
 
 ```swift
 var error : NSError?
 if let statement = database.prepareStatement("SELECT name FROM contacts", error:&error) {
-    while true {
-        if let hasRow = statement.next(&error) {
-            if hasRow {
-                // process the row
-                var contactName = statement.stringValue("name")
-            } else {
-                // no more data
-            }
-        } else {
-            // handle error
+    for result in statement {
+        switch result {
+        case .Row:
+            // process the row
+            var contactName = statement.stringValue("name")
+        case .Error(let e):
+            // handle the error
         }
     }
 }
 ```
 
-As mentioned above, you can think of `Statement` objects as mini programs. The `next(error:)` method is like stepping 
-through that program in a debugger. At each step, we call `next(error:)` to advance to the next row. A `Bool?` will be 
-returned to indicate whether another row was returned (`true`), all data has been consumed (`false`), or an error 
-occured (`nil`).
+This is a convenience interface to `Statement.next(error:)`. As mentioned above, you can think of `Statement` objects as
+mini programs. The `next(error:)` method is like stepping through that program in a debugger. At each step, we call
+`next(error:)` to advance to the next row. A `Bool?` will be returned to indicate whether another row was returned
+(`true`), all data has been consumed (`false`), or an error occured (`nil`).
 
 ### Use parameters in SQL to simplify escaping and avoid injection attacks
 
-sqlite supports parameratized SQL statements, like `SELECT * FROM contacts WHERE name = ?`. When compiled into a `Statement` object, you can specify the value for the `?` separately by *binding* a value for it. This help to avoid the need to escape values when constructing SQL, and allows compiled statements to be reused many times.
+sqlite supports parameratized SQL statements, like `SELECT * FROM contacts WHERE name = ?`. When compiled into a
+`Statement` object, you can specify the value for the `?` separately by *binding* a value for it. This help to avoid the
+need to escape values when constructing SQL, and allows compiled statements to be reused many times.
 
 For example:
 
@@ -138,13 +137,14 @@ var error : NSError?
 if let statement = database.prepareStatement("SELECT * FROM contacts WHERE name = ?",
                                              error:&error) {
     
-    if (statement.bindStringParameter("Steve Jobs", atIndex:1, error:&error)) {
-        while true {
-            if let hasNext = statement.next(&error) {
-                if hasNext {
-                    let contactId = statement.intValue("contactId")
-                    // ...
-                }
+    if statement.bindStringParameter("Steve Jobs", atIndex:1, error:&error) {
+        for result in statement {
+            switch result {
+            case .Row:
+                // process the row
+                var contactName = statement.stringValue("name")
+            case .Error(let e):
+                // handle the error
             }
         }
     }
@@ -177,11 +177,14 @@ Rather than binding an index, you bind it's name:
 statement.bindStringParameter("johnny.appleseed@apple.com", named:"$searchString", error:&error)
 ```
 
-Note that the `$` character must be included. sqlite also supports named parameters of the form `:NAME` or `@NAME`. See the [sqlite documentation](http://www.sqlite.org/lang_expr.html#varparam) for authoritative details.
+Note that the `$` character must be included. sqlite also supports named parameters of the form `:NAME` or `@NAME`. See
+the [sqlite documentation](http://www.sqlite.org/lang_expr.html#varparam) for authoritative details.
 
 ### Reuse statements for efficiency
 
-`Statement` objects can be re-executed multiple times. If your app executes the same queries many times, this will increase performance by reducing the amount of time spent parsing SQL. Different parameters can be set each time a statement is executed. 
+`Statement` objects can be re-executed multiple times. If your app executes the same queries many times, this will
+increase performance by reducing the amount of time spent parsing SQL. Different parameters can be set each time a
+statement is executed. 
 
 To reuse a statement, invoke `reset(error:)`:
 
@@ -198,7 +201,8 @@ statement.clearParameters()
 
 ### Use Squeal from the command line, or a Playground
 
-Accessing Squeal from a playground, or the command-line REPL isn't possible right now. Squeal relies on a custom module.map to access sqlite from Swift, and this isn't supported in the XCode betas (yet?).
+Accessing Squeal from a playground, or the command-line REPL isn't possible right now. Squeal relies on a custom
+module.map to access sqlite from Swift, and this isn't supported in the XCode betas (yet?).
 
 Any suggestions for a workaround would be appreciated!
 

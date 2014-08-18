@@ -75,6 +75,28 @@ class StatementSpec: QuickSpec {
             
         }
         
+        describe(".generate()") {
+            
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age FROM people")
+            }
+            
+            it("allows the statement to be used in for-in loops") {
+                var names = [String]()
+                for step in statement {
+                    switch step {
+                    case .Row:
+                        names.append(statement.stringValue("name")!)
+                    case .Error(let error):
+                        fail("Error while iterating statement: \(error)")
+                    }
+                }
+                
+                expect(names).to(equal(["Amelia", "Brian", "Cara"]))
+            }
+            
+        }
+        
         // =============================================================================================================
         // MARK:- Parameters
         

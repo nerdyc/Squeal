@@ -737,6 +737,71 @@ public class Statement : NSObject {
     
 }
 
+// -----------------------------------------------------------------------------------------------------------------
+// MARK:  SequenceType
+
+extension Statement : SequenceType {
+    
+    public func generate() -> StatementGenerator {
+        var error : NSError?
+        if reset(&error) {
+            return StatementGenerator(statement:self)
+        } else {
+            return StatementGenerator(statement:self, error:error!)
+        }
+    }
+    
+}
+
+public enum Step {
+    case Row
+    case Error(NSError)
+}
+
+public struct StatementGenerator : GeneratorType {
+    
+    private weak var statement: Statement?
+    private var isComplete: Bool = false
+    private var error:NSError?
+    
+    init(statement:Statement) {
+        self.statement = statement
+    }
+    
+    init(statement:Statement, error:NSError) {
+        self.statement = statement
+        self.error = error
+    }
+    
+    public mutating func next() -> Step? {
+        if isComplete {
+            return nil
+        }
+        
+        if let error = self.error {
+            self.isComplete = true
+            return Step.Error(error)
+        }
+        
+        if let statement = self.statement {
+            var error : NSError?
+            switch statement.next(&error) {
+            case .Some(true):
+                return Step.Row
+            case .Some(false):
+                self.isComplete = true
+                return nil
+            default: // nil
+                self.isComplete = true
+                return Step.Error(error!)
+            }
+        } else {
+            self.isComplete = true
+            return nil
+        }
+    }
+}
+
 // =====================================================================================================================
 // MARK:- Bindable
 
