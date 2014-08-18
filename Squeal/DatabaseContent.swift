@@ -162,8 +162,7 @@ extension Database {
             fragments.append("WHERE")
             fragments.append(whereExpr!)
         }
-                                var sql = join(" ", fragments)
-        NSLog("\(sql)")
+
         return prepareStatement(join(" ", fragments), error: error)
     }
     
