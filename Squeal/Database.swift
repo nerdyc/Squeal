@@ -565,11 +565,6 @@ public class Statement : NSObject {
     }
     
     public func execute(error:NSErrorPointer) -> Bool {
-        if !ensureIsOpen(error) {
-            return false
-        }
-        
-        // continue stepping until statement completes or encounters an error
         while true {
             switch next(error) {
             case .Some(true):
@@ -580,14 +575,13 @@ public class Statement : NSObject {
                 return true
             default:
                 // error!
-                reset(nil)
-                sqlite3_reset(sqliteStatement)
+                reset()
                 return false
             }
         }
     }
     
-    public func reset(error:NSErrorPointer) -> Bool {
+    public func reset(error:NSErrorPointer = nil) -> Bool {
         if !ensureIsOpen(error) {
             return false
         }
@@ -601,6 +595,33 @@ public class Statement : NSObject {
         }
         
         return true
+    }
+    
+    public func collect<T>(collector:(Statement)->(T?)) -> [T?] {
+        if let values = collect(nil, collector:collector) {
+            return values
+        } else {
+            return []
+        }
+    }
+    
+    public func collect<T>(error:NSErrorPointer, collector:(Statement)->(T?)) -> [T?]? {
+        var values = [T?]()
+        while true {
+            switch next(error) {
+            case .Some(true):
+                // more steps
+                var value = collector(self)
+                values.append(value)
+            case .Some(false):
+                // no more steps
+                return values
+            default:
+                // error!
+                reset()
+                return nil
+            }
+        }
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -744,7 +765,7 @@ extension Statement : SequenceType {
     
     public func generate() -> StatementGenerator {
         var error : NSError?
-        if reset(&error) {
+        if reset(error:&error) {
             return StatementGenerator(statement:self)
         } else {
             return StatementGenerator(statement:self, error:error!)

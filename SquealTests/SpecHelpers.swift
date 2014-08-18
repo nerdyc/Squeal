@@ -75,6 +75,18 @@ extension Database {
         }
     }
     
+    func insert(tableName:String, row:[String:Bindable?]) -> Int64 {
+        var error : NSError?
+        if let rowId = insertRow(tableName, values:row, error: &error) {
+            return rowId
+        } else {
+            NSException(name:       NSInternalInconsistencyException,
+                        reason:     "Failed to insert row (\(row)): \(error?.localizedDescription)",
+                        userInfo:   nil).raise()
+            return 0
+        }
+    }
+    
 }
 
 extension Statement {
@@ -89,16 +101,6 @@ extension Statement {
                         userInfo:   nil).raise()
             
             return false
-        }
-    }
-    
-    func reset() {
-        var error : NSError? = nil
-        var succeeded = reset(&error)
-        if !succeeded {
-            NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to reset statement: \(error?.localizedDescription)",
-                        userInfo:   nil).raise()
         }
     }
     

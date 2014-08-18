@@ -43,4 +43,69 @@ extension Database {
         return insertRow(tableName, columns:columns, values:values, error:error)
     }
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Select
+    
+    public func selectFrom(from:        String,
+                           columns:     [String]? = nil,
+                           whereExpr:   String? = nil,
+                           groupBy:     String? = nil,
+                           having:      String? = nil,
+                           orderBy:     String? = nil,
+                           limit:       Int? = nil,
+                           offset:      Int? = nil,
+                           parameters:  [Bindable?] = [],
+                           error:       NSErrorPointer = nil) -> Statement? {
+        
+        var fragments = [ "SELECT" ]
+        if columns != nil {
+            fragments.append(join(",", columns!))
+        } else {
+            fragments.append("*")
+        }
+        
+        fragments.append("FROM")
+        fragments.append(from)
+                            
+        if whereExpr != nil {
+            fragments.append("WHERE")
+            fragments.append(whereExpr!)
+        }
+        
+        if groupBy != nil {
+            fragments.append("GROUP BY")
+            fragments.append(groupBy!)
+        }
+        
+        if having != nil {
+            fragments.append("HAVING")
+            fragments.append(having!)
+        }
+        
+        if orderBy != nil {
+            fragments.append("ORDER BY")
+            fragments.append(orderBy!)
+        }
+        
+        if limit != nil {
+            fragments.append("LIMIT")
+            fragments.append("\(limit)")
+            
+            if offset != nil {
+                fragments.append("OFFSET")
+                fragments.append("\(offset!)")
+            }
+        }
+        
+        var statement = prepareStatement(join(" ", fragments), error: error)
+        if statement != nil && parameters.count > 0 {
+            if false == statement!.bind(parameters, error:error) {
+                statement!.close()
+                statement = nil
+            }
+        }
+        
+        return statement
+    }
+    
 }
