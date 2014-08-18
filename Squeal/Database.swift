@@ -219,6 +219,14 @@ public class Database: NSObject {
         return sqlite3_last_insert_rowid(self.sqliteDatabase)
     }
     
+    public var numberOfChangedRows : Int {
+        if !isOpen {
+            return 0
+        }
+        
+        return Int(sqlite3_changes(self.sqliteDatabase))
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Query
     
@@ -597,7 +605,7 @@ public class Statement : NSObject {
         return true
     }
     
-    public func collect<T>(collector:(Statement)->(T?)) -> [T?] {
+    public func collect<T>(collector:(Statement)->(T)) -> [T] {
         if let values = collect(nil, collector:collector) {
             return values
         } else {
@@ -605,8 +613,8 @@ public class Statement : NSObject {
         }
     }
     
-    public func collect<T>(error:NSErrorPointer, collector:(Statement)->(T?)) -> [T?]? {
-        var values = [T?]()
+    public func collect<T>(error:NSErrorPointer, collector:(Statement)->(T)) -> [T]? {
+        var values = [T]()
         while true {
             switch next(error) {
             case .Some(true):

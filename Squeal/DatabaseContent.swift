@@ -122,7 +122,7 @@ extension Database {
                               offset:      Int? = nil,
                               parameters:  [Bindable?] = [],
                               error:       NSErrorPointer = nil,
-                              collector:   (Statement)->(T?)) -> [T?]? {
+                              collector:   (Statement)->(T)) -> [T]? {
         
         if let statement = prepareSelectFrom(from,
                                              columns:   columns,
@@ -142,6 +142,66 @@ extension Database {
         } else {
             return nil
         }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Update
+    
+    public func prepareUpdate(tableName:   String,
+                              columns:     [String],
+                              whereExpr:   String? = nil,
+                              error:       NSErrorPointer) -> Statement? {
+        
+        var fragments = ["UPDATE", escapeIdentifier(tableName), "SET"]
+        for columnName in columns {
+            fragments.append(columnName)
+            fragments.append("= ?")
+        }
+        
+        if whereExpr != nil {
+            fragments.append("WHERE")
+            fragments.append(whereExpr!)
+        }
+                                var sql = join(" ", fragments)
+        NSLog("\(sql)")
+        return prepareStatement(join(" ", fragments), error: error)
+    }
+    
+    public func update(tableName:   String,
+                       columns:     [String],
+                       values:      [Bindable?],
+                       whereExpr:   String? = nil,
+                       parameters:  [Bindable?] = [],
+                       error:       NSErrorPointer) -> Int? {
+        
+        var numberOfChangedRows : Int?
+        if let statement = prepareUpdate(tableName, columns: columns, whereExpr: whereExpr, error: error) {
+            if statement.bind(values + parameters, error: error) {
+                if statement.execute(error) {
+                    numberOfChangedRows = self.numberOfChangedRows
+                }
+                
+            }
+            statement.close()
+        }
+        return numberOfChangedRows
+        
+    }
+    
+    public func update(tableName:   String,
+                       set:         [String:Bindable?],
+                       whereExpr:   String? = nil,
+                       parameters:  [Bindable?] = [],
+                       error:       NSErrorPointer) -> Int? {
+        
+        var columns = [String]()
+        var values = [Bindable?]()
+        for (columnName, value) in set {
+            columns.append(columnName)
+            values.append(value)
+        }
+        
+        return update(tableName, columns:columns, values:values, whereExpr:whereExpr, parameters:parameters, error:error)
     }
     
 }
