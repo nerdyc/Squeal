@@ -179,12 +179,10 @@ extension Database {
                 if statement.execute(error) {
                     numberOfChangedRows = self.numberOfChangedRows
                 }
-                
             }
             statement.close()
         }
         return numberOfChangedRows
-        
     }
     
     public func update(tableName:   String,
@@ -203,4 +201,36 @@ extension Database {
         return update(tableName, columns:columns, values:values, whereExpr:whereExpr, parameters:parameters, error:error)
     }
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Delete
+    
+    public func prepareDeleteFrom(tableName:   String,
+                                  whereExpr:   String? = nil,
+                                  error:       NSErrorPointer) -> Statement? {
+        
+        var fragments = ["DELETE FROM", escapeIdentifier(tableName)]
+        if whereExpr != nil {
+            fragments.append("WHERE")
+            fragments.append(whereExpr!)
+        }
+
+        return prepareStatement(join(" ", fragments), error: error)
+    }
+
+    public func deleteFrom(tableName:   String,
+                           whereExpr:   String? = nil,
+                           parameters:  [Bindable?] = [],
+                           error:       NSErrorPointer) -> Int? {
+            
+        var numberOfChangedRows : Int?
+        if let statement = prepareDeleteFrom(tableName, whereExpr: whereExpr, error: error) {
+            if statement.bind(parameters, error: error) {
+                if statement.execute(error) {
+                    numberOfChangedRows = self.numberOfChangedRows
+                }
+            }
+            statement.close()
+        }
+        return numberOfChangedRows
+    }
 }
