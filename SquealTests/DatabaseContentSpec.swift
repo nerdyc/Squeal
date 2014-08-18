@@ -30,13 +30,13 @@ class DatabaseContentSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- Insert
         
-        describe(".insertRow(tableName:columns:values:error:") {
+        describe(".insertInto(tableName:columns:values:error:") {
             
             var result : Int64?
             
             beforeEach {
                 database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                result = database.insertRow("contacts",
+                result = database.insertInto("contacts",
                                             columns:["name"],
                                             values:["Amelia"],
                                             error:&error)
@@ -56,13 +56,13 @@ class DatabaseContentSpec: QuickSpec {
             
         }
         
-        describe(".insertRow(tableName:values:error:") {
+        describe(".insertInto(tableName:values:error:") {
             
             var result : Int64?
             
             beforeEach {
                 database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                result = database.insertRow("contacts", values:["name":"Amelia"], error:&error)
+                result = database.insertInto("contacts", values:["name":"Amelia"], error:&error)
             }
             
             it("inserts the row into the table, and returns its row id") {
@@ -82,7 +82,7 @@ class DatabaseContentSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- Select
         
-        describe(".select(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:") {
+        describe(".selectFrom(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:") {
             
             var values : [String]?
             

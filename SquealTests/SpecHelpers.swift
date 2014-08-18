@@ -77,7 +77,7 @@ extension Database {
     
     func insert(tableName:String, row:[String:Bindable?]) -> Int64 {
         var error : NSError?
-        if let rowId = insertRow(tableName, values:row, error: &error) {
+        if let rowId = insertInto(tableName, values:row, error: &error) {
             return rowId
         } else {
             NSException(name:       NSInternalInconsistencyException,

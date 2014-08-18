@@ -23,7 +23,7 @@ extension Database {
         return prepareStatement(join(" ", sqlFragments), error: error)
     }
     
-    public func insertRow(tableName:String, columns:[String], values:[Bindable?], error:NSErrorPointer) -> Int64? {
+    public func insertInto(tableName:String, columns:[String], values:[Bindable?], error:NSErrorPointer) -> Int64? {
         var rowId : Int64?
         if let statement = prepareInsertInto(tableName, columns:columns, error: error) {
             if statement.bind(values, error: error) {
@@ -36,7 +36,7 @@ extension Database {
         return rowId
     }
     
-    public func insertRow(tableName:String, values valuesDictionary:[String:Bindable?], error:NSErrorPointer) -> Int64? {
+    public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?], error:NSErrorPointer) -> Int64? {
         var columns = [String]()
         var values = [Bindable?]()
         for (columnName, value) in valuesDictionary {
@@ -44,7 +44,7 @@ extension Database {
             values.append(value)
         }
         
-        return insertRow(tableName, columns:columns, values:values, error:error)
+        return insertInto(tableName, columns:columns, values:values, error:error)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
