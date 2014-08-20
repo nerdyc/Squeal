@@ -410,7 +410,7 @@ public class Statement : NSObject {
     public func bindStringParameter(stringValue:String, atIndex index:Int, error:NSErrorPointer) -> Bool {
         let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
         
-        let negativeOne = UnsafeMutablePointer<Int>(-1)
+        let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
         let opaquePointer = COpaquePointer(negativeOne)
         let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
         
