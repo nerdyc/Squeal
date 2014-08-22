@@ -256,7 +256,101 @@ public class Database: NSObject {
             return nil
         }
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Transactions
     
+    public enum TransactionResult {
+        case Commit
+        case Rollback
+        case Failed(NSError)
+    }
+
+    public func beginTransaction(error:NSErrorPointer = nil) -> Bool {
+        return execute("BEGIN TRANSACTION", error: error)
+    }
+
+    public func rollback(error:NSErrorPointer = nil) -> Bool {
+        return execute("ROLLBACK", error: error)
+    }
+
+    public func commit(error:NSErrorPointer = nil) -> Bool {
+        return execute("COMMIT", error: error)
+    }
+
+    public func transaction(block:(db:Database)->TransactionResult) -> TransactionResult {
+        var localError : NSError?
+        var didBegin = beginTransaction(error: &localError)
+        if !didBegin {
+            return .Failed(localError!)
+        }
+
+        let result = block(db: self)
+        switch result {
+        case .Commit:
+            var didCommit = commit(error: &localError)
+            if !didCommit {
+                return .Failed(localError!)
+            }
+        
+        case .Rollback:
+            var didRollback = rollback(error: &localError)
+            if !didRollback {
+                return .Failed(localError!)
+            }
+        case .Failed:
+            // Attempt a rollback but preserve the original error
+            rollback(error: &localError)
+            break
+        }
+        
+        return result
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  Savepoints
+
+    public func beginSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
+        return execute("SAVEPOINT " + escapeIdentifier(savepointName), error: error)
+    }
+
+    public func rollbackSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
+        return execute("ROLLBACK TO SAVEPOINT " + escapeIdentifier(savepointName),
+                       error: error)
+    }
+
+    public func releaseSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
+        return execute("RELEASE " + escapeIdentifier(savepointName),
+                       error: error)
+    }
+
+    public func savepoint(name:String, block:(db:Database)->TransactionResult) -> TransactionResult {
+        var localError : NSError?
+        var didBegin = beginSavepoint(name, error: &localError)
+        if !didBegin {
+            return .Failed(localError!)
+        }
+
+        let result = block(db: self)
+        switch result {
+        case .Commit:
+            var didCommit = releaseSavepoint(name, error: &localError)
+            if !didCommit {
+                return .Failed(localError!)
+            }
+        case .Rollback:
+            var didRollback = rollbackSavepoint(name, error: &localError)
+            if !didRollback {
+                return .Failed(localError!)
+            }
+        case .Failed:
+            // Attempt a rollback but preserve the original error
+            rollbackSavepoint(name, error: &localError)
+            break
+        }
+        
+        return result
+    }
 }
 
 // =====================================================================================================================
