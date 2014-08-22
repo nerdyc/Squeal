@@ -143,6 +143,36 @@ extension Database {
             return nil
         }
     }
+
+    public func countFrom(from:        String,
+                          columns:     [String]? = nil,
+                          whereExpr:   String? = nil,
+                          parameters:  [Bindable?] = [],
+                          error:       NSErrorPointer = nil) -> Int64? {
+
+        let countExpr = "count(" + join(",", columns ?? ["*"]) + ")"
+        if let statement = prepareSelectFrom(from,
+                                             columns:   [countExpr],
+                                             whereExpr: whereExpr,
+                                             parameters:parameters,
+                                             error:     error) {
+            
+            var count : Int64?
+            switch statement.next(error) {
+            case .Some(true):
+                count = statement.int64ValueAtIndex(0)
+            case .Some(false):
+                count = 0
+            default:
+                break
+            }
+
+            statement.close()
+            return count
+        } else {
+            return nil
+        }
+    }
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Update

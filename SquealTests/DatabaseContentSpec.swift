@@ -145,6 +145,55 @@ class DatabaseContentSpec: QuickSpec {
         }
         
         // =============================================================================================================
+        // MARK:- Count
+
+        describe(".countFrom(from:columns:whereExpr:parameters:error:") {
+            
+            var count : Int64?
+            
+            beforeEach {
+                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, initials TEXT)")
+                database.insert("contacts", row:["name": "Amelia", "initials": "A"])
+                database.insert("contacts", row:["name": "Brian", "initials":nil])
+                database.insert("contacts", row:["name": "Cara", "initials":"C"])
+            }
+            
+            context("when no whereExpr is provided") {
+                beforeEach {
+                    count = database.countFrom("contacts", error:&error)
+                }
+                
+                it("counts all rows") {
+                    expect(count).to(equal(3))
+                    expect(error).to(beNil())
+                }
+            }
+            
+            context("when columns are provided") {
+                beforeEach {
+                    count = database.countFrom("contacts", columns:["initials"], error:&error)
+                }
+                
+                it("counts all rows with non-null values") {
+                    expect(count).to(equal(2))
+                    expect(error).to(beNil())
+                }
+            }
+            
+            context("when a where clause is provided") {
+                beforeEach {
+                    count = database.countFrom("contacts", whereExpr:"contactId > ?", parameters:[2], error:&error)
+                }
+                
+                it("counts all rows matching the expression") {
+                    expect(count).to(equal(1))
+                    expect(error).to(beNil())
+                }
+            }
+                        
+        }
+        
+        // =============================================================================================================
         // MARK:- Update
         
         describe(".update(tableName:set:whereExpr:parameters:error:)") {
