@@ -209,3 +209,21 @@ Any suggestions for a workaround would be appreciated!
 ## License
 
 Squeal is released under the MIT License. Details are in the `LICENSE.txt` file in the project.
+
+## Contributing
+
+Contributions and suggestions are very welcome! No contribution is too small. Squeal (like Swift) is still evolving and feedback from the community is appreciated. Open an Issue, or submit a pull request!
+
+The main requirement is for new code to be tested. Nobody appreciates bugs in their database.
+
+### Testing
+
+Squeal benefits greatly from the following two testing libraries:
+
+* [Quick](https://github.com/Quick/Quick)
+  
+  Quick provides BDD-style testing for Swift code. Check out their examples, or Squeal's own tests for examples.
+  
+* [Nimble](https://github.com/Quick/Nimble)
+  
+  Nimble provides clean, extensible matchers for Swift tests.
