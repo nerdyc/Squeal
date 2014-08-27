@@ -41,23 +41,39 @@ private func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32
 // =====================================================================================================================
 // MARK:- Database
 
+///
+/// Provides access to a sqlite database. Databases must be opened before use, and closed to release retained resources.
+/// SQL can be compiled into reusable Statement objects, or executed directly.
+///
+/// A Database object can be passed between threads, but should not be used concurrently from multiple threads.
+/// Otherwise SQL exectured from one thread may affect the other's. For example, one thread might close a transaction
+/// opened by another.
+///
 public class Database: NSObject {
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Initialization
     
+    /// :returns: A Database whose contents are stored in-memory, and discarded when the Database is released.
     public class func newInMemoryDatabase() -> Database {
         return Database()
     }
-    
+        
+    /// :returns: A Database whose contents are stored in a temporary location on disk, and discarded when the Database
+    ///           is closed.
     public class func newTemporaryDatabase() -> Database {
         return Database(path:"")
     }
     
+    /// :returns: An in-memory Database.
     public convenience override init() {
         self.init(path:":memory:")
     }
     
+    /// :param: path    The location of the database on disk. The empty string will create a temporary Database, and
+    ///                 the special path ':memory:' creates an in-memory database.
+    ///
+    /// :returns: A Database whose contents are stored at the given path on disk.
     public init(path:String) {
         self.path = path
     }
@@ -72,16 +88,21 @@ public class Database: NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Path
     
+    /// The location of the database on disk. Temporary databases will return an empty string, and in-memory databases
+    /// return ':memory:'
     public let path : String
     
+    /// :returns: `true` if the Database is stored in memory; `false` otherwise.
     public var isInMemoryDatabase : Bool {
         return path == ":memory:"
     }
 
+    /// :returns: true if the Database is stored in a temporary location; false otherwise.
     public var isTemporaryDatabase : Bool {
         return path == ""
     }
     
+    /// :returns: true if the Database is persistent -- not stored in memory or in a temporary location.
     public var isPersistentDatabase : Bool {
         return !(isInMemoryDatabase || isTemporaryDatabase)
     }
@@ -91,10 +112,17 @@ public class Database: NSObject {
     
     private var sqliteDatabase : COpaquePointer = nil
     
+    /// :returns: true if the database has been opened via '.open(error:)'
     public var isOpen : Bool {
         return sqliteDatabase != nil
     }
     
+    /// Opens the database, allowing statements and queries to be executed against it.
+    ///
+    /// :param:     error   An error pointer to set if an error occurs. May be `nil`.
+    /// :returns:           true if the database was opened, false otherwise. On error, an NSError object will be
+    ///                     provided via the `error` parameter.
+    ///
     public func open(error:NSErrorPointer) -> Bool {
         if isOpen {
             NSException(name: NSInternalInconsistencyException,
@@ -122,6 +150,13 @@ public class Database: NSObject {
         return result == SQLITE_OK
     }
     
+
+    /// Closes the database and any open Statement objects. Databases should always be closed, otherwise memory leaks
+    /// may occur.
+    ///
+    /// :param:     error   An error pointer to set if an error occurs. May be `nil`.
+    /// :returns:           true if the database was closed, false otherwise. On error, an NSError object will be
+    ///                     provided via the `error` parameter.
     public func close(error:NSErrorPointer) -> Bool {
         if !isOpen {
             if error != nil {
@@ -190,6 +225,17 @@ public class Database: NSObject {
         return sqliteStatement
     }
     
+    ///
+    /// Compiles a SQL string into a Statement, which can then be used to execute the SQL against the database.
+    /// Statement objects can be executed multiple times, and are more efficient when executing the same query or update
+    /// multiple times. See the Statement object for details, including providing parameters.
+    ///
+    /// :param:     sqlString   A SQL statement to compile.
+    /// :param:     error       An error pointer to set if an error occurs. May be `nil`.
+    /// :returns:               The compiled SQL as a Statement. This Statement must be closed when it is no longer
+    ///                         needed. On error, `nil` will be returned and an NSError object will be provided via the
+    ///                         `error` parameter.
+    ///
     public func prepareStatement(sqlString:String, error:NSErrorPointer) -> Statement? {
         let sqliteStatement = prepareSqliteStatement(sqlString, error:error)
         if sqliteStatement == nil {
@@ -201,6 +247,16 @@ public class Database: NSObject {
         return statement
     }
     
+    ///
+    /// Compiles and executes a SQL statement. Since this method simply returns `true` or `false`, it is useful for
+    /// statements that return no data. For example, a `CREATE TABLE` statement. For other statements, consider the
+    /// `prepareStatement` or `query` methods, or one of the SQL convenience methods like `select(...)`.
+    ///
+    /// :param:     sqlString   A SQL statement to execute.
+    /// :param:     error       An error pointer to set if an error occurs. May be `nil`.
+    /// :returns:               `true` if the statment was executed, `false` otherwise. On error, an NSError object will be
+    ///                         provided via the `error` parameter.
+    ///
     public func execute(sqlString:String, error:NSErrorPointer) -> Bool {
         if let statement = prepareStatement(sqlString, error:error) {
             let result = statement.execute(error)
@@ -211,6 +267,8 @@ public class Database: NSObject {
         }
     }
     
+    /// Returns the id of the last row inserted into the database via this Database object. This is useful after
+    /// executing an INSERT statement, but undefined at other times.
     public var lastInsertedRowId : Int64 {
         if !isOpen {
             return 0
@@ -219,6 +277,8 @@ public class Database: NSObject {
         return sqlite3_last_insert_rowid(self.sqliteDatabase)
     }
     
+    /// Returns the number of rows changed by the last statement executed via this Database object. This is useful after
+    /// executing an UPDATE or DELETE statement, but undefined at other times.
     public var numberOfChangedRows : Int {
         if !isOpen {
             return 0
@@ -230,19 +290,17 @@ public class Database: NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Query
     
-    public func query(sqlString:String, error:NSErrorPointer) -> Statement? {
-        let sqliteStatement = prepareSqliteStatement(sqlString, error:error)
-        if sqliteStatement == nil {
-            return nil
-        }
-        
-        var statement = Statement(database: self, sqliteStatement: sqliteStatement)
-        statements.append(WeakStatement(statement))
-        return statement
-    }
-    
+    ///
+    /// Prepares a SQL statement and binds the given parameters to it.
+    ///
+    /// :param:     sqlString   The SQL query to prepare.
+    /// :param:     parameters  Parameters to bind to the statement.
+    /// :param:     error       An error pointer to set if an error occurs. May be `nil`.
+    /// :returns:               The prepared statement, `nil` otherwise. On error, an NSError object will be
+    ///                         provided via the `error` parameter.
+    ///
     public func query(sqlString:String, parameters:[Bindable?]?, error:NSErrorPointer) -> Statement? {
-        if let statement = query(sqlString, error:error) {
+        if let statement = prepareStatement(sqlString, error:error) {
             if parameters?.count > 0 {
                 var boundSuccessfully = statement.bind(parameters!, error:error)
                 if !boundSuccessfully {
@@ -260,24 +318,57 @@ public class Database: NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Transactions
     
+    /// Result type used to commit or rollback transactions and savepoints.
     public enum TransactionResult {
         case Commit
         case Rollback
         case Failed(NSError)
     }
 
+    /// Begins a database transaction by executing a BEGIN TRANSACTION statement. Transactions cannot be nested. If
+    /// nested operations are needed, consider using savepoints instead.
+    ///
+    /// :returns: `true` if the transaction began, `false` otherwise.
     public func beginTransaction(error:NSErrorPointer = nil) -> Bool {
         return execute("BEGIN TRANSACTION", error: error)
     }
 
+    /// Ends the current transaction and discards changes since the transaction began. All savepoints are also rolled
+    /// back. See sqlite docs for details on transaction support.
+    ///
+    /// :returns: `true` if the transaction was rolled back, `false` otherwise.
     public func rollback(error:NSErrorPointer = nil) -> Bool {
         return execute("ROLLBACK", error: error)
     }
 
+    /// Commits the current transaction and persists changes since the transaction began. All savepoints are also
+    /// committed. See sqlite docs for details on transaction support.
+    ///
+    /// :returns: `true` if the transaction was committed, `false` otherwise.
     public func commit(error:NSErrorPointer = nil) -> Bool {
         return execute("COMMIT", error: error)
     }
 
+    ///
+    /// Begins a transaction, invokes the provided closure, and uses its result to determine how to terminate the
+    /// transaction. Using this method is more concise than creating and managing the transaction yourself. For example:
+    /// 
+    ///     let result = db.transaction {
+    ///         var error : NSError?
+    ///         if let rowId = $0.insertInto("people", values:["name":"Agnes Pigott"], error:&error) {
+    ///             return .Failed(error)
+    ///         }
+    ///
+    ///         // more SQL statements...
+    ///
+    ///         return .Commit
+    ///     }
+    ///
+    /// :param: block   The operation to perform within the transaction. It should not close the transaction itself, but
+    ///                 instead return a TransactionResult.
+    /// :returns:       The result of the transaction. This should nearly always be the same value returned by the
+    ///                 block, except when the BEGIN, ROLLBACK, or COMMIT statements fail.
+    ///
     public func transaction(block:(db:Database)->TransactionResult) -> TransactionResult {
         var localError : NSError?
         var didBegin = beginTransaction(error: &localError)
@@ -300,7 +391,7 @@ public class Database: NSObject {
             }
         case .Failed:
             // Attempt a rollback but preserve the original error
-            rollback(error: &localError)
+            rollback(error: nil)
             break
         }
         
@@ -310,20 +401,51 @@ public class Database: NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Savepoints
 
+    /// Begins a database savepoint by executing a SAVEPOINT statement. Savepoints are nearly identical to transactions,
+    /// except that they are named, and can be nested. This is useful when factoring large database operations.
+    ///
+    /// :returns: `true` if the savepoint began, `false` otherwise.
     public func beginSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
         return execute("SAVEPOINT " + escapeIdentifier(savepointName), error: error)
     }
 
+    /// Rolls back the database to the point where a savepoint was begun. All changes since then are discarded. Nested
+    /// savepoints are also rolled back.
+    ///
+    /// :returns: `true` if the savepoint was rolled back, `false` otherwise.
     public func rollbackSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
         return execute("ROLLBACK TO SAVEPOINT " + escapeIdentifier(savepointName),
                        error: error)
     }
 
+    /// Commits a savepoint via a RELEASE statement, persisting its changes when the enclosing transaction completes.
+    ///
+    /// :returns: `true` if the savepoint was committed (released), `false` otherwise.
     public func releaseSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
         return execute("RELEASE " + escapeIdentifier(savepointName),
                        error: error)
     }
 
+    ///
+    /// Begins a savepoint, invokes the provided closure, and uses its result to determine how to terminate the
+    /// savepoint. Using this method is more concise than creating and managing the savepoint yourself. For example:
+    ///
+    ///     let result = db.savepoint("insert agnes") {
+    ///         var error : NSError?
+    ///         if let rowId = $0.insertInto("people", values:["name":"Agnes Pigott"], error:&error) {
+    ///             return .Failed(error)
+    ///         }
+    ///
+    ///         // more SQL statements...
+    ///
+    ///         return .Commit
+    ///     }
+    ///
+    /// :param: block   The operation to perform within the savepoint. It should not close the savepoint itself, but
+    ///                 instead return a TransactionResult.
+    /// :returns:       The result of the savepoint. This should nearly always be the same value returned by the
+    ///                 block, except when the SAVEPOINT, ROLLBACK TO SAVEPOINT, or RELEASE statements fail.
+    ///
     public func savepoint(name:String, block:(db:Database)->TransactionResult) -> TransactionResult {
         var localError : NSError?
         var didBegin = beginSavepoint(name, error: &localError)
@@ -366,6 +488,10 @@ private class WeakStatement {
     
 }
 
+///
+/// Statements are used to update the database, query data, and read results. Statements are like methods and can accept
+/// parameters. This makes it easy to escape SQL values, as well as reuse statements for optimal performance.
+///
 public class Statement : NSObject {
     
     private weak var database : Database?
