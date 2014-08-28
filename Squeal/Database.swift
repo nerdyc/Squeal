@@ -303,7 +303,7 @@ public class Database: NSObject {
     /// :returns:               The prepared statement, `nil` otherwise. On error, an NSError object will be
     ///                         provided via the `error` parameter.
     ///
-    public func query(sqlString:String, parameters:[Bindable?]?, error:NSErrorPointer) -> Statement? {
+    public func query(sqlString:String, parameters:[Bindable?]? = nil, error:NSErrorPointer) -> Statement? {
         if let statement = prepareStatement(sqlString, error:error) {
             if parameters?.count > 0 {
                 var boundSuccessfully = statement.bind(parameters!, error:error)
