@@ -42,6 +42,8 @@ private func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32
                    userInfo:[ NSLocalizedDescriptionKey:NSString(UTF8String: errorMsg) ])
 }
 
+public typealias RowId = Int64
+
 // =====================================================================================================================
 // MARK:- Database
 
@@ -275,7 +277,7 @@ public class Database: NSObject {
     
     /// Returns the id of the last row inserted into the database via this Database object. This is useful after
     /// executing an INSERT statement, but undefined at other times.
-    public var lastInsertedRowId : Int64 {
+    public var lastInsertedRowId : RowId {
         if !isOpen {
             return 0
         }
