@@ -84,6 +84,8 @@ public class Database: NSObject {
     
     deinit {
         if sqliteDatabase != nil {
+            NSLog("Database object not closed before deinitialization!")
+            
             sqlite3_close(sqliteDatabase)
             sqliteDatabase = nil
         }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C2C19B29D27004497BF /* DatabasePool.swift */; };
+		CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
 		CD7247FD1996880300151E1E /* Squeal.h in Headers */ = {isa = PBXBuildFile; fileRef = CD7247FC1996880300151E1E /* Squeal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD72481119968D3100151E1E /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
 		CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481219968D4000151E1E /* DatabaseSpec.swift */; };
@@ -83,6 +85,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CD4B4C2C19B29D27004497BF /* DatabasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePool.swift; sourceTree = "<group>"; };
+		CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePoolSpec.swift; sourceTree = "<group>"; };
 		CD7247F71996880300151E1E /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD7247FB1996880300151E1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD7247FC1996880300151E1E /* Squeal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Squeal.h; sourceTree = "<group>"; };
@@ -159,6 +163,7 @@
 				CDD59C25199C69F500FB662D /* DatabaseSchema.swift */,
 				CD7247FC1996880300151E1E /* Squeal.h */,
 				CD7247FA1996880300151E1E /* Supporting Files */,
+				CD4B4C2C19B29D27004497BF /* DatabasePool.swift */,
 			);
 			path = Squeal;
 			sourceTree = "<group>";
@@ -181,6 +186,7 @@
 				CD7248681996D6CC00151E1E /* SpecHelpers.swift */,
 				CD7248661996D4F700151E1E /* StatementSpec.swift */,
 				CD7248041996880300151E1E /* Supporting Files */,
+				CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */,
 			);
 			path = SquealTests;
 			sourceTree = "<group>";
@@ -399,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */,
 				CD9F4CD619A12967003CC387 /* DatabaseContent.swift in Sources */,
 				CD72481119968D3100151E1E /* Database.swift in Sources */,
 				CDD59C26199C69F500FB662D /* DatabaseSchema.swift in Sources */,
@@ -410,6 +417,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDD59C30199C6A5300FB662D /* DatabaseSchemaSpec.swift in Sources */,
+				CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */,
 				CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */,
 				CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */,
 				CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */,
