@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Squeal
+import SquealSpecHelpers
 
 class StatementSpec: QuickSpec {
     override func spec() {

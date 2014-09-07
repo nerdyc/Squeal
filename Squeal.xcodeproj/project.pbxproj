@@ -7,8 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD3DE27E19BCD44B00DED437 /* SquealSpecHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
+		CD3DE29A19BCD57A00DED437 /* StatementSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */; };
 		CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C2C19B29D27004497BF /* DatabasePool.swift */; };
 		CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
+		CD61584C19BCD74A00E63F56 /* SquealSpecHelpers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */; };
+		CD61585B19BCDC7C00E63F56 /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
 		CD7247FD1996880300151E1E /* Squeal.h in Headers */ = {isa = PBXBuildFile; fileRef = CD7247FC1996880300151E1E /* Squeal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD72481119968D3100151E1E /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
 		CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481219968D4000151E1E /* DatabaseSpec.swift */; };
@@ -18,7 +23,6 @@
 		CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
 		CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7248431996BE0400151E1E /* Foundation.framework */; };
 		CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
-		CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248681996D6CC00151E1E /* SpecHelpers.swift */; };
 		CD9F4CD619A12967003CC387 /* DatabaseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DatabaseContent.swift */; };
 		CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */; };
 		CDD59C26199C69F500FB662D /* DatabaseSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* DatabaseSchema.swift */; };
@@ -26,6 +30,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CD61584819BCD74000E63F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7247EE1996880300151E1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD7247F61996880300151E1E;
+			remoteInfo = Squeal;
+		};
+		CD61584A19BCD74000E63F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7247EE1996880300151E1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD3DE27819BCD44B00DED437;
+			remoteInfo = SquealSpecHelpers;
+		};
+		CD61585119BCDC7700E63F56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7247EE1996880300151E1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD7247F61996880300151E1E;
+			remoteInfo = Squeal;
+		};
 		CD72481D1996A59C00151E1E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CD7248151996A59C00151E1E /* Quick.xcodeproj */;
@@ -85,6 +110,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SquealSpecHelpers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD3DE27C19BCD44B00DED437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SquealSpecHelpers.h; sourceTree = "<group>"; };
+		CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpecHelpers.swift; sourceTree = "<group>"; };
+		CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpecHelpers.swift; sourceTree = "<group>"; };
 		CD4B4C2C19B29D27004497BF /* DatabasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePool.swift; sourceTree = "<group>"; };
 		CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePoolSpec.swift; sourceTree = "<group>"; };
 		CD7247F71996880300151E1E /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,7 +132,6 @@
 		CD72483D1996BC0100151E1E /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		CD7248431996BE0400151E1E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CD7248661996D4F700151E1E /* StatementSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpec.swift; sourceTree = "<group>"; };
-		CD7248681996D6CC00151E1E /* SpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecHelpers.swift; sourceTree = "<group>"; };
 		CD9F4CD519A12967003CC387 /* DatabaseContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseContent.swift; sourceTree = "<group>"; };
 		CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseContentSpec.swift; sourceTree = "<group>"; };
 		CDD59C25199C69F500FB662D /* DatabaseSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSchema.swift; sourceTree = "<group>"; };
@@ -110,6 +139,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CD3DE27519BCD44B00DED437 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD61585B19BCDC7C00E63F56 /* Squeal.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD7247F31996880300151E1E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -123,6 +160,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD61584C19BCD74A00E63F56 /* SquealSpecHelpers.framework in Frameworks */,
 				CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */,
 				CD7248381996A7E800151E1E /* Nimble.framework in Frameworks */,
 				CD7248391996A7E800151E1E /* Quick.framework in Frameworks */,
@@ -132,15 +170,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CD3DE27A19BCD44B00DED437 /* SquealSpecHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */,
+				CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */,
+				CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */,
+				CD3DE27B19BCD44B00DED437 /* Supporting Files */,
+			);
+			path = SquealSpecHelpers;
+			sourceTree = "<group>";
+		};
+		CD3DE27B19BCD44B00DED437 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CD3DE27C19BCD44B00DED437 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		CD7247ED1996880300151E1E = {
 			isa = PBXGroup;
 			children = (
-				CD7248431996BE0400151E1E /* Foundation.framework */,
-				CD72483D1996BC0100151E1E /* libsqlite3.dylib */,
 				CD7247F91996880300151E1E /* Squeal */,
+				CD3DE27A19BCD44B00DED437 /* SquealSpecHelpers */,
 				CD7248031996880300151E1E /* SquealTests */,
 				CD7248141996A54B00151E1E /* Externals */,
 				CD7247F81996880300151E1E /* Products */,
+				CD7248431996BE0400151E1E /* Foundation.framework */,
+				CD72483D1996BC0100151E1E /* libsqlite3.dylib */,
 				CD72483A1996A95C00151E1E /* LICENSE.txt */,
 				CD7248351996A5F700151E1E /* README.md */,
 			);
@@ -151,6 +209,7 @@
 			children = (
 				CD7247F71996880300151E1E /* Squeal.framework */,
 				CD7248021996880300151E1E /* SquealTests.xctest */,
+				CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,12 +240,11 @@
 			isa = PBXGroup;
 			children = (
 				CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */,
+				CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */,
 				CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */,
 				CD72481219968D4000151E1E /* DatabaseSpec.swift */,
-				CD7248681996D6CC00151E1E /* SpecHelpers.swift */,
 				CD7248661996D4F700151E1E /* StatementSpec.swift */,
 				CD7248041996880300151E1E /* Supporting Files */,
-				CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */,
 			);
 			path = SquealTests;
 			sourceTree = "<group>";
@@ -233,6 +291,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		CD3DE27619BCD44B00DED437 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD3DE27E19BCD44B00DED437 /* SquealSpecHelpers.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD7247F41996880300151E1E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -244,6 +310,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		CD3DE27819BCD44B00DED437 /* SquealSpecHelpers */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD3DE29519BCD44B00DED437 /* Build configuration list for PBXNativeTarget "SquealSpecHelpers" */;
+			buildPhases = (
+				CD3DE27419BCD44B00DED437 /* Sources */,
+				CD3DE27519BCD44B00DED437 /* Frameworks */,
+				CD3DE27619BCD44B00DED437 /* Headers */,
+				CD3DE27719BCD44B00DED437 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CD61585219BCDC7700E63F56 /* PBXTargetDependency */,
+			);
+			name = SquealSpecHelpers;
+			productName = SquealSpecHelpers;
+			productReference = CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		CD7247F61996880300151E1E /* Squeal */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD72480A1996880400151E1E /* Build configuration list for PBXNativeTarget "Squeal" */;
@@ -273,6 +358,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				CD61584919BCD74000E63F56 /* PBXTargetDependency */,
+				CD61584B19BCD74000E63F56 /* PBXTargetDependency */,
 			);
 			name = SquealTests;
 			productName = SquealTests;
@@ -288,6 +375,9 @@
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Vulpine Labs LLC";
 				TargetAttributes = {
+					CD3DE27819BCD44B00DED437 = {
+						CreatedOnToolsVersion = 6.0;
+					};
 					CD7247F61996880300151E1E = {
 						CreatedOnToolsVersion = 6.0;
 					};
@@ -320,6 +410,7 @@
 			targets = (
 				CD7247F61996880300151E1E /* Squeal */,
 				CD7248011996880300151E1E /* SquealTests */,
+				CD3DE27819BCD44B00DED437 /* SquealSpecHelpers */,
 			);
 		};
 /* End PBXProject section */
@@ -384,6 +475,13 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		CD3DE27719BCD44B00DED437 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD7247F51996880300151E1E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -401,6 +499,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CD3DE27419BCD44B00DED437 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD3DE29A19BCD57A00DED437 /* StatementSpecHelpers.swift in Sources */,
+				CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD7247F21996880300151E1E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -418,7 +525,6 @@
 			files = (
 				CDD59C30199C6A5300FB662D /* DatabaseSchemaSpec.swift in Sources */,
 				CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */,
-				CD7248691996D6CC00151E1E /* SpecHelpers.swift in Sources */,
 				CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */,
 				CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */,
 				CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */,
@@ -427,7 +533,65 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		CD61584919BCD74000E63F56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD7247F61996880300151E1E /* Squeal */;
+			targetProxy = CD61584819BCD74000E63F56 /* PBXContainerItemProxy */;
+		};
+		CD61584B19BCD74000E63F56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD3DE27819BCD44B00DED437 /* SquealSpecHelpers */;
+			targetProxy = CD61584A19BCD74000E63F56 /* PBXContainerItemProxy */;
+		};
+		CD61585219BCDC7700E63F56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD7247F61996880300151E1E /* Squeal */;
+			targetProxy = CD61585119BCDC7700E63F56 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		CD3DE28919BCD44B00DED437 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+			};
+			name = Debug;
+		};
+		CD3DE28A19BCD44B00DED437 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+			};
+			name = Release;
+		};
 		CD7248081996880400151E1E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -582,6 +746,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CD3DE29519BCD44B00DED437 /* Build configuration list for PBXNativeTarget "SquealSpecHelpers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD3DE28919BCD44B00DED437 /* Debug */,
+				CD3DE28A19BCD44B00DED437 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CD7247F11996880300151E1E /* Build configuration list for PBXProject "Squeal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -1,8 +1,9 @@
+import Foundation
 import Quick
 import Nimble
 import sqlite3
 import Squeal
-import Foundation
+import SquealSpecHelpers
 
 class DatabaseSpec: QuickSpec {
     override func spec() {
@@ -12,7 +13,7 @@ class DatabaseSpec: QuickSpec {
         var error : NSError?
         
         beforeEach {
-            tempPath = createTemporaryDirectory()
+            tempPath = Database.createTemporaryDirectory()
             database = Database(path:tempPath + "/Squeal")
         }
         

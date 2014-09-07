@@ -1,27 +1,27 @@
 import Foundation
 import Squeal
 
-func createTemporaryDirectory(prefix:String = "Squeal") -> String {
-    let suffix = NSUUID().UUIDString
-    let tempDirectoryPath = NSTemporaryDirectory().stringByAppendingPathComponent(prefix + "-" + suffix)
+public extension Database {
     
-    var error : NSError?
-    var success = NSFileManager.defaultManager().createDirectoryAtPath(tempDirectoryPath,
-                                                                       withIntermediateDirectories: true,
-                                                                       attributes:                  nil,
-                                                                       error:                       &error)
-    if !success {
-        NSException(name:       NSInternalInconsistencyException,
-                    reason:     "Error creating temporary directory \(error)",
-                    userInfo:   nil).raise()
+    public class func createTemporaryDirectory(prefix:String = "Squeal") -> String {
+        let suffix = NSUUID().UUIDString
+        let tempDirectoryPath = NSTemporaryDirectory().stringByAppendingPathComponent(prefix + "-" + suffix)
+        
+        var error : NSError?
+        var success = NSFileManager.defaultManager().createDirectoryAtPath(tempDirectoryPath,
+                                                                           withIntermediateDirectories: true,
+                                                                           attributes:                  nil,
+                                                                           error:                       &error)
+        if !success {
+            NSException(name:       NSInternalInconsistencyException,
+                        reason:     "Error creating temporary directory \(error)",
+                        userInfo:   nil).raise()
+        }
+        
+        return tempDirectoryPath
     }
     
-    return tempDirectoryPath
-}
-
-extension Database {
-    
-    func open() {
+    public func open() {
         var error : NSError?
         if !open(&error) {
             NSException(name:       NSInternalInconsistencyException,
@@ -30,7 +30,7 @@ extension Database {
         }
     }
     
-    func prepareStatement(sqlString:String) -> Statement {
+    public func prepareStatement(sqlString:String) -> Statement {
         var error : NSError? = nil
         var statement = self.prepareStatement(sqlString, error:&error)
         if statement == nil {
@@ -41,7 +41,7 @@ extension Database {
         return statement!
     }
     
-    func execute(statement:String) {
+    public func execute(statement:String) {
         var error : NSError?
         var succeeded = execute(statement, error:&error)
         
@@ -52,7 +52,7 @@ extension Database {
         }
     }
     
-    func query(selectSql:String) -> Statement {
+    public func query(selectSql:String) -> Statement {
         var error : NSError? = nil
         var statement = query(selectSql, error:&error)
         
@@ -65,7 +65,7 @@ extension Database {
         return statement!
     }
     
-    func dropTable(tableName:String) {
+    public func dropTable(tableName:String) {
         var error : NSError? = nil
         let result = dropTable(tableName, error:&error)
         if !result {
@@ -75,7 +75,7 @@ extension Database {
         }
     }
     
-    func insert(tableName:String, row:[String:Bindable?]) -> Int64 {
+    public func insert(tableName:String, row:[String:Bindable?]) -> Int64 {
         var error : NSError?
         if let rowId = insertInto(tableName, values:row, error: &error) {
             return rowId
@@ -89,29 +89,3 @@ extension Database {
     
 }
 
-extension Statement {
-    
-    func next() -> Bool {
-        var error : NSError? = nil
-        if let result = self.next(&error) {
-            return result
-        } else {
-            NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to advance statement: \(error?.localizedDescription)",
-                        userInfo:   nil).raise()
-            
-            return false
-        }
-    }
-    
-    func bind(parameters:Bindable?...) {
-        var error : NSError? = nil
-        let result = self.bind(parameters, error: &error)
-        if result == false {
-            NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to bind parameters (\(parameters)): \(error?.localizedDescription)",
-                        userInfo:   nil).raise()
-        }
-    }
-    
-}

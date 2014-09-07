@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Squeal
+import SquealSpecHelpers
 
 class DatabasePoolSpec: QuickSpec {
     override func spec() {
@@ -9,7 +10,7 @@ class DatabasePoolSpec: QuickSpec {
         var error : NSError?
         
         beforeEach {
-            var tempPath = createTemporaryDirectory()
+            var tempPath = Database.createTemporaryDirectory()
             databasePool = DatabasePool(databasePath: tempPath.stringByAppendingPathComponent("DatabasePoolSpec"))
         }
         
