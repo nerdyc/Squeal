@@ -20,7 +20,7 @@ public func escapeIdentifier(identifier:String) -> String {
 public class Schema : NSObject {
     
     public convenience override init() {
-        return self.init(schemaEntries: [SchemaEntry]())
+        self.init(schemaEntries: [SchemaEntry]())
     }
     
     public init(schemaEntries:[SchemaEntry]) {

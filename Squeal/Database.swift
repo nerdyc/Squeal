@@ -1186,7 +1186,7 @@ public class Statement : NSObject {
         }
         
         let columnTextI = UnsafePointer<Int8>(columnText)
-        return NSString.stringWithUTF8String(columnTextI)
+        return NSString(UTF8String:columnTextI)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
