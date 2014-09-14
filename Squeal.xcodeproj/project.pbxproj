@@ -176,8 +176,6 @@
 		CDCBEB7019C5F77900862BFD /* SquealSpecHelpers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SquealSpecHelpers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCBEB7319C5F77900862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SquealSpecHelpers-iOS.h"; sourceTree = "<group>"; };
-		CDCBEB8019C5F77900862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDCBEB8119C5F77900862BFD /* SquealSpecHelpers_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquealSpecHelpers_iOSTests.swift; sourceTree = "<group>"; };
 		CDD59C25199C69F500FB662D /* DatabaseSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSchema.swift; sourceTree = "<group>"; };
 		CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSchemaSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -263,15 +261,13 @@
 		CD7247ED1996880300151E1E = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */,
 				CD7247F91996880300151E1E /* Squeal */,
-				CD3DE27A19BCD44B00DED437 /* SquealSpecHelpers */,
 				CD7248031996880300151E1E /* SquealTests */,
-				CD7248141996A54B00151E1E /* Externals */,
+				CD3DE27A19BCD44B00DED437 /* SquealSpecHelpers */,
 				CDCBEB4D19C5F6F500862BFD /* Squeal-iOS */,
 				CDCBEB5A19C5F6F500862BFD /* Squeal-iOSTests */,
 				CDCBEB7119C5F77900862BFD /* SquealSpecHelpers-iOS */,
-				CDCBEB7E19C5F77900862BFD /* SquealSpecHelpers-iOSTests */,
+				CD7248141996A54B00151E1E /* Externals */,
 				CD7247F81996880300151E1E /* Products */,
 				CD72483A1996A95C00151E1E /* LICENSE.txt */,
 				CD7248351996A5F700151E1E /* README.md */,
@@ -379,6 +375,7 @@
 		CDCBEB4E19C5F6F500862BFD /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */,
 				CDCBEB4F19C5F6F500862BFD /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -413,23 +410,6 @@
 			isa = PBXGroup;
 			children = (
 				CDCBEB7319C5F77900862BFD /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		CDCBEB7E19C5F77900862BFD /* SquealSpecHelpers-iOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				CDCBEB8119C5F77900862BFD /* SquealSpecHelpers_iOSTests.swift */,
-				CDCBEB7F19C5F77900862BFD /* Supporting Files */,
-			);
-			path = "SquealSpecHelpers-iOSTests";
-			sourceTree = "<group>";
-		};
-		CDCBEB7F19C5F77900862BFD /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				CDCBEB8019C5F77900862BFD /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
