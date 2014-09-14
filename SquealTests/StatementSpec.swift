@@ -13,8 +13,9 @@ class StatementSpec: QuickSpec {
         beforeEach {
             database = Database.newTemporaryDatabase()
             database.open()
-            database.execute("CREATE TABLE people (personId INTEGER PRIMARY KEY, name TEXT, age REAL, is_adult INTEGER)")
-            database.execute("INSERT INTO people (name, age, is_adult) VALUES (\"Amelia\", 1.5, 0),(\"Brian\", 43.375, 1),(\"Cara\", NULL, 1)")
+            database.execute("CREATE TABLE people (personId INTEGER PRIMARY KEY, name TEXT, age REAL, is_adult INTEGER, photo BLOB)")
+            database.execute("INSERT INTO people (name, age, is_adult, photo) VALUES (\"Amelia\", 1.5, 0, NULL),(\"Brian\", 43.375, 1, X''),(\"Cara\", NULL, 1, X'696D616765')")
+            // 696D616765 is "image" in Hex.
         }
         
         afterEach {
@@ -29,31 +30,35 @@ class StatementSpec: QuickSpec {
         describe("next(error:)") {
             
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age FROM people")
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("advances to the next row, returning false when there are no more rows") {
                 expect(statement.next()).to(beTruthy())
-                expect(statement.columnCount).to(equal(3))
-                expect(statement.columnNames).to(equal(["personId", "name", "age"]))
+                expect(statement.columnCount).to(equal(4))
+                expect(statement.columnNames).to(equal(["personId", "name", "age", "photo"]))
                 
                 expect(statement.indexOfColumnNamed("personId")).to(equal(0))
                 expect(statement.indexOfColumnNamed("name")).to(equal(1))
                 expect(statement.indexOfColumnNamed("age")).to(equal(2))
+                expect(statement.indexOfColumnNamed("photo")).to(equal(3))
                 
                 expect(statement.nameOfColumnAtIndex(0)).to(equal("personId"));
                 expect(statement.nameOfColumnAtIndex(1)).to(equal("name"));
                 expect(statement.nameOfColumnAtIndex(2)).to(equal("age"));
+                expect(statement.nameOfColumnAtIndex(3)).to(equal("photo"));
                 
-                // 0: id:1, name:Amelia, age:1.5
+                // 0: id:1, name:Amelia, age:1.5, photo:NULL
                 expect(statement.intValueAtIndex(0)).to(equal(1))
                 expect(statement.intValue("personId")).to(equal(1))
                 expect(statement.stringValueAtIndex(1)).to(equal("Amelia"))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
                 expect(statement.realValueAtIndex(2)).to(equal(1.5))
                 expect(statement.realValue("age")).to(equal(1.5))
+                expect(statement.blobValueAtIndex(3)).to(beNil())
+                expect(statement.blobValue("photo")).to(beNil())
                 
-                // 1: id:2, Brian, age:43.375
+                // 1: id:2, Brian, age:43.375, photo:''
                 expect(statement.next()).to(beTruthy())
                 expect(statement.intValueAtIndex(0)).to(equal(2))
                 expect(statement.intValue("personId")).to(equal(2))
@@ -61,8 +66,10 @@ class StatementSpec: QuickSpec {
                 expect(statement.stringValue("name")).to(equal("Brian"))
                 expect(statement.realValueAtIndex(2)).to(equal(43.375))
                 expect(statement.realValue("age")).to(equal(43.375))
+                expect(statement.blobValueAtIndex(3)).to(equal(NSData()))
+                expect(statement.blobValue("photo")).to(equal(NSData()))
                 
-                // 2: id:3, name:Cara, age:nil
+                // 2: id:3, name:Cara, age:nil, photo:X'696D616765' ("image")
                 expect(statement.next()).to(beTruthy())
                 expect(statement.intValueAtIndex(0)).to(equal(3))
                 expect(statement.intValue("personId")).to(equal(3))
@@ -70,6 +77,8 @@ class StatementSpec: QuickSpec {
                 expect(statement.stringValue("name")).to(equal("Cara"))
                 expect(statement.realValueAtIndex(2)).to(beNil())
                 expect(statement.realValue("age")).to(beNil())
+                expect(statement.blobValueAtIndex(3)).to(equal("image".dataUsingEncoding(NSUTF8StringEncoding)))
+                expect(statement.blobValue("photo")).to(equal("image".dataUsingEncoding(NSUTF8StringEncoding)))
                 
                 expect(statement.next()).to(beFalsy())
             }
@@ -215,6 +224,33 @@ class StatementSpec: QuickSpec {
             it("binds Bool values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE is_adult IS ?")
                 statement.bind(false)
+                
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Amelia"))
+                expect(statement.next()).to(beFalsy())
+            }
+
+            it("binds blob values") {
+                statement = database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
+                statement.bind(["image".dataUsingEncoding(NSUTF8StringEncoding)], error:&error)
+                
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Cara"))
+                expect(statement.next()).to(beFalsy())
+            }
+            
+            it("binds empty blob values") {
+                statement = database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
+                statement.bind([NSData()], error:&error)
+                
+                expect(statement.next()).to(beTruthy())
+                expect(statement.stringValue("name")).to(equal("Brian"))
+                expect(statement.next()).to(beFalsy())
+            }
+            
+            it("binds NULL blob values") {
+                statement = database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
+                statement.bind([nil], error:&error)
                 
                 expect(statement.next()).to(beTruthy())
                 expect(statement.stringValue("name")).to(equal("Amelia"))

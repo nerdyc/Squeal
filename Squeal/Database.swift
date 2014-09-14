@@ -670,7 +670,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindStringParameter(stringValue:String, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindStringValue(stringValue:String, atIndex index:Int, error:NSErrorPointer) -> Bool {
         let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
         
         let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
@@ -696,9 +696,9 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindStringParameter(stringValue:String, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindStringValue(stringValue:String, named name:String, error:NSErrorPointer) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
-            return bindStringParameter(stringValue, atIndex: parameterIndex, error: error)
+            return bindStringValue(stringValue, atIndex: parameterIndex, error: error)
         } else {
             if error != nil {
                 error.memory = unknownBindParameterError(name)
@@ -850,6 +850,59 @@ public class Statement : NSObject {
     public func bindBoolValue(boolValue:Bool, named name:String, error:NSErrorPointer) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindBoolValue(boolValue, atIndex: parameterIndex, error: error)
+        } else {
+            if error != nil {
+                error.memory = unknownBindParameterError(name)
+            }
+            return false
+        }
+    }
+    
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:  BLOB Parameters
+    
+    /// Binds an NSData value to the parameter at the 1-based index.
+    ///
+    /// :param:     blobValue       The value to bind.
+    /// :param:     atIndex         The 1-based index of the parameter.
+    /// :param:     error           An error pointer.
+    ///
+    /// :returns:   `true` if the parameter was bound, `false` otherwise.
+    ///
+    public func bindBlobValue(blobValue:NSData, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
+        let opaquePointer = COpaquePointer(negativeOne)
+        let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
+        
+        var resultCode: Int32
+        if blobValue.bytes != nil {
+            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), blobValue.bytes, Int32(blobValue.length), transient)
+        } else {
+            resultCode = sqlite3_bind_zeroblob(sqliteStatement, Int32(index), 0);
+        }
+        
+        if resultCode != SQLITE_OK {
+            if error != nil {
+                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+            }
+            return false
+        }
+        
+        return true
+    }
+    
+    /// Binds a BLOB value to a named parameter.
+    ///
+    /// :param:     blobValue       The value to bind.
+    /// :param:     named           The name of the parameter to bind.
+    /// :param:     error           An error pointer.
+    ///
+    /// :returns:   `true` if the parameter was bound, `false` otherwise.
+    ///
+    public func bindBlobValue(blobValue:NSData, named name:String, error:NSErrorPointer) -> Bool {
+        if let parameterIndex = indexOfParameterNamed(name) {
+            return bindBlobValue(blobValue, atIndex: parameterIndex, error: error)
         } else {
             if error != nil {
                 error.memory = unknownBindParameterError(name)
@@ -1216,6 +1269,38 @@ public class Statement : NSObject {
         }
     }
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:- BLOB Parameters
+
+    public func blobValue(columnName:String) -> NSData? {
+        if let columnIndex = indexOfColumnNamed(columnName) {
+            return blobValueAtIndex(columnIndex)
+        } else {
+            return nil
+        }
+    }
+    
+    public func blobValueAtIndex(columnIndex:Int) -> NSData? {
+        if sqliteStatement == nil {
+            return nil
+        }
+        
+        // sqlite3_column_blob returns NULL for zero-length blobs. This means its not possible to detect NULL BLOB
+        // columns except by type.
+        let columnType = sqlite3_column_type(sqliteStatement, Int32(columnIndex))
+        if columnType == SQLITE_NULL {
+            return nil
+        }
+        
+        let columnBlob = sqlite3_column_blob(sqliteStatement, Int32(columnIndex))
+        if columnBlob == nil {
+            return NSData()
+        }
+        
+        let columnBytes = sqlite3_column_bytes(sqliteStatement, Int32(columnIndex))
+        return NSData(bytes: columnBlob, length: Int(columnBytes))
+    }
+    
 }
 
 // -----------------------------------------------------------------------------------------------------------------
@@ -1303,7 +1388,7 @@ public protocol Bindable {
 extension String : Bindable {
     
     public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
-        return statement.bindStringParameter(self, atIndex: index, error: error)
+        return statement.bindStringValue(self, atIndex: index, error: error)
     }
     
 }
@@ -1400,6 +1485,14 @@ extension Float : Bindable {
     
     public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
         return statement.bindDoubleValue(Double(self), atIndex: index, error: error)
+    }
+    
+}
+
+extension NSData : Bindable {
+    
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindBlobValue(self, atIndex: index, error: error)
     }
     
 }

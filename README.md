@@ -390,7 +390,7 @@ var error : NSError?
 if let statement = database.prepareStatement("SELECT * FROM contacts WHERE name = ?",
                                              error:&error) {
     
-    if statement.bindStringParameter("Steve Jobs", atIndex:1, error:&error) {
+    if statement.bindStringParameter("; DELETE FROM contacts", atIndex:1, error:&error) {
         for result in statement {
             switch result {
             case .Row:
@@ -432,6 +432,38 @@ statement.bindStringParameter("johnny.appleseed@apple.com", named:"$searchString
 
 Note that the `$` character must be included. SQLite also supports named parameters of the form `:NAME` or `@NAME`. See
 the [SQLite documentation](http://www.sqlite.org/lang_expr.html#varparam) for authoritative details.
+
+#### Types that can be bound
+
+SQLite supports TEXT, INTEGER, REAL, BLOB, and NULL values. The Squeal methods to bind these are:
+
+* `Statement.bindStringValue(stringValue:atIndex:error:)`
+* `Statement.bindInt64Value(int64Value:atIndex:error:)`
+* `Statement.bindDoubleValue(doubleValue:atIndex:error:)`
+* `Statement.bindBlobValue(blobValue:atIndex:error:)`
+* `Statement.bindNullValue(atIndex:error:)`
+
+##### `Bindable`
+
+The above methods are the core methods used to bind parameters. Squeal also provides helpers for binding arbitrary 
+types, as well as multiple parameters at once:
+
+* `Statement.bindParameter(name:value:error:)`
+* `Statement.bind(parameters:error:)`
+* `Statement.bind(namedParameters:error:)`
+
+These methods can bind any type that conforms to the `Bindable` protocol. Currently there are `Bindable` implementations
+for these types:
+
+* String
+* Int, Int32, Int64, and all other native integer types
+* Bool
+* Double
+* Float
+* NSData
+
+If you'd like to support binding other types (e.g. NSDate) then you can do so by implementing the `Bindable` protocol,
+and calling one of the core methods listed above.
 
 ### Reuse statements for efficiency
 
