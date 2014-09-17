@@ -79,7 +79,7 @@ Squeal provides the `Database.createTable(...)` method for creating tables in SQ
 ```swift
 database.createTable("people",
                      definitions:[
-                         "personId INTEGER NOT NULL AUTOINCREMENTING PRIMARY KEY",
+                         "personId INTEGER PRIMARY KEY",
                          "name TEXT",
                          "email TEXT NOT NULL",
                          "UNIQUE(email)",
