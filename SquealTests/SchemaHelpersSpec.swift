@@ -7,7 +7,6 @@ class DatabaseSchemaSpec: QuickSpec {
     override func spec() {
         
         var database : Database!
-        var statement : Statement!
         var error : NSError?
         
         beforeEach {
@@ -16,16 +15,10 @@ class DatabaseSchemaSpec: QuickSpec {
         }
         
         afterEach {
-            if (statement != nil && statement.isOpen) {
-                statement.close()
-            }
-            statement = nil
-            
             if database.isOpen {
                 database.close(nil)
             }
             database = nil
-            
             error = nil
         }
         

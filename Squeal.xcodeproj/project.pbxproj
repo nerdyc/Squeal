@@ -22,9 +22,8 @@
 		CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
 		CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7248431996BE0400151E1E /* Foundation.framework */; };
 		CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
-		CD9CD78619C5FB210038B7B0 /* DatabaseContentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */; };
 		CD9CD78719C5FB210038B7B0 /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
-		CD9CD78819C5FB210038B7B0 /* DatabaseSchemaSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */; };
+		CD9CD78819C5FB210038B7B0 /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */; };
 		CD9CD78919C5FB210038B7B0 /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481219968D4000151E1E /* DatabaseSpec.swift */; };
 		CD9CD78A19C5FB210038B7B0 /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
 		CD9CD78B19C5FB300038B7B0 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD72482D1996A5AB00151E1E /* Nimble.framework */; };
@@ -41,11 +40,22 @@
 		CD9CD7D119CA88190038B7B0 /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */; };
 		CD9CD7D219CA88190038B7B0 /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */; };
 		CD9F4CD619A12967003CC387 /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */; };
-		CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */; };
 		CDB05CE219CA88D70085E4AC /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */; };
 		CDB05CE319CA88D70085E4AC /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */; };
 		CDB05CED19CA89110085E4AC /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */; };
 		CDB05CEE19CA89110085E4AC /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */; };
+		CDB05D0319CA93EF0085E4AC /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */; };
+		CDB05D0419CA93EF0085E4AC /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */; };
+		CDB05D0619CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */; };
+		CDB05D0719CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */; };
+		CDB05D0919CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */; };
+		CDB05D0A19CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */; };
+		CDB05D0C19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */; };
+		CDB05D0D19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */; };
+		CDB05D0F19CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */; };
+		CDB05D1019CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */; };
+		CDB05D1219CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
+		CDB05D1319CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
 		CDCBEB5119C5F6F500862BFD /* Squeal-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDCBEB5719C5F6F500862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
 		CDCBEB6519C5F70800862BFD /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
@@ -59,7 +69,7 @@
 		CDCBEB8F19C5F7DB00862BFD /* StatementSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */; };
 		CDCBEB9019C5F98E00862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
 		CDD59C26199C69F500FB662D /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* SchemaHelpers.swift */; };
-		CDD59C30199C6A5300FB662D /* DatabaseSchemaSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */; };
+		CDD59C30199C6A5300FB662D /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -185,9 +195,14 @@
 		CD9CD7CD19CA86FE0038B7B0 /* Bindable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bindable.swift; sourceTree = "<group>"; };
 		CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpers.swift; sourceTree = "<group>"; };
 		CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteHelpers.swift; sourceTree = "<group>"; };
-		CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseContentSpec.swift; sourceTree = "<group>"; };
 		CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectHelpers.swift; sourceTree = "<group>"; };
 		CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateHelpers.swift; sourceTree = "<group>"; };
+		CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BindableSpec.swift; sourceTree = "<group>"; };
+		CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHelpersSpec.swift; sourceTree = "<group>"; };
+		CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteHelpersSpec.swift; sourceTree = "<group>"; };
+		CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateHelpersSpec.swift; sourceTree = "<group>"; };
+		CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectHelpersSpec.swift; sourceTree = "<group>"; };
+		CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpersSpec.swift; sourceTree = "<group>"; };
 		CDCBEB4C19C5F6F500862BFD /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCBEB4F19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-iOS.h"; sourceTree = "<group>"; };
@@ -198,7 +213,7 @@
 		CDCBEB7319C5F77900862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SquealSpecHelpers-iOS.h"; sourceTree = "<group>"; };
 		CDD59C25199C69F500FB662D /* SchemaHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaHelpers.swift; sourceTree = "<group>"; };
-		CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSchemaSpec.swift; sourceTree = "<group>"; };
+		CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaHelpersSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,6 +294,30 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		CD715E1619CAA32700602860 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */,
+				CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */,
+				CD72481219968D4000151E1E /* DatabaseSpec.swift */,
+				CD7248661996D4F700151E1E /* StatementSpec.swift */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		CD715E1719CAA33A00602860 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */,
+				CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */,
+				CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */,
+				CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */,
+				CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */,
+				CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
 		CD7247ED1996880300151E1E = {
 			isa = PBXGroup;
 			children = (
@@ -333,11 +372,8 @@
 		CD7248031996880300151E1E /* SquealTests */ = {
 			isa = PBXGroup;
 			children = (
-				CD9F4CDF19A12980003CC387 /* DatabaseContentSpec.swift */,
-				CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */,
-				CDD59C2F199C6A5300FB662D /* DatabaseSchemaSpec.swift */,
-				CD72481219968D4000151E1E /* DatabaseSpec.swift */,
-				CD7248661996D4F700151E1E /* StatementSpec.swift */,
+				CD715E1619CAA32700602860 /* Core */,
+				CD715E1719CAA33A00602860 /* Helpers */,
 				CD7248041996880300151E1E /* Supporting Files */,
 			);
 			path = SquealTests;
@@ -804,10 +840,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDD59C30199C6A5300FB662D /* DatabaseSchemaSpec.swift in Sources */,
+				CDD59C30199C6A5300FB662D /* SchemaHelpersSpec.swift in Sources */,
+				CDB05D1219CA97180085E4AC /* InsertHelpersSpec.swift in Sources */,
 				CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */,
 				CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */,
-				CD9F4CE019A12980003CC387 /* DatabaseContentSpec.swift in Sources */,
+				CDB05D0919CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */,
+				CDB05D0319CA93EF0085E4AC /* BindableSpec.swift in Sources */,
+				CDB05D0C19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */,
+				CDB05D0F19CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */,
+				CDB05D0619CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */,
 				CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -834,10 +875,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD9CD78619C5FB210038B7B0 /* DatabaseContentSpec.swift in Sources */,
+				CDB05D1319CA97180085E4AC /* InsertHelpersSpec.swift in Sources */,
 				CD9CD78719C5FB210038B7B0 /* DatabasePoolSpec.swift in Sources */,
-				CD9CD78819C5FB210038B7B0 /* DatabaseSchemaSpec.swift in Sources */,
+				CD9CD78819C5FB210038B7B0 /* SchemaHelpersSpec.swift in Sources */,
+				CDB05D0A19CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */,
+				CDB05D0419CA93EF0085E4AC /* BindableSpec.swift in Sources */,
+				CDB05D0D19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */,
+				CDB05D1019CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */,
 				CD9CD78919C5FB210038B7B0 /* DatabaseSpec.swift in Sources */,
+				CDB05D0719CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */,
 				CD9CD78A19C5FB210038B7B0 /* StatementSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -40,4 +40,25 @@ extension Database {
         }
         return numberOfChangedRows
     }
+    
+    /// Deletes table rows identified by their IDs.
+    ///
+    /// :param: tableName   The name of the table to update.
+    /// :param: rowIds      The IDs of the rows to delete.
+    /// :param: error       An error pointer.
+    ///
+    /// :returns:   The number of rows removed, or nil if an error occurs.
+    ///
+    public func deleteFrom(tableName: String,
+                           rowIds:    [RowId],
+                           error:     NSErrorPointer) -> Int? {
+        if rowIds.count == 0 {
+            return 0
+        }
+        
+        let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
+        
+        let whereExpr = "_ROWID_ IN (" + join(",", rowIds.map { _ -> String in "?" }) + ")"
+        return deleteFrom(tableName, whereExpr: whereExpr, parameters: parameters, error: error)
+    }
 }

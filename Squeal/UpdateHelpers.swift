@@ -77,4 +77,27 @@ extension Database {
         return update(tableName, columns:columns, values:values, whereExpr:whereExpr, parameters:parameters, error:error)
     }
     
+    /// Updates table rows given a set of row IDs.
+    ///
+    /// :param: tableName   The name of the table to update.
+    /// :param: rowIds      The IDs of the rows to update.
+    /// :param: values      The updated values. These values must be in the same order as the columns.
+    /// :param: error       An error pointer.
+    ///
+    /// :returns:   The number of rows updated, or nil if an error occurs.
+    ///
+    public func update(tableName: String,
+                       rowIds:    [RowId],
+                       values:    [String:Bindable?],
+                       error:     NSErrorPointer) -> Int? {
+        if rowIds.count == 0 {
+            return 0
+        }
+        
+        let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
+        
+        let whereExpr = "_ROWID_ IN (" + join(",", rowIds.map { _ -> String in "?" }) + ")"
+        return update(tableName, set:values, whereExpr:whereExpr, parameters:parameters, error:error)
+    }
+    
 }

@@ -64,6 +64,9 @@ extension Database {
         return statement
     }
     
+    // =================================================================================================================
+    // MARK:- SELECT
+    
     /// Selects table rows and iterates over them. This is a helper for executing a SELECT statement, and reading the
     /// results.
     ///
@@ -116,7 +119,44 @@ extension Database {
             return nil
         }
     }
+    
+    /// Fetches the IDs of all rows that match the given WHERE clause. This makes use of SQLite's `_ROWID_` alias to
+    /// select the primary key from the given table.
+    ///
+    /// :param: tableName   The name of the table to select from. Should not include join clauses.
+    /// :param: whereExpr   The WHERE clause. If nil, then all rows are returned.
+    /// :param: orderBy     The ORDER BY clause.
+    /// :param: limit       The LIMIT.
+    /// :param: offset      The OFFSET.
+    /// :param: parameters  An array of parameters to bind to the statement.
+    /// :param: error       An error pointer.
+    ///
+    public func selectRowIdsFrom(tableName:   String,
+                                 whereExpr:   String? = nil,
+                                 orderBy:     String? = nil,
+                                 limit:       Int? = nil,
+                                 offset:      Int? = nil,
+                                 parameters:  [Bindable?] = [],
+                                 error:       NSErrorPointer = nil) -> [RowId]? {
+            
+            return selectFrom(escapeIdentifier(tableName),
+                              columns:      ["_ROWID_"],
+                              whereExpr:    whereExpr,
+                              orderBy:      orderBy,
+                              limit:        limit,
+                              offset:       offset,
+                              parameters:   parameters,
+                              error:        error) {
+                    
+                    return $0.int64ValueAtIndex(0) ?? 0
+                    
+            }
+            
+    }
 
+    // =================================================================================================================
+    // MARK:- COUNT
+    
     /// Counts rows in a table. This is a helper for executing a SELECT count(...) FROM statement and reading the
     /// result.
     ///

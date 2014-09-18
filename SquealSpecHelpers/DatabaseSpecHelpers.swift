@@ -3,6 +3,12 @@ import Squeal
 
 public extension Database {
     
+    public class func openTemporaryDatabase() -> Database {
+        var database = Database.newTemporaryDatabase()
+        database.open()
+        return database
+    }
+    
     public class func createTemporaryDirectory(prefix:String = "Squeal") -> String {
         let suffix = NSUUID().UUIDString
         let tempDirectoryPath = NSTemporaryDirectory().stringByAppendingPathComponent(prefix + "-" + suffix)

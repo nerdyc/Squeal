@@ -203,3 +203,9 @@ extension NSData : Bindable {
     }
     
 }
+
+extension NSNull : Bindable {
+    public func bindToStatement(statement:Statement, atIndex index:Int, error:NSErrorPointer) -> Bool {
+        return statement.bindNullParameter(atIndex: index, error: error)
+    }
+}
