@@ -23,10 +23,14 @@ public class Statement : NSObject {
         for columnIndex in 0..<columnCount {
             let columnName = sqlite3_column_name(sqliteStatement, columnIndex)
             if columnName != nil {
-                columnNames.append(NSString(UTF8String: columnName))
-            } else {
-                columnNames.append("")
+                if let columnNameString = NSString(UTF8String: columnName) {
+                    columnNames.append(columnNameString)
+                    continue
+                }
             }
+            
+            // add an empty string so the column indices stay the same
+            columnNames.append("")
         }
         self.columnNames = columnNames
     }
@@ -95,7 +99,7 @@ public class Statement : NSObject {
     private func unknownBindParameterError(name:String) -> NSError {
         let localizedDescription = SquealErrorCode.UnknownBindParameter.localizedDescription + ": " + name
         return NSError(domain:  SquealErrorDomain,
-                       code:    SquealErrorCode.UnknownBindParameter.toRaw(),
+                       code:    SquealErrorCode.UnknownBindParameter.rawValue,
                        userInfo:[ NSLocalizedDescriptionKey : localizedDescription ])
         
     }

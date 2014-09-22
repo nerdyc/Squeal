@@ -100,13 +100,8 @@ public class Database: NSObject {
         var sqliteDb : COpaquePointer = nil
         var result = sqlite3_open(path.cStringUsingEncoding(NSUTF8StringEncoding)!, &sqliteDb)
         if result != SQLITE_OK {
-            var errorMsg = sqlite3_errmsg(sqliteDb)
-            let errorObj = NSError(domain: SQLiteErrorDomain,
-                                   code: Int(result),
-                                   userInfo: [ NSLocalizedDescriptionKey:NSString(UTF8String: errorMsg) ])
-
             if error != nil {
-                error.memory = errorObj
+                error.memory = errorFromSqliteResultCode(self.sqliteDatabase, result)
             }
             
             sqlite3_close(sqliteDb)

@@ -30,14 +30,21 @@ public enum SquealErrorCode: Int {
     
     public func asError() -> NSError {
         return NSError(domain:  SquealErrorDomain,
-                       code:    toRaw(),
+                       code:    rawValue,
                        userInfo:[ NSLocalizedDescriptionKey:localizedDescription])
     }
 }
 
 func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32) -> NSError {
-    var errorMsg = sqlite3_errmsg(database)
+    var userInfo: [String:AnyObject]?
+    let errorMsg = sqlite3_errmsg(database)
+    if errorMsg != nil {
+        if let errorString = NSString(UTF8String: errorMsg) {
+            userInfo = [ NSLocalizedDescriptionKey:errorString ]
+        }
+    }
+    
     return NSError(domain:  SQLiteErrorDomain,
                    code:    Int(resultCode),
-                   userInfo:[ NSLocalizedDescriptionKey:NSString(UTF8String: errorMsg) ])
+                   userInfo:userInfo)
 }
