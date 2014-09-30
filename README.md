@@ -35,6 +35,8 @@ performance.
 Step #3 is necessary because SQLite is a library not a module. Swift can only import modules, and the `module.map` 
 defines a module for SQLite so it can be imported into Swift code.
 
+NOTE: If see an issue like "Could not build Objective-C module 'sqlite3'", ensure you have the XCode command-line tools installed. They're required for the module.map to work correctly.
+
 ## Accessing a Database
 
 Databases are accessed through the `Database` class. Squeal supports creating on-disk, temporary, and in-memory 
