@@ -2,6 +2,7 @@ import Foundation
 import sqlite3
 
 public typealias RowId = Int64
+typealias SQLiteDBPointer = COpaquePointer
 
 // =====================================================================================================================
 // MARK:- Database
@@ -77,7 +78,7 @@ public class Database: NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Open
     
-    var sqliteDatabase : COpaquePointer = nil
+    var sqliteDatabase : SQLiteDBPointer = nil
     
     /// :returns: true if the database has been opened via '.open(error:)'
     public var isOpen : Bool {
@@ -97,7 +98,7 @@ public class Database: NSObject {
                         userInfo: nil).raise()
         }
         
-        var sqliteDb : COpaquePointer = nil
+        var sqliteDb : SQLiteDBPointer = nil
         var result = sqlite3_open(path.cStringUsingEncoding(NSUTF8StringEncoding)!, &sqliteDb)
         if result != SQLITE_OK {
             if error != nil {
@@ -171,7 +172,7 @@ public class Database: NSObject {
         }
     }
 
-    private func prepareSqliteStatement(sqlString:String, error:NSErrorPointer) -> COpaquePointer {
+    private func prepareSqliteStatement(sqlString:String, error:NSErrorPointer) -> SQLiteStatementPointer {
         if sqliteDatabase == nil {
             if error != nil {
                 error.memory = SquealErrorCode.DatabaseClosed.asError()
@@ -180,7 +181,7 @@ public class Database: NSObject {
         }
         
         var cString = sqlString.cStringUsingEncoding(NSUTF8StringEncoding)
-        var sqliteStatement : COpaquePointer = nil
+        var sqliteStatement : SQLiteStatementPointer = nil
         
         var resultCode = sqlite3_prepare_v2(sqliteDatabase,
                                             cString!,

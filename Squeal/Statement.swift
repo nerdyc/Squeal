@@ -1,6 +1,8 @@
 import Foundation
 import sqlite3
 
+typealias SQLiteStatementPointer = COpaquePointer
+
 ///
 /// Statements are used to update the database, query data, and read results. Statements are like methods and can accept
 /// parameters. This makes it easy to escape SQL values, as well as reuse statements for optimal performance.
@@ -10,9 +12,9 @@ import sqlite3
 public class Statement : NSObject {
     
     private weak var database : Database?
-    private var sqliteStatement : COpaquePointer
+    private var sqliteStatement : SQLiteStatementPointer
     
-    init(database:Database, sqliteStatement:COpaquePointer) {
+    init(database:Database, sqliteStatement:SQLiteStatementPointer) {
         self.database = database
         self.sqliteStatement = sqliteStatement
         
