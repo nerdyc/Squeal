@@ -4,6 +4,34 @@ import sqlite3
 typealias SQLiteStatementPointer = COpaquePointer
 
 ///
+/// Enumeration of all SQLite column types.
+///
+public enum ColumnType : Int {
+    case Integer
+    case Float
+    case Text
+    case Blob
+    case Null
+    
+    static func fromSqliteColumnType(columnType:Int32) -> ColumnType {
+        switch columnType {
+        case SQLITE_INTEGER:
+            return .Integer
+        case SQLITE_TEXT:
+            return .Text
+        case SQLITE_NULL:
+            return .Null
+        case SQLITE_FLOAT:
+            return .Float
+        case SQLITE_BLOB:
+            return .Blob
+        default:
+            return .Text
+        }
+    }
+}
+
+///
 /// Statements are used to update the database, query data, and read results. Statements are like methods and can accept
 /// parameters. This makes it easy to escape SQL values, as well as reuse statements for optimal performance.
 ///
@@ -547,13 +575,97 @@ public class Statement : NSObject {
         return find(columnNames, columnName)
     }
     
+    public func nameOfColumnAtIndex(columnIndex:Int) -> String {
+        return columnNames[columnIndex]
+    }
+    
     /// Gets the name of the column at an index.
     ///
     /// :param:     columnIndex The index of a column
     /// :returns:   The name of the column at the index
     ///
-    public func nameOfColumnAtIndex(columnIndex:Int) -> String {
+    public func columnNameAtIndex(columnIndex:Int) -> String {
         return columnNames[columnIndex]
+    }
+    
+    /// Returns the type of the column at a given index.
+    ///
+    /// :param:     columnIndex The index of a column
+    /// :returns:   The SQLite type of the column
+    ///
+    public func typeOfColumnAtIndex(columnIndex:Int) -> ColumnType {
+        let columnType = sqlite3_column_type(sqliteStatement, Int32(columnIndex))
+        return ColumnType.fromSqliteColumnType(columnType)
+    }
+    
+    /// Returns the type of the column with the given name.
+    ///
+    /// :param:     columnName The name of a column.
+    /// :returns:   The SQLite type of the column.
+    ///
+    public func typeOfColumnNamed(columnName:String) -> ColumnType {
+        if let columnIndex = indexOfColumnNamed(columnName) {
+            return typeOfColumnAtIndex(columnIndex)
+        } else {
+            fatalError("Column named '\(columnName)' not found")
+        }
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK:- Current Row
+    
+    /// All values of the current row, as a Dictionary. Only non-nil values are included in the Dictionary. This is so
+    /// `currentRow["id"]` returns a `Bindable?` value, instead of `Bindable??`.
+    ///
+    public var currentRow: [String:Bindable] {
+        var currentRow = [String:Bindable]()
+        for columnIndex in 0..<(columnCount) {
+            let columnName = nameOfColumnAtIndex(columnIndex)
+            currentRow[columnName] = valueAtIndex(columnIndex)
+        }
+        return currentRow
+    }
+    
+    /// All values of the current row in an array.
+    public var currentRowValues: [Bindable?] {
+        var currentRowValues = [Bindable?]()
+        for columnIndex in 0..<(columnCount) {
+            currentRowValues.append(valueAtIndex(columnIndex))
+        }
+        return currentRowValues
+    }
+
+    /// Returns the value of a column by name.
+    public func valueOfColumnNamed(columnName:String) -> Bindable? {
+        if let columnIndex = indexOfColumnNamed(columnName) {
+            return valueAtIndex(columnIndex)
+        } else {
+            fatalError("Column named '\(columnName)' not found")
+        }
+    }
+    
+    public subscript(columnName:String) -> Bindable? {
+        return valueOfColumnNamed(columnName)
+    }
+    
+    /// Returns the value of a column based on its index
+    public func valueAtIndex(columnIndex:Int) -> Bindable? {
+        switch typeOfColumnAtIndex(columnIndex) {
+        case .Integer:
+            return intValueAtIndex(columnIndex)
+        case .Text:
+            return stringValueAtIndex(columnIndex)
+        case .Float:
+            return doubleValueAtIndex(columnIndex)
+        case .Blob:
+            return blobValueAtIndex(columnIndex)
+        case .Null:
+            return nil
+        }
+    }
+    
+    public subscript(columnIndex:Int) -> Bindable? {
+        return valueAtIndex(columnIndex)
     }
     
     // -----------------------------------------------------------------------------------------------------------------

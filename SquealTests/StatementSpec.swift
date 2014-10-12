@@ -28,15 +28,15 @@ class StatementSpec: QuickSpec {
         }
         
         // =============================================================================================================
-        // MARK:- QUERY
+        // MARK:- Columns
         
-        describe("next(error:)") {
-            
+        describe(".columnCount, .columnNames, etc.") {
+        
             beforeEach {
                 statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
-            it("advances to the next row, returning false when there are no more rows") {
+            it("describe the selected columns") {
                 expect(statement.next()).to(beTruthy())
                 expect(statement.columnCount).to(equal(4))
                 expect(statement.columnNames).to(equal(["personId", "name", "age", "photo"]))
@@ -50,6 +50,121 @@ class StatementSpec: QuickSpec {
                 expect(statement.nameOfColumnAtIndex(1)).to(equal("name"));
                 expect(statement.nameOfColumnAtIndex(2)).to(equal("age"));
                 expect(statement.nameOfColumnAtIndex(3)).to(equal("photo"));
+            }
+            
+        }
+        
+        // =============================================================================================================
+        // MARK:- Current Row
+        
+        describe(".currentRow") {
+
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("returns row values in a dictionary") {
+                expect(statement.next()).to(beTruthy())
+                
+                // 0: id:1, name:Amelia, age:1.5, photo:NULL
+                expect(statement.currentRow["personId"] as? Int).to(equal(1))
+                expect(statement.currentRow["name"] as? String).to(equal("Amelia"))
+                expect(statement.currentRow["age"] as? Double).to(equal(1.5))
+                expect(statement.currentRow["photo"]).to(beNil())
+                
+                // NULL columns aren't included in resulting dictionary
+                expect(sorted(statement.currentRow.keys)).to(equal(["age", "name", "personId"]))
+            }
+            
+        }
+        
+        describe(".valueOfColumnNamed()") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("returns the value at the index") {
+                expect(statement.next()).to(beTruthy())
+                expect(statement.valueOfColumnNamed("personId") as? Int).to(equal(1))
+                expect(statement.valueOfColumnNamed("name") as? String).to(equal("Amelia"))
+                expect(statement.valueOfColumnNamed("age") as? Double).to(equal(1.5))
+                expect(statement.valueOfColumnNamed("photo")).to(beNil())
+            }
+            
+        }
+        
+        describe(".[columnName]") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("returns the value at the index") {
+                expect(statement.next()).to(beTruthy())
+                expect(statement["personId"] as? Int).to(equal(1))
+                expect(statement["name"] as? String).to(equal("Amelia"))
+                expect(statement["age"] as? Double).to(equal(1.5))
+                expect(statement["photo"]).to(beNil())
+            }
+        }
+
+        describe(".currentRowValues") {
+            
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("returns row values in a dictionary") {
+                expect(statement.next()).to(beTruthy())
+                
+                // 0: id:1, name:Amelia, age:1.5, photo:NULL
+                expect(statement.currentRowValues[0] as? Int).to(equal(1))
+                expect(statement.currentRowValues[1] as? String).to(equal("Amelia"))
+                expect(statement.currentRowValues[2] as? Double).to(equal(1.5))
+                expect(statement.currentRowValues[3]).to(beNil())
+            }
+            
+        }
+        
+        describe(".valueAtIndex(columnIndex:)") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("returns the value at the index") {
+                expect(statement.next()).to(beTruthy())
+                expect(statement.valueAtIndex(0) as? Int).to(equal(1))
+                expect(statement.valueAtIndex(1) as? String).to(equal("Amelia"))
+                expect(statement.valueAtIndex(2) as? Double).to(equal(1.5))
+                expect(statement.valueAtIndex(3)).to(beNil())
+            }
+            
+        }
+        
+        describe(".[columnIndex]") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("returns the value at the index") {
+                expect(statement.next()).to(beTruthy())
+                expect(statement[0] as? Int).to(equal(1))
+                expect(statement[1] as? String).to(equal("Amelia"))
+                expect(statement[2] as? Double).to(equal(1.5))
+                expect(statement[3]).to(beNil())
+            }
+        }
+
+        // =============================================================================================================
+        // MARK:- QUERY
+        
+        describe("next(error:)") {
+            
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            }
+            
+            it("advances to the next row, returning false when there are no more rows") {
+                expect(statement.next()).to(beTruthy())
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
                 expect(statement.intValueAtIndex(0)).to(equal(1))
