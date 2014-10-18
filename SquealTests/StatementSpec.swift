@@ -33,7 +33,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("describe the selected columns") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.columnCount).to(equal(4))
                 expect(statement.columnNames).to(equal(["personId", "name", "age", "photo"]))
                 
@@ -60,7 +60,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("returns row values in a dictionary") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
                 expect(statement.currentRow["personId"] as? Int).to(equal(1))
@@ -80,7 +80,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("returns the value at the index") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.valueOfColumnNamed("personId") as? Int).to(equal(1))
                 expect(statement.valueOfColumnNamed("name") as? String).to(equal("Amelia"))
                 expect(statement.valueOfColumnNamed("age") as? Double).to(equal(1.5))
@@ -95,7 +95,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("returns the value at the index") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement["personId"] as? Int).to(equal(1))
                 expect(statement["name"] as? String).to(equal("Amelia"))
                 expect(statement["age"] as? Double).to(equal(1.5))
@@ -110,7 +110,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("returns row values in a dictionary") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
                 expect(statement.currentRowValues[0] as? Int).to(equal(1))
@@ -127,7 +127,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("returns the value at the index") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.valueAtIndex(0) as? Int).to(equal(1))
                 expect(statement.valueAtIndex(1) as? String).to(equal("Amelia"))
                 expect(statement.valueAtIndex(2) as? Double).to(equal(1.5))
@@ -142,7 +142,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("returns the value at the index") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement[0] as? Int).to(equal(1))
                 expect(statement[1] as? String).to(equal("Amelia"))
                 expect(statement[2] as? Double).to(equal(1.5))
@@ -160,7 +160,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("advances to the next row, returning false when there are no more rows") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
                 expect(statement.intValueAtIndex(0)).to(equal(1))
@@ -173,7 +173,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.blobValue("photo")).to(beNil())
                 
                 // 1: id:2, Brian, age:43.375, photo:''
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.intValueAtIndex(0)).to(equal(2))
                 expect(statement.intValue("personId")).to(equal(2))
                 expect(statement.stringValueAtIndex(1)).to(equal("Brian"))
@@ -184,7 +184,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.blobValue("photo")).to(equal(NSData()))
                 
                 // 2: id:3, name:Cara, age:nil, photo:X'696D616765' ("image")
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.intValueAtIndex(0)).to(equal(3))
                 expect(statement.intValue("personId")).to(equal(3))
                 expect(statement.stringValueAtIndex(1)).to(equal("Cara"))
@@ -194,7 +194,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.blobValueAtIndex(3)).to(equal("image".dataUsingEncoding(NSUTF8StringEncoding)))
                 expect(statement.blobValue("photo")).to(equal("image".dataUsingEncoding(NSUTF8StringEncoding)))
                 
-                expect(statement.next()).to(beFalsy())
+                expect(statement.next()).to(equal(.Some(false)))
             }
             
         }
@@ -234,7 +234,7 @@ class StatementSpec: QuickSpec {
             }
             
             it("resets the statement so it can be executed again") {
-                expect(statement.next()).to(beTruthy())
+                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Brian"))
             }
             

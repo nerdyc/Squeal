@@ -115,7 +115,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindStringValue(stringValue:String, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindStringValue(stringValue:String, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
         
         let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
@@ -141,7 +141,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindStringValue(stringValue:String, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindStringValue(stringValue:String, named name:String, error:NSErrorPointer = nil) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindStringValue(stringValue, atIndex: parameterIndex, error: error)
         } else {
@@ -163,7 +163,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindIntValue(intValue:Int, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindIntValue(intValue:Int, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         return bindInt64Value(Int64(intValue), atIndex: index, error: error)
     }
     
@@ -175,7 +175,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindIntValue(intValue:Int, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindIntValue(intValue:Int, named name:String, error:NSErrorPointer = nil) -> Bool {
         return bindInt64Value(Int64(intValue), named: name, error: error)
     }
     
@@ -187,7 +187,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindInt64Value(int64Value:Int64, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindInt64Value(int64Value:Int64, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
             if error != nil {
@@ -207,7 +207,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindInt64Value(int64Value:Int64, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindInt64Value(int64Value:Int64, named name:String, error:NSErrorPointer = nil) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindInt64Value(int64Value, atIndex: parameterIndex, error: error)
         } else {
@@ -230,7 +230,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindDoubleValue(doubleValue:Double, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindDoubleValue(doubleValue:Double, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
             if error != nil {
@@ -250,7 +250,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindDoubleValue(doubleValue:Double, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindDoubleValue(doubleValue:Double, named name:String, error:NSErrorPointer = nil) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindDoubleValue(doubleValue, atIndex: parameterIndex, error: error)
         } else {
@@ -272,7 +272,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBoolValue(boolValue:Bool, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindBoolValue(boolValue:Bool, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
         if resultCode != SQLITE_OK {
             if error != nil {
@@ -292,7 +292,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBoolValue(boolValue:Bool, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindBoolValue(boolValue:Bool, named name:String, error:NSErrorPointer = nil) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindBoolValue(boolValue, atIndex: parameterIndex, error: error)
         } else {
@@ -315,7 +315,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBlobValue(blobValue:NSData, atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindBlobValue(blobValue:NSData, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
         let opaquePointer = COpaquePointer(negativeOne)
         let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
@@ -345,7 +345,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBlobValue(blobValue:NSData, named name:String, error:NSErrorPointer) -> Bool {
+    public func bindBlobValue(blobValue:NSData, named name:String, error:NSErrorPointer = nil) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindBlobValue(blobValue, atIndex: parameterIndex, error: error)
         } else {
@@ -366,7 +366,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindNullParameter(atIndex index:Int, error:NSErrorPointer) -> Bool {
+    public func bindNullParameter(atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
             if error != nil {
@@ -385,7 +385,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindNullParameter(name:String, error:NSErrorPointer) -> Bool {
+    public func bindNullParameter(name:String, error:NSErrorPointer = nil) -> Bool {
         if let parameterIndex = indexOfParameterNamed(name) {
             return bindNullParameter(atIndex:parameterIndex, error: error)
         } else {
@@ -409,7 +409,7 @@ public class Statement : NSObject {
     /// :returns:   `true` if a new result is available, `false` if the end of the result set is reached, or `nil` if
     ///             an error occurred.
     ///
-    public func next(error:NSErrorPointer) -> Bool? {
+    public func next(error:NSErrorPointer = nil) -> Bool? {
         switch sqlite3_step(sqliteStatement) {
         case SQLITE_DONE:
             // no more steps
@@ -432,9 +432,9 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the statement succeeded, `false` if it failed.
     ///
-    public func execute(error:NSErrorPointer) -> Bool {
+    public func execute(error:NSErrorPointer = nil) -> Bool {
         while true {
-            switch next(error) {
+            switch next(error: error) {
             case .Some(true):
                 // more steps
                 continue
@@ -477,7 +477,7 @@ public class Statement : NSObject {
     ///             statement fails. This means that errors cannot be detected.
     ///
     public func collect<T>(collector:(Statement)->(T)) -> [T] {
-        if let values = collect(nil, collector:collector) {
+        if let values = collect(error: nil, collector:collector) {
             return values
         } else {
             return []
@@ -494,10 +494,10 @@ public class Statement : NSObject {
     /// :returns:   An array of the values collected, as returned by the provided block. `nil` will be returned if the
     ///             statement fails.
     ///
-    public func collect<T>(error:NSErrorPointer, collector:(Statement)->(T)) -> [T]? {
+    public func collect<T>(error:NSErrorPointer = nil, collector:(Statement)->(T)) -> [T]? {
         var values = [T]()
         while true {
-            switch next(error) {
+            switch next(error: error) {
             case .Some(true):
                 // more steps
                 var value = collector(self)
@@ -872,7 +872,7 @@ public struct StatementGenerator : GeneratorType {
         
         if let statement = self.statement {
             var error : NSError?
-            switch statement.next(&error) {
+            switch statement.next(error: &error) {
             case .Some(true):
                 return Step.Row
             case .Some(false):

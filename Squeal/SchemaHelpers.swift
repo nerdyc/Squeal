@@ -231,7 +231,7 @@ extension Database {
         var error: NSError?
         if let statement = prepareStatement("SELECT * FROM sqlite_master", error:&error) {
             rowLoop: while true {
-                switch statement.next(&error) {
+                switch statement.next(error: &error) {
                 case .Some(true):
                     let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
                                                   name:     statement.stringValue("name"),
@@ -268,7 +268,7 @@ extension Database {
             var columns = [ColumnInfo]()
             
             rowLoop: while true {
-                switch statement.next(error) {
+                switch statement.next(error: error) {
                 case .Some(true):
                     let columnInfo = ColumnInfo(index:          statement.intValue("cid") ?? 0,
                                                 name:           statement.stringValue("name") ?? "",
@@ -301,7 +301,7 @@ extension Database {
     public func queryUserVersionNumber(error:NSErrorPointer = nil) -> Int32? {
         let userViewSql = "PRAGMA user_version"
         if let statement = prepareStatement(userViewSql, error:error) {
-            switch statement.next(error) {
+            switch statement.next(error:error) {
             case .Some(true):
                 if let intValue = statement.intValueAtIndex(0) {
                     return Int32(intValue)

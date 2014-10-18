@@ -110,7 +110,7 @@ extension Database {
                                              parameters:parameters,
                                              error:     error) {
                 
-            return statement.collect(error, collector:collector)
+            return statement.collect(error: error, collector:collector)
                 
         } else {
             return nil
@@ -179,7 +179,7 @@ extension Database {
                                              error:     error) {
             
             var count : Int64?
-            switch statement.next(error) {
+            switch statement.next(error: error) {
             case .Some(true):
                 count = statement.int64ValueAtIndex(0)
             case .Some(false):

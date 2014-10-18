@@ -32,7 +32,7 @@ extension Database {
         var numberOfChangedRows : Int?
         if let statement = prepareDeleteFrom(tableName, whereExpr: whereExpr, error: error) {
             if statement.bind(parameters, error: error) {
-                if statement.execute(error) {
+                if statement.execute(error: error) {
                     numberOfChangedRows = self.numberOfChangedRows
                 }
             }

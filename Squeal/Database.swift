@@ -145,7 +145,7 @@ public class Database : NSObject {
     ///
     public func execute(sqlString:String, error:NSErrorPointer = nil) -> Bool {
         if let statement = prepareStatement(sqlString, error:error) {
-            return statement.execute(error)
+            return statement.execute(error: error)
         } else {
             return false
         }

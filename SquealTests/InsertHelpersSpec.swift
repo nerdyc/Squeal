@@ -34,11 +34,12 @@ class InsertHelpersSpec: QuickSpec {
                 expect(error).to(beNil())
                 
                 let query = database.queryOrFail("SELECT * FROM contacts")
-                expect(query.next()).to(beTruthy())
+                expect(query.next()).to(equal(.Some(true)))
+                
                 expect(query.intValue("contactId")).to(equal(1))
                 expect(query.stringValue("name")).to(equal("Amelia"))
 
-                expect(query.next()).to(beFalsy())
+                expect(query.next()).to(equal(.Some(false)))
             }
             
         }
@@ -57,11 +58,12 @@ class InsertHelpersSpec: QuickSpec {
                 expect(error).to(beNil())
                 
                 let query = database.queryOrFail("SELECT * FROM contacts")
-                expect(query.next()).to(beTruthy())
+                expect(query.next()).to(equal(.Some(true)))
+                
                 expect(query.intValue("contactId")).to(equal(1))
                 expect(query.stringValue("name")).to(equal("Amelia"))
                 
-                expect(query.next()).to(beFalsy())
+                expect(query.next()).to(equal(.Some(false)))
             }
             
         }

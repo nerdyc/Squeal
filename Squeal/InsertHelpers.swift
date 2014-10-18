@@ -31,7 +31,7 @@ extension Database {
         var rowId : Int64?
         if let statement = prepareInsertInto(tableName, columns:columns, error: error) {
             if statement.bind(values, error: error) {
-                if statement.execute(error) {
+                if statement.execute(error: error) {
                     rowId = lastInsertedRowId
                 }
             }
