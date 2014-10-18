@@ -20,7 +20,7 @@ class TransactionHelpersSpec: QuickSpec {
         describe(".transaction()") {
             
             beforeEach {
-                database.execute("CREATE TABLE people (id PRIMARY KEY, name TEXT)")
+                database.executeOrFail("CREATE TABLE people (id PRIMARY KEY, name TEXT)")
             }
             
             context("when the transaction is committed") {

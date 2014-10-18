@@ -12,7 +12,7 @@ class UpdateHelpersSpec: QuickSpec {
         beforeEach {
             database = Database.openTemporaryDatabase()
             
-            database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+            database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
             database.insert("contacts", row:["name": "Amelia"])
             database.insert("contacts", row:["name": "Brian"])
             database.insert("contacts", row:["name": "Cara"])

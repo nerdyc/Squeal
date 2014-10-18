@@ -22,7 +22,7 @@ class InsertHelpersSpec: QuickSpec {
             var result : Int64?
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
                 result = database.insertInto("contacts",
                                             columns:["name"],
                                             values:["Amelia"],
@@ -33,7 +33,7 @@ class InsertHelpersSpec: QuickSpec {
                 expect(result).to(equal(1))
                 expect(error).to(beNil())
                 
-                let query = database.query("SELECT * FROM contacts")
+                let query = database.queryOrFail("SELECT * FROM contacts")
                 expect(query.next()).to(beTruthy())
                 expect(query.intValue("contactId")).to(equal(1))
                 expect(query.stringValue("name")).to(equal("Amelia"))
@@ -48,7 +48,7 @@ class InsertHelpersSpec: QuickSpec {
             var result : Int64?
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
                 result = database.insertInto("contacts", values:["name":"Amelia"], error:&error)
             }
             
@@ -56,7 +56,7 @@ class InsertHelpersSpec: QuickSpec {
                 expect(result).to(equal(1))
                 expect(error).to(beNil())
                 
-                let query = database.query("SELECT * FROM contacts")
+                let query = database.queryOrFail("SELECT * FROM contacts")
                 expect(query.next()).to(beTruthy())
                 expect(query.intValue("contactId")).to(equal(1))
                 expect(query.stringValue("name")).to(equal("Amelia"))

@@ -124,7 +124,7 @@ public class Database : NSObject {
     /// :returns:               The compiled SQL as a Statement. On error, `nil` will be returned and an NSError object
     //                          will be provided via the `error` parameter.
     ///
-    public func prepareStatement(sqlString:String, error:NSErrorPointer) -> Statement? {
+    public func prepareStatement(sqlString:String, error:NSErrorPointer = nil) -> Statement? {
         let sqliteStatement = prepareSQLiteStatement(sqlString, error:error)
         if sqliteStatement == nil {
             return nil
@@ -143,7 +143,7 @@ public class Database : NSObject {
     /// :returns:               `true` if the statment was executed, `false` otherwise. On error, an NSError object will be
     ///                         provided via the `error` parameter.
     ///
-    public func execute(sqlString:String, error:NSErrorPointer) -> Bool {
+    public func execute(sqlString:String, error:NSErrorPointer = nil) -> Bool {
         if let statement = prepareStatement(sqlString, error:error) {
             return statement.execute(error)
         } else {
@@ -175,7 +175,7 @@ public class Database : NSObject {
     /// :returns:               The prepared statement, `nil` otherwise. On error, an NSError object will be
     ///                         provided via the `error` parameter.
     ///
-    public func query(sqlString:String, parameters:[Bindable?]? = nil, error:NSErrorPointer) -> Statement? {
+    public func query(sqlString:String, parameters:[Bindable?]? = nil, error:NSErrorPointer = nil) -> Statement? {
         if let statement = prepareStatement(sqlString, error:error) {
             if parameters?.count > 0 {
                 var boundSuccessfully = statement.bind(parameters!, error:error)

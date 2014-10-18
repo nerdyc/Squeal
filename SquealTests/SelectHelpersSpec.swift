@@ -11,7 +11,7 @@ class SelectHelpersSpec: QuickSpec {
         beforeEach {
             database = Database.openTemporaryDatabase()
             
-            database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, initials TEXT)")
+            database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, initials TEXT)")
             database.insert("contacts", row:["name": "Amelia", "initials": "A"])
             database.insert("contacts", row:["name": "Brian",  "initials": NSNull()])
             database.insert("contacts", row:["name": "Cara",   "initials": "C"])

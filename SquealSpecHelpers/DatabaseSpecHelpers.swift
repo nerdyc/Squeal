@@ -33,18 +33,7 @@ public extension Database {
         return tempDirectoryPath
     }
     
-    public func prepareStatement(sqlString:String) -> Statement {
-        var error : NSError? = nil
-        var statement = self.prepareStatement(sqlString, error:&error)
-        if statement == nil {
-            NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to prepare statement (\(sqlString)): \(error?.localizedDescription)",
-                        userInfo:   nil).raise()
-        }
-        return statement!
-    }
-    
-    public func execute(statement:String) {
+    public func executeOrFail(statement:String) {
         var error : NSError?
         var succeeded = execute(statement, error:&error)
         
@@ -55,7 +44,7 @@ public extension Database {
         }
     }
     
-    public func query(selectSql:String) -> Statement {
+    public func queryOrFail(selectSql:String) -> Statement {
         var error : NSError? = nil
         var statement = query(selectSql, error:&error)
         

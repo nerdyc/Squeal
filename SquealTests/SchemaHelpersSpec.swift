@@ -24,13 +24,13 @@ class DatabaseSchemaSpec: QuickSpec {
         describe(".schema") {
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT)")
-                database.execute("CREATE INDEX contacts_name ON contacts (firstName, lastName)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT)")
+                database.executeOrFail("CREATE INDEX contacts_name ON contacts (firstName, lastName)")
                 
-                database.execute("CREATE TABLE emailAddresses (emailId INTEGER PRIMARY KEY, address TEXT UNIQUE NOT NULL, contactId INTEGER NOT NULL)")
-                database.execute("CREATE INDEX emailAddresses_contactId ON emailAddresses (contactId)")
+                database.executeOrFail("CREATE TABLE emailAddresses (emailId INTEGER PRIMARY KEY, address TEXT UNIQUE NOT NULL, contactId INTEGER NOT NULL)")
+                database.executeOrFail("CREATE INDEX emailAddresses_contactId ON emailAddresses (contactId)")
                 
-                database.execute("CREATE TABLE phoneNumbers (phoneNumberId INTEGER PRIMARY KEY, number TEXT NOT NULL, contactId INTEGER NOT NULL)")
+                database.executeOrFail("CREATE TABLE phoneNumbers (phoneNumberId INTEGER PRIMARY KEY, number TEXT NOT NULL, contactId INTEGER NOT NULL)")
 
             }
             
@@ -51,7 +51,7 @@ class DatabaseSchemaSpec: QuickSpec {
         describe(".tableInfoForTableNamed(name:error:)") {
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT)")
             }
             
             it("returns a TableInfo object describing the table") {
@@ -69,7 +69,7 @@ class DatabaseSchemaSpec: QuickSpec {
         describe(".queryUserVersionNumber(error:)") {
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
             }
             
             it("is 0 when database is created") {
@@ -116,7 +116,7 @@ class DatabaseSchemaSpec: QuickSpec {
             context("when the table already exists") {
                 
                 beforeEach {
-                    database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+                    database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
                 }
                 
                 it("returns false and provides an error by default") {
@@ -163,8 +163,8 @@ class DatabaseSchemaSpec: QuickSpec {
         describe(".dropTable(name:error:)") {
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
-                database.execute("CREATE TABLE emails (emailId INTEGER PRIMARY KEY)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+                database.executeOrFail("CREATE TABLE emails (emailId INTEGER PRIMARY KEY)")
             }
             
             it("drops the table from the database") {
@@ -198,7 +198,7 @@ class DatabaseSchemaSpec: QuickSpec {
             var result : Bool = false
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
                 result = database.renameTable("contacts", to:"people", error:&error)
             }
             
@@ -214,7 +214,7 @@ class DatabaseSchemaSpec: QuickSpec {
             var result : Bool = false
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY)")
                 result = database.addColumnToTable("contacts", column:"name TEXT", error:&error)
             }
             
@@ -233,7 +233,7 @@ class DatabaseSchemaSpec: QuickSpec {
             var result : Bool = false
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER, name TEXT)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER, name TEXT)")
             }
             
             context("when the index doesn't exist") {
@@ -255,7 +255,7 @@ class DatabaseSchemaSpec: QuickSpec {
             context("when the index already exists") {
                 
                 beforeEach {
-                    database.execute("CREATE INDEX contacts_name ON contacts (name)")
+                    database.executeOrFail("CREATE INDEX contacts_name ON contacts (name)")
                 }
                 
                 it("returns an error") {
@@ -286,8 +286,8 @@ class DatabaseSchemaSpec: QuickSpec {
         describe(".dropIndex(name:ifExists:error:)") {
             
             beforeEach {
-                database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                database.execute("CREATE INDEX contacts_name ON contacts (name)")
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+                database.executeOrFail("CREATE INDEX contacts_name ON contacts (name)")
             }
             
             it("drops the index from the database") {
