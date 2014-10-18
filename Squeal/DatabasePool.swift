@@ -37,7 +37,7 @@ public class DatabasePool : NSObject {
     /// :param: error   An error pointer.
     /// :returns: An open Database, or nil if the database could not be opened.
     ///
-    public func dequeueDatabase(error:NSErrorPointer) -> Database? {
+    public func dequeueDatabase(error:NSErrorPointer = nil) -> Database? {
         var database : Database? = nil
         dispatch_sync(syncQueue) {
             if self.inactiveDatabases.isEmpty {

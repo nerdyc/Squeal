@@ -25,7 +25,7 @@ class DatabasePoolSpec: QuickSpec {
             var otherDatabase : Database?
             
             beforeEach {
-                database = databasePool.dequeueDatabase(&error)
+                database = databasePool.dequeueDatabase(error: &error)
             }
             
             afterEach {
@@ -46,7 +46,7 @@ class DatabasePoolSpec: QuickSpec {
             }
             
             it("returns a new database if a database isn't available") {
-                otherDatabase = databasePool.dequeueDatabase(&error)
+                otherDatabase = databasePool.dequeueDatabase(error: &error)
                 expect(otherDatabase).notTo(beNil())
                 expect(error).to(beNil())
                 
@@ -59,7 +59,7 @@ class DatabasePoolSpec: QuickSpec {
                 if database != nil {
                     databasePool.enqueueDatabase(database)
                     
-                    otherDatabase = databasePool.dequeueDatabase(&error)
+                    otherDatabase = databasePool.dequeueDatabase(error: &error)
                     expect(otherDatabase).notTo(beNil())
                     expect(error).to(beNil())
                     
@@ -76,7 +76,7 @@ class DatabasePoolSpec: QuickSpec {
             var database : Database?
             
             beforeEach {
-                database = databasePool.dequeueDatabase(&error)
+                database = databasePool.dequeueDatabase(error: &error)
                 expect(database).notTo(beNil())
                 expect(error).to(beNil())
             }
@@ -99,7 +99,7 @@ class DatabasePoolSpec: QuickSpec {
             var database : Database?
             
             beforeEach {
-                database = databasePool.dequeueDatabase(&error)
+                database = databasePool.dequeueDatabase(error: &error)
                 expect(database).notTo(beNil())
                 expect(error).to(beNil())
             }
@@ -123,11 +123,11 @@ class DatabasePoolSpec: QuickSpec {
             var otherDatabase : Database!
             
             beforeEach {
-                database = databasePool.dequeueDatabase(&error)
+                database = databasePool.dequeueDatabase(error: &error)
                 expect(database).notTo(beNil())
                 expect(error).to(beNil())
                 
-                otherDatabase = databasePool.dequeueDatabase(&error)
+                otherDatabase = databasePool.dequeueDatabase(error: &error)
                 expect(otherDatabase).notTo(beNil())
                 expect(error).to(beNil())
                 
