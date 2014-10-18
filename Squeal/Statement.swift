@@ -13,7 +13,7 @@ public enum ColumnType : Int {
     case Blob
     case Null
     
-    static func fromSqliteColumnType(columnType:Int32) -> ColumnType {
+    static func fromSQLiteColumnType(columnType:Int32) -> ColumnType {
         switch columnType {
         case SQLITE_INTEGER:
             return .Integer
@@ -155,7 +155,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, transient)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -221,7 +221,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -264,7 +264,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -306,7 +306,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -359,7 +359,7 @@ public class Statement : NSObject {
         
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -400,7 +400,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -454,7 +454,7 @@ public class Statement : NSObject {
         case let (stepResult):
             // error
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, stepResult)
+                error.memory = errorFromSQLiteResultCode(stepResult)
             }
             return nil
         }
@@ -498,7 +498,7 @@ public class Statement : NSObject {
         var resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(database!.sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return false
         }
@@ -595,7 +595,7 @@ public class Statement : NSObject {
     ///
     public func typeOfColumnAtIndex(columnIndex:Int) -> ColumnType {
         let columnType = sqlite3_column_type(sqliteStatement, Int32(columnIndex))
-        return ColumnType.fromSqliteColumnType(columnType)
+        return ColumnType.fromSQLiteColumnType(columnType)
     }
     
     /// Returns the type of the column with the given name.

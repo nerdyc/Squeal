@@ -102,7 +102,7 @@ public class Database: NSObject {
         var result = sqlite3_open(path.cStringUsingEncoding(NSUTF8StringEncoding)!, &sqliteDb)
         if result != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(self.sqliteDatabase, result)
+                error.memory = errorFromSQLiteResultCode(result)
             }
             
             sqlite3_close(sqliteDb)
@@ -142,7 +142,7 @@ public class Database: NSObject {
         let result = sqlite3_close(sqliteDatabase)
         if result != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(sqliteDatabase, result)
+                error.memory = errorFromSQLiteResultCode(result)
             }
             return false
         }
@@ -172,7 +172,7 @@ public class Database: NSObject {
         }
     }
 
-    private func prepareSqliteStatement(sqlString:String, error:NSErrorPointer) -> SQLiteStatementPointer {
+    private func prepareSQLiteStatement(sqlString:String, error:NSErrorPointer) -> SQLiteStatementPointer {
         if sqliteDatabase == nil {
             if error != nil {
                 error.memory = SquealErrorCode.DatabaseClosed.asError()
@@ -190,7 +190,7 @@ public class Database: NSObject {
                                             nil)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSqliteResultCode(sqliteDatabase, resultCode)
+                error.memory = errorFromSQLiteResultCode(resultCode)
             }
             return nil
         }
@@ -210,7 +210,7 @@ public class Database: NSObject {
     ///                         `error` parameter.
     ///
     public func prepareStatement(sqlString:String, error:NSErrorPointer) -> Statement? {
-        let sqliteStatement = prepareSqliteStatement(sqlString, error:error)
+        let sqliteStatement = prepareSQLiteStatement(sqlString, error:error)
         if sqliteStatement == nil {
             return nil
         }

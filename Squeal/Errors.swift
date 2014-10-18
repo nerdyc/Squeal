@@ -35,9 +35,9 @@ public enum SquealErrorCode: Int {
     }
 }
 
-func errorFromSqliteResultCode(database:COpaquePointer, resultCode:Int32) -> NSError {
+func errorFromSQLiteResultCode(resultCode:Int32) -> NSError {
     var userInfo: [String:AnyObject]?
-    let errorMsg = sqlite3_errmsg(database)
+    let errorMsg = sqlite3_errstr(resultCode)
     if errorMsg != nil {
         if let errorString = NSString(UTF8String: errorMsg) {
             userInfo = [ NSLocalizedDescriptionKey:errorString ]
