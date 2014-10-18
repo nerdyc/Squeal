@@ -2,7 +2,7 @@ import Foundation
 
 extension Database {
     
-    public func prepareInsertInto(tableName:String, columns:[String], error:NSErrorPointer) -> Statement? {
+    public func prepareInsertInto(tableName:String, columns:[String], error:NSErrorPointer = nil) -> Statement? {
         var sqlFragments = ["INSERT INTO"]
         sqlFragments.append(escapeIdentifier(tableName))
         sqlFragments.append("(")
@@ -27,7 +27,7 @@ extension Database {
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
     ///             INTEGER value. `nil` is returned when an error occurs.
     ///
-    public func insertInto(tableName:String, columns:[String], values:[Bindable?], error:NSErrorPointer) -> Int64? {
+    public func insertInto(tableName:String, columns:[String], values:[Bindable?], error:NSErrorPointer = nil) -> Int64? {
         var rowId : Int64?
         if let statement = prepareInsertInto(tableName, columns:columns, error: error) {
             if statement.bind(values, error: error) {
@@ -48,7 +48,7 @@ extension Database {
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
     ///             INTEGER value. `nil` is returned when an error occurs.
     ///
-    public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?], error:NSErrorPointer) -> Int64? {
+    public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?], error:NSErrorPointer = nil) -> Int64? {
         var columns = [String]()
         var values = [Bindable?]()
         for (columnName, value) in valuesDictionary {

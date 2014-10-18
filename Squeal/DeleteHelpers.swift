@@ -4,7 +4,7 @@ extension Database {
     
     public func prepareDeleteFrom(tableName:   String,
                                   whereExpr:   String? = nil,
-                                  error:       NSErrorPointer) -> Statement? {
+                                  error:       NSErrorPointer = nil) -> Statement? {
         
         var fragments = ["DELETE FROM", escapeIdentifier(tableName)]
         if whereExpr != nil {
@@ -27,7 +27,7 @@ extension Database {
     public func deleteFrom(tableName:   String,
                            whereExpr:   String? = nil,
                            parameters:  [Bindable?] = [],
-                           error:       NSErrorPointer) -> Int? {
+                           error:       NSErrorPointer = nil) -> Int? {
             
         var numberOfChangedRows : Int?
         if let statement = prepareDeleteFrom(tableName, whereExpr: whereExpr, error: error) {
@@ -50,7 +50,7 @@ extension Database {
     ///
     public func deleteFrom(tableName: String,
                            rowIds:    [RowId],
-                           error:     NSErrorPointer) -> Int? {
+                           error:     NSErrorPointer = nil) -> Int? {
         if rowIds.count == 0 {
             return 0
         }

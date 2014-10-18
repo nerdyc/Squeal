@@ -5,7 +5,7 @@ extension Database {
     public func prepareUpdate(tableName:   String,
                               columns:     [String],
                               whereExpr:   String? = nil,
-                              error:       NSErrorPointer) -> Statement? {
+                              error:       NSErrorPointer = nil) -> Statement? {
         
         var fragments = ["UPDATE", escapeIdentifier(tableName), "SET"]
         for columnName in columns {
@@ -37,7 +37,7 @@ extension Database {
                        values:      [Bindable?],
                        whereExpr:   String? = nil,
                        parameters:  [Bindable?] = [],
-                       error:       NSErrorPointer) -> Int? {
+                       error:       NSErrorPointer = nil) -> Int? {
         
         var numberOfChangedRows : Int?
         if let statement = prepareUpdate(tableName, columns: columns, whereExpr: whereExpr, error: error) {
@@ -64,7 +64,7 @@ extension Database {
                        set:         [String:Bindable?],
                        whereExpr:   String? = nil,
                        parameters:  [Bindable?] = [],
-                       error:       NSErrorPointer) -> Int? {
+                       error:       NSErrorPointer = nil) -> Int? {
         
         var columns = [String]()
         var values = [Bindable?]()
@@ -88,7 +88,7 @@ extension Database {
     public func update(tableName: String,
                        rowIds:    [RowId],
                        values:    [String:Bindable?],
-                       error:     NSErrorPointer) -> Int? {
+                       error:     NSErrorPointer = nil) -> Int? {
         if rowIds.count == 0 {
             return 0
         }
