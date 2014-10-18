@@ -14,13 +14,12 @@ class DatabaseSpec: QuickSpec {
         
         beforeEach {
             tempPath = Database.createTemporaryDirectory()
-            database = Database(path:tempPath + "/Squeal")
+            database = Database(path:tempPath + "/Squeal", error:&error)
+            expect(database).notTo(beNil())
+            expect(error).to(beNil())
         }
         
         afterEach {
-            if database != nil && database.isOpen {
-                database.close(nil)
-            }
             database = nil
             tempPath = nil
             error = nil
@@ -29,24 +28,30 @@ class DatabaseSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- Initialization
         
-        describe("newInMemoryDatabase()") {
+        describe("newInMemoryDatabase(error:)") {
             
             it("returns an in-memory database") {
-                var inMemoryDB = Database.newInMemoryDatabase()
-                expect(inMemoryDB.isInMemoryDatabase).to(beTruthy())
-                expect(inMemoryDB.isTemporaryDatabase).to(beFalsy())
-                expect(inMemoryDB.isPersistentDatabase).to(beFalsy())
+                var inMemoryDB = Database.newInMemoryDatabase(error:&error)
+                expect(inMemoryDB).notTo(beNil())
+                expect(error).to(beNil())
+                
+                expect(inMemoryDB!.isInMemoryDatabase).to(beTruthy())
+                expect(inMemoryDB!.isTemporaryDatabase).to(beFalsy())
+                expect(inMemoryDB!.isPersistentDatabase).to(beFalsy())
             }
             
         }
         
-        describe("newTemporaryDatabase()") {
+        describe("newTemporaryDatabase(error:)") {
             
             it("returns a temporary database") {
-                var temporaryDB = Database.newTemporaryDatabase()
-                expect(temporaryDB.isInMemoryDatabase).to(beFalsy())
-                expect(temporaryDB.isTemporaryDatabase).to(beTruthy())
-                expect(temporaryDB.isPersistentDatabase).to(beFalsy())
+                var temporaryDB = Database.newTemporaryDatabase(error:&error)
+                expect(temporaryDB).notTo(beNil())
+                expect(error).to(beNil())
+                
+                expect(temporaryDB!.isInMemoryDatabase).to(beFalsy())
+                expect(temporaryDB!.isTemporaryDatabase).to(beTruthy())
+                expect(temporaryDB!.isPersistentDatabase).to(beFalsy())
             }
             
         }
@@ -60,70 +65,11 @@ class DatabaseSpec: QuickSpec {
         }
         
         // =============================================================================================================
-        // MARK:- Open
-        
-        describe("open()") {
-            
-            context("when the database doesn't exist") {
-                
-                beforeEach {
-                    if !database.open(&error) {
-                        NSException(name: NSInternalInconsistencyException,
-                                    reason: "Unable to open database \(error)",
-                                    userInfo: nil)
-                    }
-                }
-                
-                it("creates the database") {
-                    expect(database.isOpen).to(beTruthy())
-                    expect(NSFileManager.defaultManager().fileExistsAtPath(database.path)).to(beTruthy())
-                }
-                
-            }
-            
-        }
-        
-        // =============================================================================================================
-        // MARK:- Close
-        
-        describe("close()") {
-            
-            var result: Bool = false
-            var statement: Statement?
-            
-            beforeEach {
-                database.open()
-                database.execute("CREATE TABLE people (id PRIMARY KEY, name TEXT)")
-                database.execute("INSERT INTO people(name) VALUES ('A'), ('B'), ('C')")
-                statement = database.query("SELECT id,name FROM people")
-                statement!.next(&error)
-                
-                result = database.close(&error)
-            }
-            
-            it("closes the database and any open statements") {
-                expect(result).to(beTruthy())
-                expect(error).to(beNil())
-                
-                expect(statement!.isOpen).to(beFalsy())
-                expect(statement!.columnCount).to(equal(0))
-                expect(statement!.intValueAtIndex(0)).to(beNil())
-                expect(statement!.stringValueAtIndex(1)).to(beNil())
-            }
-            
-        }
-        
-        // =============================================================================================================
         // MARK:- Statements
         
         describe("prepareStatement(sql:error:)") {
             
-            var error: NSError?
             var statement: Statement?
-            
-            beforeEach {
-                database.open()
-            }
             
             it("returns a Statement when the sql is valid") {
                 statement = database.prepareStatement("CREATE TABLE people (personId INTEGER PRIMARY KEY)",

@@ -19,9 +19,6 @@ class UpdateHelpersSpec: QuickSpec {
         }
         
         afterEach {
-            if database.isOpen {
-                database.close(nil)
-            }
             database = nil
             error = nil
             result = nil

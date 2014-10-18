@@ -14,11 +14,6 @@ public class DatabasePool : NSObject {
         self.syncQueue = dispatch_queue_create("DatabasePool-(\(databasePath))", DISPATCH_QUEUE_SERIAL)
     }
     
-    deinit {
-        // ensure unused databases get closed
-        drain()
-    }
-    
     // =================================================================================================================
     // MARK:- Databases
     
@@ -59,32 +54,24 @@ public class DatabasePool : NSObject {
     }
     
     ///
-    /// Returns a Database to the pool. If the database has been closed, it is removed from the pool.
+    /// Returns a Database to the pool.
     ///
     /// :param: database   The Database to return to the pool.
     ///
     public func enqueueDatabase(database:Database) {
         deactivateDatabase(database)
-        if database.isOpen {
-            dispatch_sync(syncQueue) {
-                self.inactiveDatabases.append(database)
-            }
+        dispatch_sync(syncQueue) {
+            self.inactiveDatabases.append(database)
         }
     }
 
     ///
-    /// Removes a Database from the pool, and closes the Database.
+    /// Removes a Database from the pool.
     ///
-    /// :param: database   The Database to close and remove.
+    /// :param: database   The Database to remove.
     ///
     public func removeDatabase(database:Database) {
         deactivateDatabase(database)
-        if database.isOpen {
-            var error : NSError?
-            if !database.close(&error) {
-                NSLog("Error closing database: \(error?.localizedDescription)")
-            }
-        }
     }
     
     ///
@@ -92,27 +79,12 @@ public class DatabasePool : NSObject {
     ///
     public func drain() {
         dispatch_sync(syncQueue) {
-            while self.inactiveDatabases.count > 0 {
-                var database = self.inactiveDatabases.removeLast()
-                self.closeDatabase(database)
-            }
+            self.inactiveDatabases.removeAll(keepCapacity: false)
         }
     }
     
     private func openDatabase(error:NSErrorPointer) -> Database? {
-        var database = Database(path: databasePath)
-        if database.open(error) {
-            return database
-        } else {
-            return nil
-        }
-    }
-
-    private func closeDatabase(database:Database) {
-        var error : NSError?
-        if !database.close(&error) {
-            NSLog("Error closing database: \(error?.localizedDescription)")
-        }
+        return Database(path: databasePath, error: error)
     }
     
     private func deactivateDatabase(database:Database) {

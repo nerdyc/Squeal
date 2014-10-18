@@ -47,32 +47,13 @@ Databases are accessed through the `Database` class. Squeal supports creating on
 databases:
 
 ```swift
-let onDiskDatabase    = Database(path:"contacts.db")
-let temporaryDatabase = Database.newTemporaryDatabase()
-let inMemoryDatabase  = Database.newInMemoryDatabase()  // alternatively: Database()
+var error: NSError?
+let onDiskDatabase    = Database(path:"contacts.db", error:&error)
+let temporaryDatabase = Database.newTemporaryDatabase(error:&error)
+let inMemoryDatabase  = Database.newInMemoryDatabase(error:&error)  // alternatively: Database(error:)
 ```
 
-After creating a `Database` object, it must be opened before use:
-
-```swift
-let database = Database()
-var error : NSError?
-if !database.open(&error) {
-    // handle error
-}
-```
-
-Databases must be closed to free their resources:
-
-```swift
-var error : NSError?
-if !database.close(&error) {
-    // handle error
-}
-```
-
-Closing a database will attempt to close all outstanding `Statement` objects, but may fail if the `Database` object is 
-still being used elsewhere in your app.
+If the database doesn't exist, it will be created. If it couldn't be created or opened, `nil` is returned.
 
 ## Creating Databases
 
@@ -322,9 +303,8 @@ Since `Database.execute(sqlString:error:)` simply returns `true` or `false`, it 
 
 ### Prepare `Statement` objects to execute SQL
 
-Once a database has been opened, SQLite commands and queries are executed through `Statement` objects.
-
-`Statement` objects are created by the `Database.prepareStatement()` method:
+SQLite commands and queries are executed through `Statement` objects. `Statement` objects are created by the 
+`Database.prepareStatement()` method:
 
 ```swift
 var error : NSError?
@@ -338,15 +318,8 @@ if statement == nil {
 Preparing a statement compiles and validates the SQL string, but does not execute it. SQLite compiles SQL strings into
 an internal executable representation. Think of `Statement` objects like mini computer programs.
 
-Once prepared, statements are executed through the `Statement.execute(error:)` or `Statement.query(error:)` methods. `Statement` objects are reusable, and are more efficient when reused. See below for details.
-
-Once a `Statement` is no longer needed, it must be closed to release its resources:
-
-```swift
-statement.close()
-```
-
-After closing a `Statement`, it is unusable and should be discarded.
+Once prepared, statements are executed through the `Statement.execute(error:)` or `Statement.query(error:)` methods.
+`Statement` objects are reusable, and are more efficient when reused. See below for details.
 
 ### Use `Statement.execute(:error)` to perform updates
 
@@ -356,7 +329,9 @@ Any SQL statement that is not a `SELECT` should use the `Statement.execute(error
 let executeSucceeded = statement.execute(&error)
 ```
 
-After executing an INSERT statement, the ID of the inserted row can be accessed from the `Database.lastInsertedRowId` property. The number of rows affected by an UPDATE or DELETE statement is accessible from the `Database.numberOfChangedRows` property.
+After executing an INSERT statement, the ID of the inserted row can be accessed from the `Database.lastInsertedRowId`
+property. The number of rows affected by an UPDATE or DELETE statement is accessible from the
+`Database.numberOfChangedRows` property.
 
 ### Iterate a Statement when querying the database
 

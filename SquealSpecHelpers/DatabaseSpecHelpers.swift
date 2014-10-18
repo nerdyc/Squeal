@@ -4,9 +4,15 @@ import Squeal
 public extension Database {
     
     public class func openTemporaryDatabase() -> Database {
-        var database = Database.newTemporaryDatabase()
-        database.open()
-        return database
+        var error : NSErrorPointer = nil
+        let db = Database.newTemporaryDatabase(error: error)
+        if db == nil {
+            NSException(name:       NSInternalInconsistencyException,
+                        reason:     "Error creating temporary database \(error)",
+                        userInfo:   nil).raise()
+        }
+        
+        return db!
     }
     
     public class func createTemporaryDirectory(prefix:String = "Squeal") -> String {
@@ -25,15 +31,6 @@ public extension Database {
         }
         
         return tempDirectoryPath
-    }
-    
-    public func open() {
-        var error : NSError?
-        if !open(&error) {
-            NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to open database: \(error?.localizedDescription)",
-                        userInfo:   nil).raise()
-        }
     }
     
     public func prepareStatement(sqlString:String) -> Statement {

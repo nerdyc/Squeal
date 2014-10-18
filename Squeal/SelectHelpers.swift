@@ -56,7 +56,6 @@ extension Database {
         var statement = prepareStatement(join(" ", fragments), error: error)
         if statement != nil && parameters.count > 0 {
             if false == statement!.bind(parameters, error:error) {
-                statement!.close()
                 statement = nil
             }
         }
@@ -111,9 +110,7 @@ extension Database {
                                              parameters:parameters,
                                              error:     error) {
                 
-            var values = statement.collect(error, collector:collector)
-            statement.close()
-            return values
+            return statement.collect(error, collector:collector)
                 
         } else {
             return nil
@@ -191,7 +188,6 @@ extension Database {
                 break
             }
 
-            statement.close()
             return count
         } else {
             return nil

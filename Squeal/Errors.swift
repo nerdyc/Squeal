@@ -11,18 +11,12 @@ let SquealErrorDomain = "Squeal"
 public enum SquealErrorCode: Int {
     
     case Success = 0
-    case DatabaseClosed
-    case StatementClosed
     case UnknownBindParameter
     
     public var localizedDescription : String {
         switch self {
             case .Success:
                 return "Success"
-            case .DatabaseClosed:
-                return "Database has been closed"
-            case .StatementClosed:
-                return "Statement has been closed"
             case .UnknownBindParameter:
                 return "Unknown parameter to bind"
         }

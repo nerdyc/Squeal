@@ -38,15 +38,11 @@ class DatabasePoolSpec: QuickSpec {
                 }
             }
             
-            it("returns an an open database") {
+            it("returns a database") {
                 expect(database).notTo(beNil())
                 expect(error).to(beNil())
-                
-                if database != nil {
-                    expect(database.isOpen).to(beTruthy())
-                    expect(databasePool.activeDatabaseCount).to(equal(1))
-                    expect(databasePool.inactiveDatabaseCount).to(equal(0))
-                }
+                expect(databasePool.activeDatabaseCount).to(equal(1))
+                expect(databasePool.inactiveDatabaseCount).to(equal(0))
             }
             
             it("returns a new database if a database isn't available") {
@@ -89,12 +85,11 @@ class DatabasePoolSpec: QuickSpec {
                 database = nil
             }
             
-            it("removes the database if it has already been closed") {
-                database!.close(nil)
+            it("returns the database to the queue") {
                 databasePool.enqueueDatabase(database!)
                 
                 expect(databasePool.activeDatabaseCount).to(equal(0))
-                expect(databasePool.inactiveDatabaseCount).to(equal(0))
+                expect(databasePool.inactiveDatabaseCount).to(equal(1))
             }
             
         }
@@ -113,9 +108,8 @@ class DatabasePoolSpec: QuickSpec {
                 database = nil
             }
             
-            it("closes the database and removes it from the pool") {
+            it("removes the database from the pool") {
                 databasePool.removeDatabase(database!)
-                expect(database!.isOpen).to(beFalsy())
                 
                 expect(databasePool.activeDatabaseCount).to(equal(0))
                 expect(databasePool.inactiveDatabaseCount).to(equal(0))

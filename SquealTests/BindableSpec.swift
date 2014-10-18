@@ -11,17 +11,13 @@ class BindableSpec: QuickSpec {
         var error : NSError?
         
         beforeEach {
-            database = Database.newTemporaryDatabase()
-            database.open()
+            database = Database.openTemporaryDatabase()
             database.execute("CREATE TABLE people (personId INTEGER PRIMARY KEY, name TEXT, age REAL, is_adult INTEGER, photo BLOB)")
             database.execute("INSERT INTO people (name, age, is_adult, photo) VALUES (\"Amelia\", 1.5, 0, NULL),(\"Brian\", 43.375, 1, X''),(\"Cara\", NULL, 1, X'696D616765')")
             // 696D616765 is "image" in Hex.
         }
         
         afterEach {
-            if database.isOpen {
-                database.close(nil)
-            }
             statement = nil
             database = nil
             error = nil

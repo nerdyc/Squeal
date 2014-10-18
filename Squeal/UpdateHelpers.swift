@@ -46,7 +46,6 @@ extension Database {
                     numberOfChangedRows = self.numberOfChangedRows
                 }
             }
-            statement.close()
         }
         return numberOfChangedRows
     }

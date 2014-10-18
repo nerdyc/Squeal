@@ -13,9 +13,6 @@ class InsertHelpersSpec: QuickSpec {
         }
         
         afterEach {
-            if database.isOpen {
-                database.close(nil)
-            }
             database = nil
             error = nil
         }

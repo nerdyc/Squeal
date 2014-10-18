@@ -35,7 +35,6 @@ extension Database {
                     rowId = lastInsertedRowId
                 }
             }
-            statement.close()
         }
         return rowId
     }

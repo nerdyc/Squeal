@@ -18,9 +18,6 @@ class SelectHelpersSpec: QuickSpec {
         }
         
         afterEach {
-            if database.isOpen {
-                database.close(nil)
-            }
             database = nil
             error = nil
         }

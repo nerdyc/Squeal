@@ -224,36 +224,33 @@ extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Schema Introspection
     
-    /// The database schema. If the database is closed, or some other error occurs, an empty Schema object is returned.
+    /// The database schema. If an error occurs, an empty Schema object is returned.
     public var schema: Schema {
         var schemaEntries = [SchemaEntry]()
         
-        if isOpen {
-            var error: NSError?
-            if let statement = prepareStatement("SELECT * FROM sqlite_master", error:&error) {
-                rowLoop: while true {
-                    switch statement.next(&error) {
-                    case .Some(true):
-                        let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
-                                                      name:     statement.stringValue("name"),
-                                                      tableName:statement.stringValue("tbl_name"),
-                                                      rootPage: statement.intValue("rootpage"),
-                                                      sql:      statement.stringValue("sql"))
-                        
-                        schemaEntries.append(schemaEntry)
-                        
-                    case .Some(false):
-                        break rowLoop
-                        
-                    default:
-                        NSLog("Error reading database schema: \(error)")
-                        return Schema()
-                    }
+        var error: NSError?
+        if let statement = prepareStatement("SELECT * FROM sqlite_master", error:&error) {
+            rowLoop: while true {
+                switch statement.next(&error) {
+                case .Some(true):
+                    let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
+                                                  name:     statement.stringValue("name"),
+                                                  tableName:statement.stringValue("tbl_name"),
+                                                  rootPage: statement.intValue("rootpage"),
+                                                  sql:      statement.stringValue("sql"))
+                    
+                    schemaEntries.append(schemaEntry)
+                    
+                case .Some(false):
+                    break rowLoop
+                    
+                default:
+                    NSLog("Error reading database schema: \(error)")
+                    return Schema()
                 }
-                statement.close()
-            } else {
-                NSLog("Error preparing statement to read database schema: \(error)")
             }
+        } else {
+            NSLog("Error preparing statement to read database schema: \(error)")
         }
         
         return Schema(schemaEntries: schemaEntries)
@@ -288,7 +285,6 @@ extension Database {
                     return nil
                 }
             }
-            statement.close()
             
             return TableInfo(name: tableName, columns: columns)
         } else {

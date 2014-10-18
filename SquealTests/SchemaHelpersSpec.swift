@@ -10,14 +10,10 @@ class DatabaseSchemaSpec: QuickSpec {
         var error : NSError?
         
         beforeEach {
-            database = Database.newTemporaryDatabase()
-            database.open()
+            database = Database.openTemporaryDatabase()
         }
         
         afterEach {
-            if database.isOpen {
-                database.close(nil)
-            }
             database = nil
             error = nil
         }

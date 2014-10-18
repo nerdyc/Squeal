@@ -39,11 +39,9 @@ public enum ColumnType : Int {
 ///
 public class Statement : NSObject {
     
-    private weak var database : Database?
-    private var sqliteStatement : SQLiteStatementPointer
+    private let sqliteStatement : SQLiteStatementPointer
     
-    init(database:Database, sqliteStatement:SQLiteStatementPointer) {
-        self.database = database
+    init(sqliteStatement:SQLiteStatementPointer) {
         self.sqliteStatement = sqliteStatement
         
         parameterCount = Int(sqlite3_bind_parameter_count(sqliteStatement))
@@ -66,38 +64,10 @@ public class Statement : NSObject {
     }
     
     deinit {
-        if sqliteStatement != nil {
-            sqlite3_finalize(sqliteStatement)
-        }
-    }
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  State
-    
-    private func ensureIsOpen(error:NSErrorPointer) -> Bool {
-        if sqliteStatement == nil {
-            if error != nil {
-                error.memory = SquealErrorCode.StatementClosed.asError()
-            }
-            return false
-        } else {
-            return true
-        }
-    }
-    
-    /// :returns: `true` if the Statement can be executed, `false` if it has been closed and reclaimed.
-    public var isOpen : Bool {
-        return database != nil && sqliteStatement != nil
-    }
-    
-    /// Closes a statement, releasing any resources it retained. Once a Statement is closed, it can no longer be used.
-    public func close() {
-        if database != nil {
-            database?.statementWillClose(self)
-            
-            sqlite3_finalize(sqliteStatement)
-            sqliteStatement = nil
-            database = nil
+        let result = sqlite3_finalize(sqliteStatement)
+        if result != SQLITE_OK {
+            let error = errorFromSQLiteResultCode(result)
+            NSLog("Error closing statement (resultCode: \(result)): \(error.localizedDescription)")
         }
     }
     
@@ -440,10 +410,6 @@ public class Statement : NSObject {
     ///             an error occurred.
     ///
     public func next(error:NSErrorPointer) -> Bool? {
-        if !ensureIsOpen(error) {
-            return nil
-        }
-        
         switch sqlite3_step(sqliteStatement) {
         case SQLITE_DONE:
             // no more steps
@@ -491,10 +457,6 @@ public class Statement : NSObject {
     /// :returns:   `true` if the statement was reset, `false` otherwise.
     ///
     public func reset(error:NSErrorPointer = nil) -> Bool {
-        if !ensureIsOpen(error) {
-            return false
-        }
-        
         var resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
             if error != nil {
