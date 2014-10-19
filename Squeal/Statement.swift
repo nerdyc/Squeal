@@ -614,7 +614,7 @@ public class Statement : NSObject {
     public func valueAtIndex(columnIndex:Int) -> Bindable? {
         switch typeOfColumnAtIndex(columnIndex) {
         case .Integer:
-            return intValueAtIndex(columnIndex)
+            return int64ValueAtIndex(columnIndex)
         case .Text:
             return stringValueAtIndex(columnIndex)
         case .Float:

@@ -63,7 +63,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
-                expect(statement.currentRow["personId"] as? Int).to(equal(1))
+                expect(statement.currentRow["personId"] as? Int64).to(equal(1))
                 expect(statement.currentRow["name"] as? String).to(equal("Amelia"))
                 expect(statement.currentRow["age"] as? Double).to(equal(1.5))
                 expect(statement.currentRow["photo"]).to(beNil())
@@ -81,7 +81,7 @@ class StatementSpec: QuickSpec {
             
             it("returns the value at the index") {
                 expect(statement.next()).to(equal(.Some(true)))
-                expect(statement.valueOfColumnNamed("personId") as? Int).to(equal(1))
+                expect(statement.valueOfColumnNamed("personId") as? Int64).to(equal(1))
                 expect(statement.valueOfColumnNamed("name") as? String).to(equal("Amelia"))
                 expect(statement.valueOfColumnNamed("age") as? Double).to(equal(1.5))
                 expect(statement.valueOfColumnNamed("photo")).to(beNil())
@@ -96,7 +96,7 @@ class StatementSpec: QuickSpec {
             
             it("returns the value at the index") {
                 expect(statement.next()).to(equal(.Some(true)))
-                expect(statement["personId"] as? Int).to(equal(1))
+                expect(statement["personId"] as? Int64).to(equal(1))
                 expect(statement["name"] as? String).to(equal("Amelia"))
                 expect(statement["age"] as? Double).to(equal(1.5))
                 expect(statement["photo"]).to(beNil())
@@ -113,7 +113,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
-                expect(statement.currentRowValues[0] as? Int).to(equal(1))
+                expect(statement.currentRowValues[0] as? Int64).to(equal(1))
                 expect(statement.currentRowValues[1] as? String).to(equal("Amelia"))
                 expect(statement.currentRowValues[2] as? Double).to(equal(1.5))
                 expect(statement.currentRowValues[3]).to(beNil())
@@ -128,7 +128,7 @@ class StatementSpec: QuickSpec {
             
             it("returns the value at the index") {
                 expect(statement.next()).to(equal(.Some(true)))
-                expect(statement.valueAtIndex(0) as? Int).to(equal(1))
+                expect(statement.valueAtIndex(0) as? Int64).to(equal(1))
                 expect(statement.valueAtIndex(1) as? String).to(equal("Amelia"))
                 expect(statement.valueAtIndex(2) as? Double).to(equal(1.5))
                 expect(statement.valueAtIndex(3)).to(beNil())
@@ -143,7 +143,7 @@ class StatementSpec: QuickSpec {
             
             it("returns the value at the index") {
                 expect(statement.next()).to(equal(.Some(true)))
-                expect(statement[0] as? Int).to(equal(1))
+                expect(statement[0] as? Int64).to(equal(1))
                 expect(statement[1] as? String).to(equal("Amelia"))
                 expect(statement[2] as? Double).to(equal(1.5))
                 expect(statement[3]).to(beNil())
