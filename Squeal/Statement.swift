@@ -433,20 +433,13 @@ public class Statement : NSObject {
     /// :returns:   `true` if the statement succeeded, `false` if it failed.
     ///
     public func execute(error:NSErrorPointer = nil) -> Bool {
-        while true {
-            switch next(error: error) {
-            case .Some(true):
-                // more steps
-                continue
-            case .Some(false):
-                // no more steps
-                return true
-            default:
-                // error!
-                reset()
+        for step in self.step(error:error) {
+            if step == nil {
                 return false
             }
         }
+        
+        return true
     }
     
     /// Resets the statement so it can be executed again. Paramters are NOT cleared. To clear them call
@@ -825,66 +818,208 @@ public class Statement : NSObject {
 }
 
 // =====================================================================================================================
-// MARK:-  SequenceType
+// MARK:- Step
 
-extension Statement : SequenceType {
+extension Statement {
+
+    ///
+    /// Resets and executes the Statement, returning a `Statement?` sequence representing each step of the result set.
+    /// If an error occurs while iterating, the last item of the sequence will be `nil`, and an error will be placed in
+    /// the provided error pointer.
+    ///
+    /// Unlike the other `step` methods, this method does not clear any existing parameters, allowing them to be
+    /// reused.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func step(error:NSErrorPointer = nil) -> StepSequence {
+        reset()
+        return StepSequence(statement:self, errorPointer:error, hasError:false)
+    }
     
-    public func generate() -> StatementGenerator {
-        var error : NSError?
-        if reset(error:&error) {
-            return StatementGenerator(statement:self)
+    ///
+    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
+    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
+    /// and an error will be placed in the provided error pointer.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func step(#parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+        clearParameters()
+        if self.bind(parameters, error:error) {
+            return step(error:error)
         } else {
-            return StatementGenerator(statement:self, error:error!)
+            return StepSequence(statement:self, errorPointer:error, hasError:true)
+        }
+    }
+    
+    ///
+    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
+    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
+    /// and an error will be placed in the provided error pointer.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func step(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+        clearParameters()
+        if self.bind(namedParameters:namedParameters, error:error) {
+            return step(error:error)
+        } else {
+            return StepSequence(statement:self, errorPointer:error, hasError:true)
         }
     }
     
 }
 
-public enum Step {
-    case Row
-    case Error(NSError)
+public class StepSequence : SequenceType {
+    
+    private let statement: Statement?
+    private let errorPointer: NSErrorPointer
+    private let hasError: Bool
+    
+    private init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
+        self.statement = statement
+        self.errorPointer = errorPointer
+        self.hasError = hasError
+    }
+    
+    public func generate() -> StepGenerator {
+        return StepGenerator(statement:statement, errorPointer:errorPointer, hasError:hasError)
+    }
+    
 }
 
-public struct StatementGenerator : GeneratorType {
+public struct StepGenerator : GeneratorType {
     
-    private weak var statement: Statement?
+    private let statement: Statement?
+    private let errorPointer: NSErrorPointer
+    private let hasError: Bool
     private var isComplete: Bool = false
-    private var error:NSError?
     
-    init(statement:Statement) {
+    private init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
         self.statement = statement
+        self.errorPointer = errorPointer
+        self.hasError = hasError
     }
     
-    init(statement:Statement, error:NSError) {
-        self.statement = statement
-        self.error = error
-    }
-    
-    public mutating func next() -> Step? {
+    public mutating func next() -> Statement?? {
         if isComplete {
             return nil
         }
         
-        if let error = self.error {
-            self.isComplete = true
-            return Step.Error(error)
+        if hasError {
+            isComplete = true
+            return Statement?.None
         }
         
         if let statement = self.statement {
-            var error : NSError?
-            switch statement.next(error: &error) {
+            switch statement.next(error:self.errorPointer) {
             case .Some(true):
-                return Step.Row
+                return statement
             case .Some(false):
-                self.isComplete = true
+                isComplete = true
                 return nil
             default: // nil
-                self.isComplete = true
-                return Step.Error(error!)
+                isComplete = true
+                return Statement?.None
             }
         } else {
-            self.isComplete = true
+            isComplete = true
             return nil
         }
     }
+}
+
+// =====================================================================================================================
+// MARK:- Query
+
+extension Statement {
+    
+    ///
+    /// Resets and executes the Statement, returning a sequence of `[String:Bindable]?` representing each row of the
+    /// result set. If an error occurs while iterating, `nil` is provided as the last item in the sequence. Otherwise
+    /// the values of the current row are returned.
+    ///
+    /// Unlike the other `query` methods, this method does not clear any existing parameters, allowing them to be
+    /// reused.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func query(error:NSErrorPointer = nil) -> QuerySequence {
+        let stepSequence = self.step(error:error)
+        return QuerySequence(stepSequence)
+    }
+
+    ///
+    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
+    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
+    /// and an error will be placed in the provided error pointer.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func query(#parameters:[Bindable?], error:NSErrorPointer = nil) -> QuerySequence {
+        let stepSequence = self.step(parameters:parameters, error:error)
+        return QuerySequence(stepSequence)
+    }
+
+    ///
+    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
+    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
+    /// and an error will be placed in the provided error pointer.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func query(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> QuerySequence {
+        let stepSequence = self.step(namedParameters:namedParameters, error:error)
+        return QuerySequence(stepSequence)
+    }
+
+}
+
+public class QuerySequence : SequenceType {
+    
+    private let stepSequence:StepSequence
+    
+    init(_ stepSequence:StepSequence) {
+        self.stepSequence = stepSequence
+    }
+    
+    public func generate() -> QueryGenerator {
+        return QueryGenerator(stepSequence.generate())
+    }
+
+}
+
+public struct QueryGenerator : GeneratorType {
+    
+    private var stepGenerator:StepGenerator
+    
+    init(_ stepGenerator:StepGenerator) {
+        self.stepGenerator = stepGenerator
+    }
+    
+    public mutating func next() -> [String:Bindable]?? {
+        if let next = stepGenerator.next() {
+            if let statement = next {
+                return statement.currentRow
+            } else {
+                // error
+                return [String:Bindable]?.None
+            }
+        } else {
+            // end of the sequence
+            return nil
+        }
+    }
+}
+
+// =====================================================================================================================
+// MARK:-  SequenceType
+
+extension Statement : SequenceType {
+    
+    public func generate() -> QueryGenerator {
+        return self.query().generate()
+    }
+    
 }

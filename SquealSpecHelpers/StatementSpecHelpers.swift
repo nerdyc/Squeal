@@ -3,7 +3,7 @@ import Squeal
 
 public extension Statement {
     
-    public func bind(parameters:Bindable?...) {
+    public func bindOrFail(parameters:Bindable?...) {
         var error : NSError? = nil
         let result = self.bind(parameters, error: &error)
         if result == false {

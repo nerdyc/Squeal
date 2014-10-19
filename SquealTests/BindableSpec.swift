@@ -27,7 +27,7 @@ class BindableSpec: QuickSpec {
             
             it("binds String values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS ?")
-                statement.bind("Brian")
+                statement.bindOrFail("Brian")
             
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -37,7 +37,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Int values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(Int(1))
+                statement.bindOrFail(Int(1))
 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -46,7 +46,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Int64 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(Int64(1))
+                statement.bindOrFail(Int64(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -55,7 +55,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Int32 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(Int32(1))
+                statement.bindOrFail(Int32(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -64,7 +64,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Int16 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(Int16(1))
+                statement.bindOrFail(Int16(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -73,7 +73,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Int8 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(Int8(1))
+                statement.bindOrFail(Int8(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -82,7 +82,7 @@ class BindableSpec: QuickSpec {
             
             it("binds UInt64 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(UInt64(1))
+                statement.bindOrFail(UInt64(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -91,7 +91,7 @@ class BindableSpec: QuickSpec {
             
             it("binds UInt32 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(UInt32(1))
+                statement.bindOrFail(UInt32(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -100,7 +100,7 @@ class BindableSpec: QuickSpec {
             
             it("binds UInt16 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(UInt16(1))
+                statement.bindOrFail(UInt16(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -109,7 +109,7 @@ class BindableSpec: QuickSpec {
             
             it("binds UInt8 values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
-                statement.bind(UInt8(1))
+                statement.bindOrFail(UInt8(1))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
@@ -118,7 +118,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Double values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE age > ?")
-                statement.bind(Double(43.374))
+                statement.bindOrFail(Double(43.374))
 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -127,7 +127,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Float values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE age > ?")
-                statement.bind(Float(43.374))
+                statement.bindOrFail(Float(43.374))
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -136,7 +136,7 @@ class BindableSpec: QuickSpec {
             
             it("binds Bool values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE is_adult IS ?")
-                statement.bind(false)
+                statement.bindOrFail(false)
                 
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))

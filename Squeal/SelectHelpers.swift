@@ -178,16 +178,11 @@ extension Database {
                                              parameters:parameters,
                                              error:     error) {
             
-            var count : Int64?
-            switch statement.next(error: error) {
-            case .Some(true):
-                count = statement.int64ValueAtIndex(0)
-            case .Some(false):
-                count = 0
-            default:
+            var count: Int64? = 0
+            for step in statement.step(error:error) {
+                count = step?.int64ValueAtIndex(0)
                 break
             }
-
             return count
         } else {
             return nil

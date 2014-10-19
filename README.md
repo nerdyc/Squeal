@@ -341,22 +341,18 @@ a for loop after preparing a statement:
 ```swift
 var error : NSError?
 if let statement = database.prepareStatement("SELECT name FROM contacts", error:&error) {
-    for result in statement {
-        switch result {
-        case .Row:
-            // process the row
-            var contactName = statement.stringValue("name")
-        case .Error(let e):
-            // handle the error
+    for s in statement.step(error:&error) {
+        if s == nil {
+            // error executing statement
+            return
         }
+
+        // process the row
+        var contactName = statement.stringValue("name")
+        // ...
     }
 }
 ```
-
-This is a convenience interface to `Statement.next(error:)`. As mentioned above, you can think of `Statement` objects as
-mini programs. The `next(error:)` method is like stepping through that program in a debugger. At each step, we call
-`next(error:)` to advance to the next row. A `Bool?` will be returned to indicate whether another row was returned
-(`true`), all data has been consumed (`false`), or an error occured (`nil`).
 
 ### Use parameters in SQL to simplify escaping and avoid injection attacks
 
@@ -371,16 +367,15 @@ var error : NSError?
 if let statement = database.prepareStatement("SELECT * FROM contacts WHERE name = ?",
                                              error:&error) {
     
-    if statement.bindStringParameter("; DELETE FROM contacts", atIndex:1, error:&error) {
-        for result in statement {
-            switch result {
-            case .Row:
-                // process the row
-                var contactName = statement.stringValue("name")
-            case .Error(let e):
-                // handle the error
-            }
+    for step in statement.step(error&error) {
+        if step == nil {
+            // handle the error
+            return
         }
+        
+        // process the row
+        var contactName = statement.stringValue("name")
+        // ...
     }
 }
 ```

@@ -230,24 +230,20 @@ extension Database {
         
         var error: NSError?
         if let statement = prepareStatement("SELECT * FROM sqlite_master", error:&error) {
-            rowLoop: while true {
-                switch statement.next(error: &error) {
-                case .Some(true):
-                    let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
-                                                  name:     statement.stringValue("name"),
-                                                  tableName:statement.stringValue("tbl_name"),
-                                                  rootPage: statement.intValue("rootpage"),
-                                                  sql:      statement.stringValue("sql"))
-                    
-                    schemaEntries.append(schemaEntry)
-                    
-                case .Some(false):
-                    break rowLoop
-                    
-                default:
+            for step in statement.step(error:&error) {
+                if step == nil {
                     NSLog("Error reading database schema: \(error)")
                     return Schema()
                 }
+                
+                let schemaEntry = SchemaEntry(type:     step!.stringValue("type"),
+                                              name:     step!.stringValue("name"),
+                                              tableName:step!.stringValue("tbl_name"),
+                                              rootPage: step!.intValue("rootpage"),
+                                              sql:      step!.stringValue("sql"))
+                
+                schemaEntries.append(schemaEntry)
+                
             }
         } else {
             NSLog("Error preparing statement to read database schema: \(error)")
@@ -267,23 +263,19 @@ extension Database {
         if let statement = prepareStatement(selectSql, error:error) {
             var columns = [ColumnInfo]()
             
-            rowLoop: while true {
-                switch statement.next(error: error) {
-                case .Some(true):
-                    let columnInfo = ColumnInfo(index:          statement.intValue("cid") ?? 0,
-                                                name:           statement.stringValue("name") ?? "",
-                                                type:           statement.stringValue("type"),
-                                                notNull:        statement.boolValue("notnull") ?? false,
-                                                defaultValue:   statement.stringValue("dflt_value"),
-                                                primaryKeyIndex:statement.intValue("pk") ?? 0)
-                    
-                    columns.append(columnInfo)
-                    
-                case .Some(false):
-                    break rowLoop
-                default:
+            for step in statement.step(error:error) {
+                if step == nil {
                     return nil
                 }
+                
+                let columnInfo = ColumnInfo(index:          step!.intValue("cid") ?? 0,
+                                            name:           step!.stringValue("name") ?? "",
+                                            type:           step!.stringValue("type"),
+                                            notNull:        step!.boolValue("notnull") ?? false,
+                                            defaultValue:   step!.stringValue("dflt_value"),
+                                            primaryKeyIndex:step!.intValue("pk") ?? 0)
+                
+                columns.append(columnInfo)
             }
             
             return TableInfo(name: tableName, columns: columns)
@@ -301,18 +293,15 @@ extension Database {
     public func queryUserVersionNumber(error:NSErrorPointer = nil) -> Int32? {
         let userViewSql = "PRAGMA user_version"
         if let statement = prepareStatement(userViewSql, error:error) {
-            switch statement.next(error:error) {
-            case .Some(true):
-                if let intValue = statement.intValueAtIndex(0) {
-                    return Int32(intValue)
-                } else {
-                    return 0
+            var userVersionNumber:Int32 = 0
+            for step in statement.step(error:error) {
+                if step == nil {
+                    return nil
                 }
-            case .Some(false):
-                return 0
-            default:
-                return nil
+                
+                userVersionNumber = Int32(step!.intValueAtIndex(0) ?? 0)
             }
+            return userVersionNumber
         } else {
             return nil
         }

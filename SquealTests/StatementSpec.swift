@@ -151,7 +151,93 @@ class StatementSpec: QuickSpec {
         }
 
         // =============================================================================================================
-        // MARK:- QUERY
+        // MARK:- STEPS
+        
+        describe(".step(error:)") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+            }
+            
+            it("iterates through each step of the statement") {
+                statement.bindOrFail(1)
+                
+                var ids = [RowId]()
+                for s in statement.step(error:&error) {
+                    expect(s).notTo(beNil())
+                    expect(error).to(beNil())
+                    
+                    ids.append(s?.int64ValueAtIndex(0) ?? 0)
+                }
+                expect(ids).to(equal([2, 3]))
+                
+                // now prove that it resets the statement
+                ids.removeAll()
+                for s in statement.step(error:&error) {
+                    expect(s).notTo(beNil())
+                    expect(error).to(beNil())
+                    
+                    ids.append(s?.int64ValueAtIndex(0) ?? 0)
+                }
+                expect(ids).to(equal([2, 3]))
+            }
+        }
+        
+        describe(".step(parameters:error:)") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+            }
+            
+            it("clears parameters and iterates through each step of the statement") {
+                statement.bindOrFail(3) // bind another value to prove the value is cleared
+                
+                var ids = [RowId]()
+                for s in statement.step(parameters:[1], error:&error) {
+                    expect(s).notTo(beNil())
+                    expect(error).to(beNil())
+                    
+                    ids.append(s?.int64ValueAtIndex(0) ?? 0)
+                }
+                expect(ids).to(equal([2, 3]))
+            }
+        }
+        
+        describe(".query(error:)") {
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+            }
+            
+            it("iterates through each row") {
+                var ids = [RowId]()
+                for row in statement.query(parameters:[1], error:&error) {
+                    expect(row).notTo(beNil())
+                    expect(error).to(beNil())
+                    
+                    ids.append(row?["personId"] as RowId)
+                }
+                expect(ids).to(equal([2, 3]))
+            }
+        }
+        
+        describe(".generate()") {
+            
+            beforeEach {
+                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+            }
+            
+            it("is an alias for .query") {
+                statement.bindOrFail(1)
+                
+                var ids = [RowId]()
+                for row in statement {
+                    expect(row).notTo(beNil())
+                    expect(error).to(beNil())
+                    
+                    ids.append(row?["personId"] as RowId)
+                }
+                expect(ids).to(equal([2, 3]))
+            }
+            
+        }
         
         describe("next(error:)") {
             
@@ -199,27 +285,7 @@ class StatementSpec: QuickSpec {
             
         }
         
-        describe(".generate()") {
-            
-            beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age FROM people")
-            }
-            
-            it("allows the statement to be used in for-in loops") {
-                var names = [String]()
-                for step in statement {
-                    switch step {
-                    case .Row:
-                        names.append(statement.stringValue("name")!)
-                    case .Error(let error):
-                        fail("Error while iterating statement: \(error)")
-                    }
-                }
-                
-                expect(names).to(equal(["Amelia", "Brian", "Cara"]))
-            }
-            
-        }
+
         
         // =============================================================================================================
         // MARK:- Parameters
@@ -228,7 +294,7 @@ class StatementSpec: QuickSpec {
             
             beforeEach {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS ?")
-                statement.bind("Brian")
+                statement.bindOrFail("Brian")
                 statement.next()
                 statement.reset()
             }
