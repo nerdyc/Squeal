@@ -12,6 +12,7 @@ while still providing complete access to SQLite's advanced features.
 * Compile and reuse SQL for optimal performance.
 * Simple DatabasePool implementation for concurrent access to a database.
 * No globals.
+* Thoroughly tested with [Quick](https://github.com/Quick/Quick) and [Nimble](https://github.com/Quick/Nimble).
 
 ## Overview
 
