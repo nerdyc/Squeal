@@ -397,7 +397,7 @@ public class Statement : NSObject {
     }
     
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Execute
+    // MARK:  Execute & Query
     
     /// Advances to the next row of results. Statements begin before the first row of data, and iterate through the
     /// results through this method.
@@ -426,6 +426,53 @@ public class Statement : NSObject {
         }
     }
     
+    ///
+    /// Resets and executes the Statement, returning a `Statement?` sequence representing each step of the result set.
+    /// If an error occurs while iterating, the last item of the sequence will be `nil`, and an error will be placed in
+    /// the provided error pointer.
+    ///
+    /// Unlike the other `step` methods, this method does not clear any existing parameters, allowing them to be
+    /// reused.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func query(error:NSErrorPointer = nil) -> StepSequence {
+        reset()
+        return StepSequence(statement:self, errorPointer:error, hasError:false)
+    }
+    
+    ///
+    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
+    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
+    /// and an error will be placed in the provided error pointer.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func query(#parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+        clearParameters()
+        if self.bind(parameters, error:error) {
+            return query(error:error)
+        } else {
+            return StepSequence(statement:self, errorPointer:error, hasError:true)
+        }
+    }
+    
+    ///
+    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
+    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
+    /// and an error will be placed in the provided error pointer.
+    ///
+    /// This method is intended to be used with a for-in loop.
+    ///
+    public func query(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+        clearParameters()
+        if self.bind(namedParameters:namedParameters, error:error) {
+            return query(error:error)
+        } else {
+            return StepSequence(statement:self, errorPointer:error, hasError:true)
+        }
+    }
+    
     /// Executes the statement. This is useful for statements like `INSERT` which return no results.
     ///
     /// :param:     error           An error pointer.
@@ -433,7 +480,7 @@ public class Statement : NSObject {
     /// :returns:   `true` if the statement succeeded, `false` if it failed.
     ///
     public func execute(error:NSErrorPointer = nil) -> Bool {
-        for step in self.step(error:error) {
+        for step in self.query(error:error) {
             if step == nil {
                 return false
             }
@@ -459,51 +506,6 @@ public class Statement : NSObject {
         }
         
         return true
-    }
-    
-    /// Executes a query and collects all rows into an array, ignoring errors.
-    ///
-    /// :param:     collector       A block to process each row, and return a value. The block will be provided the
-    ///                             Statement so it can extract the selected values for each row.
-    ///
-    /// :returns:   An array of the values collected, as returned by the provided block. `[]` will be returned if the
-    ///             statement fails. This means that errors cannot be detected.
-    ///
-    public func collect<T>(collector:(Statement)->(T)) -> [T] {
-        if let values = collect(error: nil, collector:collector) {
-            return values
-        } else {
-            return []
-        }
-    }
-    
-    /// Executes a query and collects all rows into an array. Each row of the result set is processed by invoking the
-    /// provided block.
-    ///
-    /// :param:     error           An error pointer.
-    /// :param:     collector       A block to process each row, and return a value. The block will be provided the
-    ///                             Statement so it can extract the selected values for each row.
-    ///
-    /// :returns:   An array of the values collected, as returned by the provided block. `nil` will be returned if the
-    ///             statement fails.
-    ///
-    public func collect<T>(error:NSErrorPointer = nil, collector:(Statement)->(T)) -> [T]? {
-        var values = [T]()
-        while true {
-            switch next(error: error) {
-            case .Some(true):
-                // more steps
-                var value = collector(self)
-                values.append(value)
-            case .Some(false):
-                // no more steps
-                return values
-            default:
-                // error!
-                reset()
-                return nil
-            }
-        }
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -567,12 +569,12 @@ public class Statement : NSObject {
     }
     
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:- Current Row
+    // MARK: Current Row
     
     /// All values of the current row, as a Dictionary. Only non-nil values are included in the Dictionary. This is so
     /// `currentRow["id"]` returns a `Bindable?` value, instead of `Bindable??`.
     ///
-    public var currentRow: [String:Bindable] {
+    public var dictionaryValue: [String:Bindable] {
         var currentRow = [String:Bindable]()
         for columnIndex in 0..<(columnCount) {
             let columnName = nameOfColumnAtIndex(columnIndex)
@@ -582,7 +584,7 @@ public class Statement : NSObject {
     }
     
     /// All values of the current row in an array.
-    public var currentRowValues: [Bindable?] {
+    public var values: [Bindable?] {
         var currentRowValues = [Bindable?]()
         for columnIndex in 0..<(columnCount) {
             currentRowValues.append(valueAtIndex(columnIndex))
@@ -591,7 +593,7 @@ public class Statement : NSObject {
     }
 
     /// Returns the value of a column by name.
-    public func valueOfColumnNamed(columnName:String) -> Bindable? {
+    public func valueOf(columnName:String) -> Bindable? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return valueAtIndex(columnIndex)
         } else {
@@ -600,7 +602,7 @@ public class Statement : NSObject {
     }
     
     public subscript(columnName:String) -> Bindable? {
-        return valueOfColumnNamed(columnName)
+        return valueOf(columnName)
     }
     
     /// Returns the value of a column based on its index
@@ -818,58 +820,7 @@ public class Statement : NSObject {
 }
 
 // =====================================================================================================================
-// MARK:- Step
-
-extension Statement {
-
-    ///
-    /// Resets and executes the Statement, returning a `Statement?` sequence representing each step of the result set.
-    /// If an error occurs while iterating, the last item of the sequence will be `nil`, and an error will be placed in
-    /// the provided error pointer.
-    ///
-    /// Unlike the other `step` methods, this method does not clear any existing parameters, allowing them to be
-    /// reused.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func step(error:NSErrorPointer = nil) -> StepSequence {
-        reset()
-        return StepSequence(statement:self, errorPointer:error, hasError:false)
-    }
-    
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func step(#parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        clearParameters()
-        if self.bind(parameters, error:error) {
-            return step(error:error)
-        } else {
-            return StepSequence(statement:self, errorPointer:error, hasError:true)
-        }
-    }
-    
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func step(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        clearParameters()
-        if self.bind(namedParameters:namedParameters, error:error) {
-            return step(error:error)
-        } else {
-            return StepSequence(statement:self, errorPointer:error, hasError:true)
-        }
-    }
-    
-}
+// MARK:- SequenceType
 
 public class StepSequence : SequenceType {
     
@@ -877,7 +828,7 @@ public class StepSequence : SequenceType {
     private let errorPointer: NSErrorPointer
     private let hasError: Bool
     
-    private init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
+    init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
         self.statement = statement
         self.errorPointer = errorPointer
         self.hasError = hasError
@@ -913,112 +864,30 @@ public struct StepGenerator : GeneratorType {
         }
         
         if let statement = self.statement {
-            switch statement.next(error:self.errorPointer) {
-            case .Some(true):
-                return statement
+            switch statement.next(error:errorPointer) {
             case .Some(false):
-                isComplete = true
-                return nil
-            default: // nil
+                // no more steps
+                break
+
+            case .Some(true):
+                // more rows to process
+                return statement
+                
+            default:
+                // error
                 isComplete = true
                 return Statement?.None
             }
-        } else {
-            isComplete = true
-            return nil
         }
+        
+        isComplete = true
+        return nil
     }
 }
-
-// =====================================================================================================================
-// MARK:- Query
-
-extension Statement {
-    
-    ///
-    /// Resets and executes the Statement, returning a sequence of `[String:Bindable]?` representing each row of the
-    /// result set. If an error occurs while iterating, `nil` is provided as the last item in the sequence. Otherwise
-    /// the values of the current row are returned.
-    ///
-    /// Unlike the other `query` methods, this method does not clear any existing parameters, allowing them to be
-    /// reused.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(error:NSErrorPointer = nil) -> QuerySequence {
-        let stepSequence = self.step(error:error)
-        return QuerySequence(stepSequence)
-    }
-
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(#parameters:[Bindable?], error:NSErrorPointer = nil) -> QuerySequence {
-        let stepSequence = self.step(parameters:parameters, error:error)
-        return QuerySequence(stepSequence)
-    }
-
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> QuerySequence {
-        let stepSequence = self.step(namedParameters:namedParameters, error:error)
-        return QuerySequence(stepSequence)
-    }
-
-}
-
-public class QuerySequence : SequenceType {
-    
-    private let stepSequence:StepSequence
-    
-    init(_ stepSequence:StepSequence) {
-        self.stepSequence = stepSequence
-    }
-    
-    public func generate() -> QueryGenerator {
-        return QueryGenerator(stepSequence.generate())
-    }
-
-}
-
-public struct QueryGenerator : GeneratorType {
-    
-    private var stepGenerator:StepGenerator
-    
-    init(_ stepGenerator:StepGenerator) {
-        self.stepGenerator = stepGenerator
-    }
-    
-    public mutating func next() -> [String:Bindable]?? {
-        if let next = stepGenerator.next() {
-            if let statement = next {
-                return statement.currentRow
-            } else {
-                // error
-                return [String:Bindable]?.None
-            }
-        } else {
-            // end of the sequence
-            return nil
-        }
-    }
-}
-
-// =====================================================================================================================
-// MARK:-  SequenceType
 
 extension Statement : SequenceType {
     
-    public func generate() -> QueryGenerator {
+    public func generate() -> StepGenerator {
         return self.query().generate()
     }
     

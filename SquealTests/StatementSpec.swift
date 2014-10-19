@@ -33,7 +33,6 @@ class StatementSpec: QuickSpec {
             }
             
             it("describe the selected columns") {
-                expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.columnCount).to(equal(4))
                 expect(statement.columnNames).to(equal(["personId", "name", "age", "photo"]))
                 
@@ -53,7 +52,7 @@ class StatementSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- Current Row
         
-        describe(".currentRow") {
+        describe(".dictionaryValue") {
 
             beforeEach {
                 statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
@@ -63,28 +62,28 @@ class StatementSpec: QuickSpec {
                 expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
-                expect(statement.currentRow["personId"] as? Int64).to(equal(1))
-                expect(statement.currentRow["name"] as? String).to(equal("Amelia"))
-                expect(statement.currentRow["age"] as? Double).to(equal(1.5))
-                expect(statement.currentRow["photo"]).to(beNil())
+                expect(statement.dictionaryValue["personId"] as? Int64).to(equal(1))
+                expect(statement.dictionaryValue["name"] as? String).to(equal("Amelia"))
+                expect(statement.dictionaryValue["age"] as? Double).to(equal(1.5))
+                expect(statement.dictionaryValue["photo"]).to(beNil())
                 
                 // NULL columns aren't included in resulting dictionary
-                expect(sorted(statement.currentRow.keys)).to(equal(["age", "name", "personId"]))
+                expect(sorted(statement.dictionaryValue.keys)).to(equal(["age", "name", "personId"]))
             }
             
         }
         
-        describe(".valueOfColumnNamed()") {
+        describe(".valueOf()") {
             beforeEach {
                 statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
                 expect(statement.next()).to(equal(.Some(true)))
-                expect(statement.valueOfColumnNamed("personId") as? Int64).to(equal(1))
-                expect(statement.valueOfColumnNamed("name") as? String).to(equal("Amelia"))
-                expect(statement.valueOfColumnNamed("age") as? Double).to(equal(1.5))
-                expect(statement.valueOfColumnNamed("photo")).to(beNil())
+                expect(statement.valueOf("personId") as? Int64).to(equal(1))
+                expect(statement.valueOf("name") as? String).to(equal("Amelia"))
+                expect(statement.valueOf("age") as? Double).to(equal(1.5))
+                expect(statement.valueOf("photo")).to(beNil())
             }
             
         }
@@ -103,7 +102,7 @@ class StatementSpec: QuickSpec {
             }
         }
 
-        describe(".currentRowValues") {
+        describe(".values") {
             
             beforeEach {
                 statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
@@ -113,10 +112,10 @@ class StatementSpec: QuickSpec {
                 expect(statement.next()).to(equal(.Some(true)))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
-                expect(statement.currentRowValues[0] as? Int64).to(equal(1))
-                expect(statement.currentRowValues[1] as? String).to(equal("Amelia"))
-                expect(statement.currentRowValues[2] as? Double).to(equal(1.5))
-                expect(statement.currentRowValues[3]).to(beNil())
+                expect(statement.values[0] as? Int64).to(equal(1))
+                expect(statement.values[1] as? String).to(equal("Amelia"))
+                expect(statement.values[2] as? Double).to(equal(1.5))
+                expect(statement.values[3]).to(beNil())
             }
             
         }
@@ -153,16 +152,16 @@ class StatementSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- STEPS
         
-        describe(".step(error:)") {
+        describe(".query(error:)") {
             beforeEach {
                 statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
             }
             
-            it("iterates through each step of the statement") {
+            it("iterates through each row of the statement") {
                 statement.bindOrFail(1)
                 
                 var ids = [RowId]()
-                for s in statement.step(error:&error) {
+                for s in statement.query(error:&error) {
                     expect(s).notTo(beNil())
                     expect(error).to(beNil())
                     
@@ -172,7 +171,7 @@ class StatementSpec: QuickSpec {
                 
                 // now prove that it resets the statement
                 ids.removeAll()
-                for s in statement.step(error:&error) {
+                for s in statement.query(error:&error) {
                     expect(s).notTo(beNil())
                     expect(error).to(beNil())
                     
@@ -182,7 +181,7 @@ class StatementSpec: QuickSpec {
             }
         }
         
-        describe(".step(parameters:error:)") {
+        describe(".query(parameters:error:)") {
             beforeEach {
                 statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
             }
@@ -191,28 +190,11 @@ class StatementSpec: QuickSpec {
                 statement.bindOrFail(3) // bind another value to prove the value is cleared
                 
                 var ids = [RowId]()
-                for s in statement.step(parameters:[1], error:&error) {
+                for s in statement.query(parameters:[1], error:&error) {
                     expect(s).notTo(beNil())
                     expect(error).to(beNil())
                     
                     ids.append(s?.int64ValueAtIndex(0) ?? 0)
-                }
-                expect(ids).to(equal([2, 3]))
-            }
-        }
-        
-        describe(".query(error:)") {
-            beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
-            }
-            
-            it("iterates through each row") {
-                var ids = [RowId]()
-                for row in statement.query(parameters:[1], error:&error) {
-                    expect(row).notTo(beNil())
-                    expect(error).to(beNil())
-                    
-                    ids.append(row?["personId"] as RowId)
                 }
                 expect(ids).to(equal([2, 3]))
             }

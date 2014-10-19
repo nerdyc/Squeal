@@ -34,9 +34,7 @@ class DeleteHelpersSpec: QuickSpec {
             }
             
             it("deletes the matching values in the database") {
-                var values = database.selectFrom("contacts",
-                                                 columns:  ["name"],
-                                                 error:&error) { $0.stringValue("name")! }
+                var values = map(database.selectFrom("contacts")) { $0!["name"] as String }
                 
                 expect(result).to(equal(1))
                 expect(values).to(equal(["Amelia", "Cara"]))
@@ -59,9 +57,7 @@ class DeleteHelpersSpec: QuickSpec {
             }
             
             it("deletes the matching values in the database") {
-                var values = database.selectFrom("contacts",
-                                                 columns:   ["name"],
-                                                 error:     &error) { $0.stringValue("name")! }
+                var values = map(database.selectFrom("contacts")) { $0!["name"] as String }
                 
                 expect(result).to(equal(1))
                 expect(values).to(equal(["Amelia", "Cara"]))

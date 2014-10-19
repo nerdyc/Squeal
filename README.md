@@ -1,13 +1,46 @@
 # Squeal, a Swift interface to SQLite
 
-Squeal allows [SQLite](http://www.sqlite.org/) databases to be created and accessed with [Swift](https://developer.apple.com/swift/). Squeal's goal is to make the most common SQLite tasks easy in Swift, while still providing complete access to SQLite's
-advanced features.
+Squeal allows [SQLite](http://www.sqlite.org/) databases to be created and accessed from 
+[Swift](https://developer.apple.com/swift/) code. Squeal's goal is to make the most common SQLite tasks easy in Swift, 
+while still providing complete access to SQLite's advanced features.
 
-To this end, Squeal provides helpers for executing the most common types of SQLite statements in Swift. Creating tables,
-inserting data, and reading results can all be done with a minimum of boilerplate code.
+### Features
 
-Squeal also provides access to SQLite statement objects, which allow SQL to be pre-compiled and reused for optimal 
-performance.
+* Access any SQLite database, or multiple databases at a time.
+* Easy interface to select rows from a database.
+* Helper methods for most common types of SQL statements.
+* Compile and reuse SQL for optimal performance.
+* Simple DatabasePool implementation for concurrent access to a database.
+* No globals.
+
+## Overview
+
+Using Squeal to create, populate, and select values from a database looks like this:
+
+```swift
+import Squeal
+
+let db = Database(path:"data.sqlite3")!
+
+db.createTable("people",
+               definitions:[
+                   "personId INTEGER PRIMARY KEY",
+                   "name TEXT",
+                   "email TEXT NOT NULL",
+                   "UNIQUE(email)",
+                   "CHECK (name IS NOT NULL OR email IS NOT NULL)"
+               ])
+
+db.insertInto("people", values:["name":"Harry Potter",     "email":"hpotter@hogwarts.edu"])
+db.insertInto("people", values:["name":"Hermione Granger", "email":"hgranger@hogwarts.edu"])
+
+for row in db.selectFrom("people", whereExpr:"name = ?", parameters:["Harry Potter"]) {
+    println(row![0])               // Optional(1)
+    println(row!["name"])          // Optional("Harry Potter")
+    println(row!.dictionaryValue)  // ["name":"Harry Potter", "email":"hpotter@hogwarts.edu"]
+    println(row!.values)           // [Optional(1), Optional("Harry Potter"), Optional("hpotter@hogwarts.edu")]
+}
+```
 
 ## Installation
 
@@ -171,36 +204,40 @@ if let deleteCount = database.deleteFrom("people",
 }
 ```
 
-## Reading Data
+## Querying Data
 
-Data can be read via the
-`Database.selectFrom(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:collector:)` method.
-Most of the method parameters are optional.
+The Database can be queried through the `Database.query(sqlString:parameters:error:)` or
+`Database.selectFrom(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:collector:)` methods.
+The second method is a helper that will compose a SELECT statement from fragments. Most of the method parameters are 
+optional.
 
-The `collector` argument is a closure that will be called for each matching row. The method returns an array of all
-processed rows.
-
-For example, the following code snippet reads `Person` structs from the database:
+For example:
 
 ```swift
-struct Person {
-    let id:Int64?
-    let name:String?
-    let email:String?
+var error:NSError?
+for row in db.query("SELECT * FROM people", error:&error) {
+    if row == nil? {
+        // handle error
+        break
+    }
+    
+    println(row!.dictionaryValue)     // read the whole row as a Dictionary
+    println(row!.values)              // or as an array
+    
+    println(row![0])                  // get the first column's value
+    println(row!["personId"])         // get the 'personId' value
+    
+    println(row!.stringValue("name")) // get the 'name' value
 }
 
-var people = database.selectFrom("people") { (statement:Statement) -> Person in
-    // this block is called to process each row.
-    return Person(id:   statement.int64Value("personId"),
-                  name: statement.stringValue("name"),
-                  email:statement.stringValue("email"))
-}
-if people != nil {
+// equivalent to above
+for row in db.selectFrom("people", error:&error) {
     // ...
-} else {
-    // handle error
 }
 ```
+
+At each loop, a `Statement?` is provided. The `Statement?` will be `nil` if an error occurred, but otherwise provides
+methods to access to the current row. See the `Statement` class for complete details.
 
 ### Counting rows
 
@@ -209,9 +246,8 @@ Rows can be counted with the `Database.countFrom(from:columns:whereExpr:paramete
 
 ```swift
 var error: NSError?
-if let peopleCount = database.countFrom("people", error:&error) {
-    // continue
-} else {
+let peopleCount = database.countFrom("people", error:&error)
+if peopleCount == nil
     // handle error
 }
 ```
@@ -270,19 +306,7 @@ And the equivalents for savepoints are available too:
 * `Database.rollbackSavepoint(savepointName:error:)`
 * `Database.releaseSavepoint(savepointName:error:)`
 
-## Concurrency & Database Pools
-
-SQLite is thread-safe, and the same `Database` object can be safely passed between threads. However, using the same `Database` object concurrently is not, since one thread might commit a transaction while another is updating a row.
-
-Instead, each operation or thread should use its own `Database` object. Squeal provides the `DatabasePool` class to make
-it easy to create and reuse `Database` objects. `DatabasePool` is very simple and does not enforce a bound on the size
-of the pool. As a result, it will not block except to open a newly created database.
-
-Note that SQLite supports multiple concurrent readers, but only a single write operation. Executing multiple writes 
-concurrently is unlikely to improve performance. Refer to the [SQLite](http://www.sqlite.org/wal.html) documentation 
-when deciding how to design concurrency for your app.
-
-## Executing Arbitrary SQLite Statements
+### Executing Arbitrary SQL Statements
 
 The above examples showcased Swift helpers provided by Squeal to execute the most common types of SQL statements. 
 Squeal also provides methods for executing any SQL statement you need to.
@@ -299,168 +323,40 @@ if db.execute("VACUUM", error:&error) {
 }
 ```
 
-Since `Database.execute(sqlString:error:)` simply returns `true` or `false`, it is not appropriate for queries. To execute queries and retrieve data, it's necessary to prepare a `Statement` object.
+Since `Database.execute(sqlString:error:)` simply returns `true` or `false`, it is not appropriate for queries. To execute queries and retrieve data, use the `query` method.
 
-### Prepare `Statement` objects to execute SQL
+### Reusing Statements
 
-SQLite commands and queries are executed through `Statement` objects. `Statement` objects are created by the 
-`Database.prepareStatement()` method:
+If you need to perform the same query many times, you can reuse a `Statement` object and avoid recompiling the same
+SQL each time. To do so, prepare a Statement and then use `Statement.query(parameters:error:)` to execute it each time:
 
 ```swift
-var error : NSError?
-let statement = database.prepareStatement("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)",
-                                          error:&error)
-if statement == nil {
-    // handle error
+let statement = database.prepareStatement("SELECT * FROM contacts WHERE email = ?")!
+for row in statement.query(parameters:["hpotter@hogwarts.edu"]) {
+    ...
 }
 ```
 
-Preparing a statement compiles and validates the SQL string, but does not execute it. SQLite compiles SQL strings into
-an internal executable representation. Think of `Statement` objects like mini computer programs.
-
-Once prepared, statements are executed through the `Statement.execute(error:)` or `Statement.query(error:)` methods.
-`Statement` objects are reusable, and are more efficient when reused. See below for details.
-
-### Use `Statement.execute(:error)` to perform updates
-
-Any SQL statement that is not a `SELECT` should use the `Statement.execute(error:)` method:
+To reuse a non-SELECT statement, use the `Statement.execute(parameters:error:)` method instead:
 
 ```swift
-let executeSucceeded = statement.execute(&error)
+let statement = database.prepareStatement("INSERT INTO contacts (name,email) VALUES (?, ?)")!
+statement.execute(parameters:["Harry Potter", "hpotter@hogwarts.edu"])
 ```
 
-After executing an INSERT statement, the ID of the inserted row can be accessed from the `Database.lastInsertedRowId`
-property. The number of rows affected by an UPDATE or DELETE statement is accessible from the
-`Database.numberOfChangedRows` property.
+## Concurrency & Database Pools
 
-### Iterate a Statement when querying the database
+SQLite is thread-safe, and the same `Database` object can be safely passed between threads. However, using the same `Database` object concurrently is not, since one thread might commit a transaction while another is updating a row.
 
-`SELECT` statements are special because they return data. To execute a query and iterate through the results, just use
-a for loop after preparing a statement:
+Instead, each operation or thread should use its own `Database` object. Squeal provides the `DatabasePool` class to make
+it easy to create and reuse `Database` objects. `DatabasePool` is very simple and does not enforce a bound on the size
+of the pool. As a result, it will not block except to open a newly created database.
 
-```swift
-var error : NSError?
-if let statement = database.prepareStatement("SELECT name FROM contacts", error:&error) {
-    for s in statement.step(error:&error) {
-        if s == nil {
-            // error executing statement
-            return
-        }
+Note that SQLite supports multiple concurrent readers, but only a single write operation. Executing multiple writes 
+concurrently is unlikely to improve performance. Refer to the [SQLite](http://www.sqlite.org/wal.html) documentation 
+when deciding how to design concurrency for your app.
 
-        // process the row
-        var contactName = statement.stringValue("name")
-        // ...
-    }
-}
-```
-
-### Use parameters in SQL to simplify escaping and avoid injection attacks
-
-SQLite supports parameratized SQL statements, like `SELECT * FROM contacts WHERE name = ?`. When compiled into a
-`Statement` object, you can specify the value for the `?` separately by *binding* a value for it. This help to avoid the
-need to escape values when constructing SQL, and allows compiled statements to be reused many times.
-
-For example:
-
-```swift
-var error : NSError?
-if let statement = database.prepareStatement("SELECT * FROM contacts WHERE name = ?",
-                                             error:&error) {
-    
-    for step in statement.step(error&error) {
-        if step == nil {
-            // handle the error
-            return
-        }
-        
-        // process the row
-        var contactName = statement.stringValue("name")
-        // ...
-    }
-}
-```
-
-Note that **parameters are 1-based**. Binding a parameter at index '0' will always fail.
-
-SQLite also supports inserting an indexed parameter multiple times. This is best shown by example: 
-
-```sql
-SELECT * FROM contacts WHERE name = ?1 OR email = ?1
-```
-
-This statement has a single parameter that is inserted multiple times. It will match any contact whose name or email 
-matches the first parameter. 
-
-#### Named Parameters
-
-SQLite supports parameters like `$NAME`, which can make longer queries more comprehensible. For example, this query is
-equivalent to the previous example:
-
-```SQL
-SELECT * FROM contacts WHERE name = $searchString OR email = $searchString
-```
-
-Rather than binding an index, you bind it's name:
-
-```swift
-statement.bindStringParameter("johnny.appleseed@apple.com", named:"$searchString", error:&error)
-```
-
-Note that the `$` character must be included. SQLite also supports named parameters of the form `:NAME` or `@NAME`. See
-the [SQLite documentation](http://www.sqlite.org/lang_expr.html#varparam) for authoritative details.
-
-#### Types that can be bound
-
-SQLite supports TEXT, INTEGER, REAL, BLOB, and NULL values. The Squeal methods to bind these are:
-
-* `Statement.bindStringValue(stringValue:atIndex:error:)`
-* `Statement.bindInt64Value(int64Value:atIndex:error:)`
-* `Statement.bindDoubleValue(doubleValue:atIndex:error:)`
-* `Statement.bindBlobValue(blobValue:atIndex:error:)`
-* `Statement.bindNullValue(atIndex:error:)`
-
-##### `Bindable`
-
-The above methods are the core methods used to bind parameters. Squeal also provides helpers for binding arbitrary 
-types, as well as multiple parameters at once:
-
-* `Statement.bindParameter(name:value:error:)`
-* `Statement.bind(parameters:error:)`
-* `Statement.bind(namedParameters:error:)`
-
-These methods can bind any type that conforms to the `Bindable` protocol. Currently there are `Bindable` implementations
-for these types:
-
-* String
-* Int, Int32, Int64, and all other native integer types
-* Bool
-* Double
-* Float
-* NSData
-
-If you'd like to support binding other types (e.g. NSDate) then you can do so by implementing the `Bindable` protocol,
-and calling one of the core methods listed above.
-
-### Reuse statements for efficiency
-
-`Statement` objects can be re-executed multiple times. If your app executes the same queries many times, this will
-increase performance by reducing the amount of time spent parsing SQL. Different parameters can be set each time a
-statement is executed. 
-
-To reuse a statement, invoke `reset(error:)`:
-
-```swift
-statement.reset(&error)
-```
-
-**Resetting a statement does not clear parameters**. To clear all parameters, invoke `clearParameters()`:
-
-```swift
-statement.reset(&error)
-statement.clearParameters()
-```
-
-### Use Squeal from the command line, or a Playground
+## Use Squeal from the command line, or a Playground
 
 Accessing Squeal from a playground, or the command-line REPL isn't possible right now. Squeal relies on a custom
 module.map to access SQLite from Swift, and this isn't supported in the XCode betas (yet?).

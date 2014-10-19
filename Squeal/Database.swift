@@ -166,28 +166,24 @@ public class Database : NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Query
     
-    ///
-    /// Prepares a SQL statement and binds the given parameters to it.
-    ///
-    /// :param:     sqlString   The SQL query to prepare.
-    /// :param:     parameters  Parameters to bind to the statement.
-    /// :param:     error       An error pointer to set if an error occurs. May be `nil`.
-    /// :returns:               The prepared statement, `nil` otherwise. On error, an NSError object will be
-    ///                         provided via the `error` parameter.
-    ///
-    public func query(sqlString:String, parameters:[Bindable?]? = nil, error:NSErrorPointer = nil) -> Statement? {
+    public func query(sqlString:String, error:NSErrorPointer = nil) -> StepSequence {
+        return query(sqlString, parameters:[], error:error)
+    }
+    
+    public func query(sqlString:String, parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
         if let statement = prepareStatement(sqlString, error:error) {
-            if parameters?.count > 0 {
-                var boundSuccessfully = statement.bind(parameters!, error:error)
-                if !boundSuccessfully {
-                    return nil
-                }
-            }
-            
-            return statement;
+            return statement.query(parameters:parameters, error:error)
         } else {
-            return nil
+            return StepSequence(statement:nil, errorPointer:error, hasError:true)
         }
     }
 
+    public func query(sqlString:String, namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+        if let statement = prepareStatement(sqlString, error:error) {
+            return statement.query(namedParameters:namedParameters, error:error)
+        } else {
+            return StepSequence(statement:nil, errorPointer:error, hasError:true)
+        }
+    }
+    
 }

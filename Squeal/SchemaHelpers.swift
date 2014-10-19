@@ -230,17 +230,17 @@ extension Database {
         
         var error: NSError?
         if let statement = prepareStatement("SELECT * FROM sqlite_master", error:&error) {
-            for step in statement.step(error:&error) {
-                if step == nil {
+            for row in statement.query(error:&error) {
+                if row == nil {
                     NSLog("Error reading database schema: \(error)")
                     return Schema()
                 }
                 
-                let schemaEntry = SchemaEntry(type:     step!.stringValue("type"),
-                                              name:     step!.stringValue("name"),
-                                              tableName:step!.stringValue("tbl_name"),
-                                              rootPage: step!.intValue("rootpage"),
-                                              sql:      step!.stringValue("sql"))
+                let schemaEntry = SchemaEntry(type:     row!.stringValue("type"),
+                                              name:     row!.stringValue("name"),
+                                              tableName:row!.stringValue("tbl_name"),
+                                              rootPage: row!.intValue("rootpage"),
+                                              sql:      row!.stringValue("sql"))
                 
                 schemaEntries.append(schemaEntry)
                 
@@ -263,17 +263,17 @@ extension Database {
         if let statement = prepareStatement(selectSql, error:error) {
             var columns = [ColumnInfo]()
             
-            for step in statement.step(error:error) {
-                if step == nil {
+            for row in statement.query(error:error) {
+                if row == nil {
                     return nil
                 }
                 
-                let columnInfo = ColumnInfo(index:          step!.intValue("cid") ?? 0,
-                                            name:           step!.stringValue("name") ?? "",
-                                            type:           step!.stringValue("type"),
-                                            notNull:        step!.boolValue("notnull") ?? false,
-                                            defaultValue:   step!.stringValue("dflt_value"),
-                                            primaryKeyIndex:step!.intValue("pk") ?? 0)
+                let columnInfo = ColumnInfo(index:          row!.intValue("cid") ?? 0,
+                                            name:           row!.stringValue("name") ?? "",
+                                            type:           row!.stringValue("type"),
+                                            notNull:        row!.boolValue("notnull") ?? false,
+                                            defaultValue:   row!.stringValue("dflt_value"),
+                                            primaryKeyIndex:row!.intValue("pk") ?? 0)
                 
                 columns.append(columnInfo)
             }
@@ -294,12 +294,12 @@ extension Database {
         let userViewSql = "PRAGMA user_version"
         if let statement = prepareStatement(userViewSql, error:error) {
             var userVersionNumber:Int32 = 0
-            for step in statement.step(error:error) {
-                if step == nil {
+            for row in statement.query(error:error) {
+                if row == nil {
                     return nil
                 }
                 
-                userVersionNumber = Int32(step!.intValueAtIndex(0) ?? 0)
+                userVersionNumber = Int32(row!.intValueAtIndex(0) ?? 0)
             }
             return userVersionNumber
         } else {

@@ -44,19 +44,6 @@ public extension Database {
         }
     }
     
-    public func queryOrFail(selectSql:String) -> Statement {
-        var error : NSError? = nil
-        var statement = query(selectSql, error:&error)
-        
-        if statement == nil {
-            NSException(name:       NSInternalInconsistencyException,
-                        reason:     "Failed to query statement (\(selectSql)): \(error?.localizedDescription)",
-                        userInfo:   nil).raise()
-        }
-        
-        return statement!
-    }
-    
     public func dropTable(tableName:String) {
         var error : NSError? = nil
         let result = dropTable(tableName, error:&error)
@@ -77,6 +64,18 @@ public extension Database {
                         userInfo:   nil).raise()
             return 0
         }
+    }
+    
+    public func queryRows(sqlString:String, error:NSErrorPointer = nil) -> [[String:Bindable]]? {
+        var rows = [[String:Bindable]]()
+        for row in self.query(sqlString, error:error) {
+            if row == nil {
+                return nil
+            }
+            
+            rows.append(row!.dictionaryValue)
+        }
+        return rows
     }
     
 }

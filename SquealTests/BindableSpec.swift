@@ -28,7 +28,7 @@ class BindableSpec: QuickSpec {
             it("binds String values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE name IS ?")
                 statement.bindOrFail("Brian")
-            
+                
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Brian"))
                 
@@ -38,7 +38,7 @@ class BindableSpec: QuickSpec {
             it("binds Int values") {
                 statement = database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 statement.bindOrFail(Int(1))
-
+                
                 expect(statement.next()).to(equal(.Some(true)))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
                 expect(statement.next()).to(equal(.Some(false)))

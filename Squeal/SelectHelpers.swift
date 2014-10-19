@@ -87,34 +87,31 @@ extension Database {
     ///
     /// :returns:   An array of all values read, or nil if an error occurs.
     ///
-    public func selectFrom<T>(from:        String,
-                              columns:     [String]? = nil,
-                              whereExpr:   String? = nil,
-                              groupBy:     String? = nil,
-                              having:      String? = nil,
-                              orderBy:     String? = nil,
-                              limit:       Int? = nil,
-                              offset:      Int? = nil,
-                              parameters:  [Bindable?] = [],
-                              error:       NSErrorPointer = nil,
-                              collector:   (Statement)->(T)) -> [T]? {
+    public func selectFrom(from:        String,
+                           columns:     [String]? = nil,
+                           whereExpr:   String? = nil,
+                           groupBy:     String? = nil,
+                           having:      String? = nil,
+                           orderBy:     String? = nil,
+                           limit:       Int? = nil,
+                           offset:      Int? = nil,
+                           parameters:  [Bindable?] = [],
+                           error:       NSErrorPointer = nil) -> StepSequence {
         
-        if let statement = prepareSelectFrom(from,
-                                             columns:   columns,
-                                             whereExpr: whereExpr,
-                                             groupBy:   groupBy,
-                                             having:    having,
-                                             orderBy:   orderBy,
-                                             limit:     limit,
-                                             offset:    offset,
-                                             parameters:parameters,
-                                             error:     error) {
-                
-            return statement.collect(error: error, collector:collector)
-                
-        } else {
-            return nil
+        let statement = prepareSelectFrom(from,
+                                          columns:   columns,
+                                          whereExpr: whereExpr,
+                                          groupBy:   groupBy,
+                                          having:    having,
+                                          orderBy:   orderBy,
+                                          limit:     limit,
+                                          offset:    offset,
+                                          error:     error)
+        if statement == nil {
+            return StepSequence(statement:nil, errorPointer:error, hasError:true)
         }
+
+        return statement!.query(parameters:parameters, error:error)
     }
     
     /// Fetches the IDs of all rows that match the given WHERE clause. This makes use of SQLite's `_ROWID_` alias to
@@ -135,20 +132,28 @@ extension Database {
                                  offset:      Int? = nil,
                                  parameters:  [Bindable?] = [],
                                  error:       NSErrorPointer = nil) -> [RowId]? {
-            
-            return selectFrom(escapeIdentifier(tableName),
-                              columns:      ["_ROWID_"],
-                              whereExpr:    whereExpr,
-                              orderBy:      orderBy,
-                              limit:        limit,
-                              offset:       offset,
-                              parameters:   parameters,
-                              error:        error) {
-                    
-                    return $0.int64ValueAtIndex(0) ?? 0
-                    
+        
+        let statement = prepareSelectFrom(tableName,
+                                          columns:   ["_ROWID_"],
+                                          whereExpr: whereExpr,
+                                          orderBy:   orderBy,
+                                          limit:     limit,
+                                          offset:    offset,
+                                          parameters:parameters,
+                                          error:     error)
+        if statement == nil {
+            return nil
+        }
+        
+        var rowIds = [RowId]()
+        for step in statement!.query(error:error) {
+            if step == nil {
+                return nil
             }
             
+            rowIds.append(statement!.int64ValueAtIndex(0) ?? 0)
+        }
+        return rowIds
     }
 
     // =================================================================================================================
@@ -179,7 +184,7 @@ extension Database {
                                              error:     error) {
             
             var count: Int64? = 0
-            for step in statement.step(error:error) {
+            for step in statement.query(error:error) {
                 count = step?.int64ValueAtIndex(0)
                 break
             }

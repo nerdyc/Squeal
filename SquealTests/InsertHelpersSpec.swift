@@ -33,13 +33,12 @@ class InsertHelpersSpec: QuickSpec {
                 expect(result).to(equal(1))
                 expect(error).to(beNil())
                 
-                let query = database.queryOrFail("SELECT * FROM contacts")
-                expect(query.next()).to(equal(.Some(true)))
+                let contacts = database.queryRows("SELECT * FROM contacts")
+                expect(contacts).notTo(beNil())
+                expect(contacts?.count).to(equal(1))
                 
-                expect(query.intValue("contactId")).to(equal(1))
-                expect(query.stringValue("name")).to(equal("Amelia"))
-
-                expect(query.next()).to(equal(.Some(false)))
+                expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
+                expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
             }
             
         }
@@ -57,13 +56,12 @@ class InsertHelpersSpec: QuickSpec {
                 expect(result).to(equal(1))
                 expect(error).to(beNil())
                 
-                let query = database.queryOrFail("SELECT * FROM contacts")
-                expect(query.next()).to(equal(.Some(true)))
+                let contacts = database.queryRows("SELECT * FROM contacts")
+                expect(contacts).notTo(beNil())
+                expect(contacts?.count).to(equal(1))
                 
-                expect(query.intValue("contactId")).to(equal(1))
-                expect(query.stringValue("name")).to(equal("Amelia"))
-                
-                expect(query.next()).to(equal(.Some(false)))
+                expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
+                expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
             }
             
         }

@@ -27,14 +27,14 @@ class SelectHelpersSpec: QuickSpec {
         
         describe(".selectFrom(from:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:error:") {
             
-            var values : [String?]?
+            var values : [String]?
             
             afterEach { values = nil }
             
             context("when the statement is valid") {
                 
                 beforeEach {
-                    values = database.selectFrom("contacts", error:&error) { $0.stringValue("name") }
+                    values = map(database.selectFrom("contacts")) { $0!["name"] as String }
                 }
                 
                 it("returns the collected values") {
@@ -50,11 +50,10 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement has a where clause") {
                 
                 beforeEach {
-                    values = database.selectFrom("contacts",
-                                                 whereExpr:  "contactId > ?",
-                                                 orderBy:    "name",
-                                                 parameters: [1],
-                                                 error:      &error) { $0.stringValue("name") }
+                    values = map(database.selectFrom("contacts",
+                                                     whereExpr:  "contactId > ?",
+                                                     orderBy:    "name",
+                                                     parameters: [1])) { $0!["name"] as String }
                 }
                 
                 it("returns the collected values") {
@@ -68,13 +67,12 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement is invalid") {
                 
                 beforeEach {
-                    values = database.selectFrom("contacts",
-                                                 whereExpr:   "sdfsdfsf IS NULL",
-                                                 error:       &error)  { $0.stringValue("name")! }
+                    for s in database.selectFrom("contacts", whereExpr: "sdfsdfsf IS NULL", error:&error) {
+                        // skip
+                    }
                 }
                 
                 it("provides an error") {
-                    expect(values).to(beNil())
                     expect(error).notTo(beNil())
                 }
                 
