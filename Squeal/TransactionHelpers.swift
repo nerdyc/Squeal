@@ -1,5 +1,13 @@
 import Foundation
-import sqlite3
+#if os(iOS)
+    #if arch(i386) || arch(x86_64)
+        import sqlite3_ios_simulator
+    #else
+        import sqlite3_ios
+    #endif
+#else
+import sqlite3_osx
+#endif
 
 extension Database {
     

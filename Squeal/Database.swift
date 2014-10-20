@@ -1,8 +1,33 @@
 import Foundation
-import sqlite3
 
+#if os(iOS)
+    #if arch(i386) || arch(x86_64)
+        import sqlite3_ios_simulator
+    #else
+        import sqlite3_ios
+    #endif
+#else
+import sqlite3_osx
+#endif
+    
 public typealias RowId = Int64
 typealias SQLiteDBPointer = COpaquePointer
+
+private func errorFromSQLiteResultCode(database:SQLiteDBPointer) -> NSError {
+    var userInfo: [String:AnyObject]?
+    
+    let resultCode = sqlite3_errcode(database)
+    let errorMsg = sqlite3_errmsg(database)
+    if errorMsg != nil {
+        if let errorString = NSString(UTF8String: errorMsg) {
+            userInfo = [ NSLocalizedDescriptionKey:errorString ]
+        }
+    }
+    
+    return NSError(domain:  SQLiteErrorDomain,
+                   code:    Int(resultCode),
+                   userInfo:userInfo)
+}
 
 // =====================================================================================================================
 // MARK:- Database
@@ -55,7 +80,7 @@ public class Database : NSObject {
         
         if result != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(result)
+                error.memory = errorFromSQLiteResultCode(sqliteDatabase)
             }
             
             return nil
@@ -63,10 +88,9 @@ public class Database : NSObject {
     }
     
     deinit {
-        var result = sqlite3_close_v2(sqliteDatabase)
+        var result = sqlite3_close(sqliteDatabase)
         if result != SQLITE_OK {
-            let error = errorFromSQLiteResultCode(result)
-            NSLog("Error closing database (resultCode: \(result)): \(error.localizedDescription)")
+            NSLog("Error closing database (resultCode: \(result)): \(sqliteError.localizedDescription)")
         }
     }
     
@@ -106,7 +130,7 @@ public class Database : NSObject {
                                             nil)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = errorFromSQLiteResultCode(sqliteDatabase)
             }
             return nil
         }
@@ -130,7 +154,7 @@ public class Database : NSObject {
             return nil
         }
         
-        return Statement(sqliteStatement: sqliteStatement)
+        return Statement(database:self, sqliteStatement: sqliteStatement)
     }
     
     ///
@@ -161,6 +185,10 @@ public class Database : NSObject {
     /// executing an UPDATE or DELETE statement, but undefined at other times.
     public var numberOfChangedRows : Int {
         return Int(sqlite3_changes(self.sqliteDatabase))
+    }
+    
+    var sqliteError:NSError {
+        return errorFromSQLiteResultCode(sqliteDatabase)
     }
     
     // -----------------------------------------------------------------------------------------------------------------

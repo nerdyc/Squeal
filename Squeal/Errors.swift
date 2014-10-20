@@ -1,5 +1,14 @@
 import Foundation
-import sqlite3
+
+#if os(iOS)
+    #if arch(i386) || arch(x86_64)
+        import sqlite3_ios_simulator
+    #else
+        import sqlite3_ios
+    #endif
+#else
+import sqlite3_osx
+#endif
 
 /// Error domain for sqlite errors
 let SQLiteErrorDomain = "sqlite3"
@@ -27,18 +36,4 @@ public enum SquealErrorCode: Int {
                        code:    rawValue,
                        userInfo:[ NSLocalizedDescriptionKey:localizedDescription])
     }
-}
-
-func errorFromSQLiteResultCode(resultCode:Int32) -> NSError {
-    var userInfo: [String:AnyObject]?
-    let errorMsg = sqlite3_errstr(resultCode)
-    if errorMsg != nil {
-        if let errorString = NSString(UTF8String: errorMsg) {
-            userInfo = [ NSLocalizedDescriptionKey:errorString ]
-        }
-    }
-    
-    return NSError(domain:  SQLiteErrorDomain,
-                   code:    Int(resultCode),
-                   userInfo:userInfo)
 }

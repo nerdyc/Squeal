@@ -1,6 +1,13 @@
 import Foundation
-import sqlite3
-
+#if os(iOS)
+    #if arch(i386) || arch(x86_64)
+        import sqlite3_ios_simulator
+    #else
+        import sqlite3_ios
+    #endif
+#else
+import sqlite3_osx
+#endif
 typealias SQLiteStatementPointer = COpaquePointer
 
 ///
@@ -39,9 +46,12 @@ public enum ColumnType : Int {
 ///
 public class Statement : NSObject {
     
-    private let sqliteStatement : SQLiteStatementPointer
+    // We hold a strong reference to the database to ensure it isn't closed before all statements have been finalized.
+    private let database:Database
+    private let sqliteStatement:SQLiteStatementPointer
     
-    init(sqliteStatement:SQLiteStatementPointer) {
+    init(database:Database, sqliteStatement:SQLiteStatementPointer) {
+        self.database = database
         self.sqliteStatement = sqliteStatement
         
         parameterCount = Int(sqlite3_bind_parameter_count(sqliteStatement))
@@ -66,8 +76,7 @@ public class Statement : NSObject {
     deinit {
         let result = sqlite3_finalize(sqliteStatement)
         if result != SQLITE_OK {
-            let error = errorFromSQLiteResultCode(result)
-            NSLog("Error closing statement (resultCode: \(result)): \(error.localizedDescription)")
+            NSLog("Error closing statement (resultCode: \(result)): \(database.sqliteError.localizedDescription)")
         }
     }
     
@@ -125,7 +134,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, transient)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }
@@ -191,7 +200,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }
@@ -234,7 +243,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }
@@ -276,7 +285,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }
@@ -329,7 +338,7 @@ public class Statement : NSObject {
         
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }
@@ -370,7 +379,7 @@ public class Statement : NSObject {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }
@@ -420,7 +429,7 @@ public class Statement : NSObject {
         case let (stepResult):
             // error
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(stepResult)
+                error.memory = database.sqliteError
             }
             return nil
         }
@@ -500,7 +509,7 @@ public class Statement : NSObject {
         var resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
             if error != nil {
-                error.memory = errorFromSQLiteResultCode(resultCode)
+                error.memory = database.sqliteError
             }
             return false
         }

@@ -1,9 +1,18 @@
 import Foundation
 import Quick
 import Nimble
-import sqlite3
 import Squeal
 import SquealSpecHelpers
+
+#if os(iOS)
+    #if arch(i386) || arch(x86_64)
+        import sqlite3_ios_simulator
+    #else
+        import sqlite3_ios
+    #endif
+#else
+import sqlite3_osx
+#endif
 
 class DatabaseSpec: QuickSpec {
     override func spec() {

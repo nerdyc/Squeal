@@ -23,6 +23,19 @@ class StatementSpec: QuickSpec {
             error = nil
         }
         
+        it("retains the database until the statement has been finalized") {
+            statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            weak var db = database
+            
+            // remove the last non-weak external reference to the database; only the statement has retained it.
+            database = nil
+            expect(db).notTo(beNil())
+            
+            // now release the statement, which should release the last hold on the database.
+            statement = nil
+            expect(db).to(beNil())
+        }
+        
         // =============================================================================================================
         // MARK:- Columns
         
