@@ -23,6 +23,9 @@ class StatementSpec: QuickSpec {
             error = nil
         }
         
+#if arch(x86_64) || arch(arm64)
+// this test only works on 64-bit architectures because weak references are cleared immediately on 640bit runtimes, but
+// not on 32-bit. Probably because of tagged pointers?
         it("retains the database until the statement has been finalized") {
             statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
             weak var db = database
@@ -35,6 +38,7 @@ class StatementSpec: QuickSpec {
             statement = nil
             expect(db).to(beNil())
         }
+#endif
         
         // =============================================================================================================
         // MARK:- Columns
