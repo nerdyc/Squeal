@@ -11,6 +11,9 @@ extension Database {
         for columnName in columns {
             fragments.append(columnName)
             fragments.append("= ?")
+            if(columnName != columns.last){
+                fragments.append(",")
+            }
         }
         
         if whereExpr != nil {
