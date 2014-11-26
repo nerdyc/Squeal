@@ -7,15 +7,9 @@ extension Database {
                               whereExpr:   String? = nil,
                               error:       NSErrorPointer = nil) -> Statement? {
         
-        var fragments = ["UPDATE", escapeIdentifier(tableName), "SET"]
-        for columnName in columns {
-            fragments.append(columnName)
-            fragments.append("= ?")
-            if(columnName != columns.last){
-                fragments.append(",")
-            }
-        }
-        
+        let columnsToSet = join(", ", columns.map { escapeIdentifier($0) + " = ?" })
+        var fragments = ["UPDATE", escapeIdentifier(tableName), "SET", columnsToSet]
+                                
         if whereExpr != nil {
             fragments.append("WHERE")
             fragments.append(whereExpr!)
