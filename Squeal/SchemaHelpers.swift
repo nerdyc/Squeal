@@ -33,6 +33,20 @@ public class Schema : NSObject {
     /// The entries in the Schema, each describing a table, index, or other structure.
     public let schemaEntries: [SchemaEntry]
     
+    public subscript(entryName:String) -> SchemaEntry? {
+        return entryNamed(entryName)
+    }
+    
+    /// Returns the entry with the given name -- table, index, or trigger.
+    public func entryNamed(entryName:String) -> SchemaEntry? {
+        for entry in schemaEntries {
+            if entry.name == entryName {
+                return entry
+            }
+        }
+        return nil
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Tables
     
@@ -44,6 +58,16 @@ public class Schema : NSObject {
     /// The names of all tables in the database.
     public var tableNames: [String] {
         return tables.map { $0.name }
+    }
+    
+    /// Returns the entry for a particular table.
+    public func tableNamed(tableName:String) -> SchemaEntry? {
+        for entry in schemaEntries {
+            if entry.isTable && entry.name == tableName {
+                return entry
+            }
+        }
+        return nil
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -175,6 +199,15 @@ public class TableInfo : NSObject {
     /// The names of all columns in the table.
     public var columnNames : [String] {
         return columns.map { $0.name }
+    }
+    
+    public subscript(columnName:String) -> ColumnInfo? {
+        for column in columns {
+            if column.name == columnName {
+                return column
+            }
+        }
+        return nil
     }
     
 }
