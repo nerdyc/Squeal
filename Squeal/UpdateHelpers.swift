@@ -1,6 +1,6 @@
 import Foundation
 
-extension Database {
+public extension Database {
     
     public func prepareUpdate(tableName:   String,
                               columns:     [String],

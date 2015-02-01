@@ -9,7 +9,7 @@ import Foundation
 import sqlite3_osx
 #endif
 
-extension Database {
+public extension Database {
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Transactions
