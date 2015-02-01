@@ -50,7 +50,7 @@ for row in db.selectFrom("people", whereExpr:"name = ?", parameters:["Harry Pott
     ```bash
     cd ~/SwiftProject
     mkdir Externals
-    git clone git@github.com:nerdyc/Squeal.git Externals/Squeal
+    git clone https://github.com/nerdyc/Squeal.git Externals/Squeal
     ```
 
 2.  Add `Squeal.xcodeproj` to your project by selecting the 'Add files to ...' item in the 'File' menu.
