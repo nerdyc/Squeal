@@ -45,7 +45,7 @@ extension Database {
         
         if limit != nil {
             fragments.append("LIMIT")
-            fragments.append("\(limit)")
+            fragments.append("\(limit!)")
             
             if offset != nil {
                 fragments.append("OFFSET")

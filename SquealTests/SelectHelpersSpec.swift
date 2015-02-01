@@ -63,6 +63,25 @@ class SelectHelpersSpec: QuickSpec {
                 }
                 
             }
+
+            context("when the statement has a limit and offset") {
+                
+                beforeEach {
+                    values = map(database.selectFrom("contacts",
+                                                     whereExpr:  "contactId > ?",
+                                                     orderBy:    "name",
+                                                     limit:      1,
+                                                     offset:     1,
+                                                     parameters: [1])) { $0!["name"] as String }
+                }
+                
+                it("returns the collected values") {
+                    expect(values?[0]).to(equal("Cara"))
+                    expect(values?.count).to(equal(1))
+                    expect(error).to(beNil())
+                }
+                
+            }
             
             context("when the statement is invalid") {
                 
