@@ -1,6 +1,6 @@
 import Foundation
 
-extension Database {
+public extension Database {
     
     public func prepareSelectFrom(from:        String,
                                   columns:     [String]? = nil,

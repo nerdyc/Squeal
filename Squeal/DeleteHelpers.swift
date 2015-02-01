@@ -1,6 +1,6 @@
 import Foundation
 
-extension Database {
+public extension Database {
     
     public func prepareDeleteFrom(tableName:   String,
                                   whereExpr:   String? = nil,

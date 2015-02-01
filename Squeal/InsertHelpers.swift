@@ -1,6 +1,6 @@
 import Foundation
 
-extension Database {
+public extension Database {
     
     public func prepareInsertInto(tableName:String, columns:[String], error:NSErrorPointer = nil) -> Statement? {
         var sqlFragments = ["INSERT INTO"]

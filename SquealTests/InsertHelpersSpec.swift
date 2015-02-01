@@ -17,7 +17,7 @@ class InsertHelpersSpec: QuickSpec {
             error = nil
         }
         
-        describe(".insertInto(tableName:columns:values:error:") {
+        describe(".insertInto(tableName:columns:values:error:)") {
             
             var result : Int64?
             
