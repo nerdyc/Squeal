@@ -46,22 +46,50 @@ class InsertHelpersSpec: QuickSpec {
         describe(".insertInto(tableName:values:error:") {
             
             var result : Int64?
-            
+
             beforeEach {
-                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                result = database.insertInto("contacts", values:["name":"Amelia"], error:&error)
+                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, title TEXT)")
+            }
+
+            describe("when all values are non-nil") {
+            
+                beforeEach {
+                    result = database.insertInto("contacts", values:["name":"Amelia"], error:&error)
+                }
+                
+                it("inserts the row into the table, and returns its row id") {
+                    expect(result).to(equal(1))
+                    expect(error).to(beNil())
+                    
+                    let contacts = database.queryRows("SELECT * FROM contacts")
+                    expect(contacts).notTo(beNil())
+                    expect(contacts?.count).to(equal(1))
+                    
+                    expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
+                    expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
+                }
+            
             }
             
-            it("inserts the row into the table, and returns its row id") {
-                expect(result).to(equal(1))
-                expect(error).to(beNil())
+            describe("when a value is nil") {
                 
-                let contacts = database.queryRows("SELECT * FROM contacts")
-                expect(contacts).notTo(beNil())
-                expect(contacts?.count).to(equal(1))
+                beforeEach {
+                    result = database.insertInto("contacts", values:["title": nil, "name":"Amelia"], error:&error)
+                }
                 
-                expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
-                expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
+                it("inserts the row into the table, and returns its row id") {
+                    expect(result).to(equal(1))
+                    expect(error).to(beNil())
+                    
+                    let contacts = database.queryRows("SELECT * FROM contacts")
+                    expect(contacts).notTo(beNil())
+                    expect(contacts?.count).to(equal(1))
+                    
+                    expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
+                    expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
+                    expect(contacts?.first?["title"] as? String).to(beNil())
+                }
+
             }
             
         }

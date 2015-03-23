@@ -39,7 +39,9 @@ extension Statement {
                     return false
                 }
             } else {
-                return bindNullParameter(atIndex:bindIndex, error: error)
+                if !bindNullParameter(atIndex:bindIndex, error: error) {
+                    return false
+                }
             }
             
         }
@@ -80,7 +82,9 @@ extension Statement {
                     return false
                 }
             } else {
-                return bindNullParameter(atIndex:bindIndex, error: error)
+                if !bindNullParameter(atIndex:bindIndex, error: error) {
+                    return false
+                }
             }
         }
         
