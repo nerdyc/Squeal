@@ -62,7 +62,7 @@ public class Statement : NSObject {
             let columnName = sqlite3_column_name(sqliteStatement, columnIndex)
             if columnName != nil {
                 if let columnNameString = NSString(UTF8String: columnName) {
-                    columnNames.append(columnNameString)
+                    columnNames.append(columnNameString as String)
                     continue
                 }
             }
@@ -764,7 +764,7 @@ public class Statement : NSObject {
         }
         
         let columnTextI = UnsafePointer<Int8>(columnText)
-        return NSString(UTF8String:columnTextI)
+        return NSString(UTF8String:columnTextI) as String?
     }
     
     // -----------------------------------------------------------------------------------------------------------------
