@@ -35,10 +35,10 @@ class UpdateHelpersSpec: QuickSpec {
             }
             
             it("updates the values in the database") {
-                var names = map(database.selectFrom("contacts", error:&error)) { $0!["name"] as String }
+                var names = map(database.selectFrom("contacts", error:&error)) { $0!["name"] as! String }
                 expect(error).to(beNil())
                 
-                var emails = map(database.selectFrom("contacts", error:&error)) { $0!["email"] as String }
+                var emails = map(database.selectFrom("contacts", error:&error)) { $0!["email"] as! String }
                 expect(error).to(beNil())
                 
                 expect(names).to(equal(["Amelia", "Bobby", "Cara"]))
@@ -59,7 +59,7 @@ class UpdateHelpersSpec: QuickSpec {
             it("updates the values in the database") {
                 var values = map(database.selectFrom("contacts",
                                                      orderBy:"_ROWID_",
-                                                     error:  &error)) { $0!["name"] as String }
+                                                     error:  &error)) { $0!["name"] as! String }
                 
                 expect(result).to(equal(2))
                 expect(values).to(equal(["Bobby", "Brian", "Bobby"]))

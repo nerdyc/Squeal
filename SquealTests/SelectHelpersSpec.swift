@@ -34,7 +34,7 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement is valid") {
                 
                 beforeEach {
-                    values = map(database.selectFrom("contacts")) { $0!["name"] as String }
+                    values = map(database.selectFrom("contacts")) { $0!["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -53,7 +53,7 @@ class SelectHelpersSpec: QuickSpec {
                     values = map(database.selectFrom("contacts",
                                                      whereExpr:  "contactId > ?",
                                                      orderBy:    "name",
-                                                     parameters: [1])) { $0!["name"] as String }
+                                                     parameters: [1])) { $0!["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -72,7 +72,7 @@ class SelectHelpersSpec: QuickSpec {
                                                      orderBy:    "name",
                                                      limit:      1,
                                                      offset:     1,
-                                                     parameters: [1])) { $0!["name"] as String }
+                                                     parameters: [1])) { $0!["name"] as! String }
                 }
                 
                 it("returns the collected values") {

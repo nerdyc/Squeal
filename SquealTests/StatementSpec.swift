@@ -231,7 +231,7 @@ class StatementSpec: QuickSpec {
                     expect(row).notTo(beNil())
                     expect(error).to(beNil())
                     
-                    ids.append(row?["personId"] as RowId)
+                    ids.append(row?["personId"] as! RowId)
                 }
                 expect(ids).to(equal([2, 3]))
             }
