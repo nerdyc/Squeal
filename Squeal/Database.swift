@@ -47,13 +47,13 @@ public class Database : NSObject {
     // MARK:  Initialization
     
     /// :returns: A Database whose contents are stored in-memory, and discarded when the Database is released.
-    public class func newInMemoryDatabase(error:NSErrorPointer = nil) -> Database? {
+    public class func newInMemoryDatabase(error error:NSErrorPointer = nil) -> Database? {
         return Database(error:error)
     }
         
     /// :returns: A Database whose contents are stored in a temporary location on disk, and discarded when the Database
     ///           is no longer used.
-    public class func newTemporaryDatabase(error:NSErrorPointer = nil) -> Database? {
+    public class func newTemporaryDatabase(error error:NSErrorPointer = nil) -> Database? {
         return Database(path:"", error:error)
     }
     
@@ -70,7 +70,7 @@ public class Database : NSObject {
         self.path = path
         
         var sqliteDatabase : SQLiteDBPointer = nil
-        var result = sqlite3_open_v2(path.cStringUsingEncoding(NSUTF8StringEncoding)!,
+        let result = sqlite3_open_v2(path.cStringUsingEncoding(NSUTF8StringEncoding)!,
                                      &sqliteDatabase,
                                      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
                                      nil)
@@ -88,7 +88,7 @@ public class Database : NSObject {
     }
     
     deinit {
-        var result = sqlite3_close(sqliteDatabase)
+        let result = sqlite3_close(sqliteDatabase)
         if result != SQLITE_OK {
             NSLog("Error closing database (resultCode: \(result)): \(sqliteError.localizedDescription)")
         }
@@ -120,10 +120,10 @@ public class Database : NSObject {
     // MARK:  Statements
     
     private func prepareSQLiteStatement(sqlString:String, error:NSErrorPointer) -> SQLiteStatementPointer {
-        var cString = sqlString.cStringUsingEncoding(NSUTF8StringEncoding)
+        let cString = sqlString.cStringUsingEncoding(NSUTF8StringEncoding)
         var sqliteStatement : SQLiteStatementPointer = nil
         
-        var resultCode = sqlite3_prepare_v2(sqliteDatabase,
+        let resultCode = sqlite3_prepare_v2(sqliteDatabase,
                                             cString!,
                                             -1,
                                             &sqliteStatement,

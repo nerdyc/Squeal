@@ -4,8 +4,8 @@ import Squeal
 public extension Database {
     
     public class func openTemporaryDatabase() -> Database {
-        var error : NSErrorPointer = nil
-        let db = Database.newTemporaryDatabase(error: error)
+        var error:NSError? = nil
+        let db = Database.newTemporaryDatabase(error: &error)
         if db == nil {
             NSException(name:       NSInternalInconsistencyException,
                         reason:     "Error creating temporary database \(error)",
@@ -19,12 +19,11 @@ public extension Database {
         let suffix = NSUUID().UUIDString
         let tempDirectoryPath = NSTemporaryDirectory().stringByAppendingPathComponent(prefix + "-" + suffix)
         
-        var error : NSError?
-        var success = NSFileManager.defaultManager().createDirectoryAtPath(tempDirectoryPath,
-                                                                           withIntermediateDirectories: true,
-                                                                           attributes:                  nil,
-                                                                           error:                       &error)
-        if !success {
+        do {
+            try NSFileManager.defaultManager().createDirectoryAtPath(tempDirectoryPath,
+                                                                     withIntermediateDirectories: true,
+                                                                     attributes:                  nil)
+        } catch {
             NSException(name:       NSInternalInconsistencyException,
                         reason:     "Error creating temporary directory \(error)",
                         userInfo:   nil).raise()
@@ -35,7 +34,7 @@ public extension Database {
     
     public func executeOrFail(statement:String) {
         var error : NSError?
-        var succeeded = execute(statement, error:&error)
+        let succeeded = execute(statement, error:&error)
         
         if !succeeded {
             NSException(name:       NSInternalInconsistencyException,

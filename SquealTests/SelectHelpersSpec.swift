@@ -34,7 +34,7 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement is valid") {
                 
                 beforeEach {
-                    values = map(database.selectFrom("contacts")) { $0!["name"] as! String }
+                    values = database.selectFrom("contacts").map { $0!["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -50,10 +50,10 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement has a where clause") {
                 
                 beforeEach {
-                    values = map(database.selectFrom("contacts",
-                                                     whereExpr:  "contactId > ?",
-                                                     orderBy:    "name",
-                                                     parameters: [1])) { $0!["name"] as! String }
+                    values = database.selectFrom("contacts",
+                                                 whereExpr:  "contactId > ?",
+                                                 orderBy:    "name",
+                                                 parameters: [1]).map { $0!["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -67,12 +67,12 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement has a limit and offset") {
                 
                 beforeEach {
-                    values = map(database.selectFrom("contacts",
-                                                     whereExpr:  "contactId > ?",
-                                                     orderBy:    "name",
-                                                     limit:      1,
-                                                     offset:     1,
-                                                     parameters: [1])) { $0!["name"] as! String }
+                    values = database.selectFrom("contacts",
+                                                 whereExpr:  "contactId > ?",
+                                                 orderBy:    "name",
+                                                 limit:      1,
+                                                 offset:     1,
+                                                 parameters: [1]).map { $0!["name"] as! String }
                 }
                 
                 it("returns the collected values") {

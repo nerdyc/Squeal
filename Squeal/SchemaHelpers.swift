@@ -2,7 +2,7 @@ import Foundation
 
 /// Escapes a SQL string. For example, escaping `it's it` will produce `'it''s it'`.
 public func escapeIdentifier(identifier:String) -> String {
-    var escapedString = identifier.stringByReplacingOccurrencesOfString("'",
+    let escapedString = identifier.stringByReplacingOccurrencesOfString("'",
                                                                         withString: "''",
                                                                         options:    .LiteralSearch,
                                                                         range:      nil)
@@ -374,10 +374,10 @@ public extension Database {
         }
         createTableSql.append(escapeIdentifier(tableName))
         createTableSql.append("(")
-        createTableSql.append(join(",", definitions))
+        createTableSql.append(",".join(definitions))
         createTableSql.append(")")
                                 
-        return execute(join(" ", createTableSql),
+        return execute(" ".join(createTableSql),
                        error: error)
     }
 
@@ -471,10 +471,10 @@ public extension Database {
         createIndexSql.append("ON")
         createIndexSql.append(escapeIdentifier(tableName))
         createIndexSql.append("(")
-        createIndexSql.append(join(", ", columns))
+        createIndexSql.append(", ".join(columns))
         createIndexSql.append(")")
         
-        return execute(join(" ", createIndexSql), error: error)
+        return execute(" ".join(createIndexSql), error: error)
     }
     
     // -----------------------------------------------------------------------------------------------------------------

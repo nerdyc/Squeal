@@ -12,7 +12,7 @@ public extension Database {
             fragments.append(whereExpr!)
         }
 
-        return prepareStatement(join(" ", fragments), error: error)
+        return prepareStatement(" ".join(fragments), error: error)
     }
 
     /// Deletes table rows. This is a helper for executing an DELETE FROM ... WHERE statement.
@@ -57,7 +57,7 @@ public extension Database {
         
         let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
         
-        let whereExpr = "_ROWID_ IN (" + join(",", rowIds.map { _ -> String in "?" }) + ")"
+        let whereExpr = "_ROWID_ IN (" + ",".join(rowIds.map { _ -> String in "?" }) + ")"
         return deleteFrom(tableName, whereExpr: whereExpr, parameters: parameters, error: error)
     }
 }

@@ -85,7 +85,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.dictionaryValue["photo"]).to(beNil())
                 
                 // NULL columns aren't included in resulting dictionary
-                expect(sorted(statement.dictionaryValue.keys)).to(equal(["age", "name", "personId"]))
+                expect(statement.dictionaryValue.keys.sort()).to(equal(["age", "name", "personId"]))
             }
             
         }

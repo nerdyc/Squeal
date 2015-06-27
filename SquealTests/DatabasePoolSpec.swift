@@ -10,7 +10,7 @@ class DatabasePoolSpec: QuickSpec {
         var error : NSError?
         
         beforeEach {
-            var tempPath = Database.createTemporaryDirectory()
+            let tempPath = Database.createTemporaryDirectory()
             databasePool = DatabasePool(databasePath: tempPath.stringByAppendingPathComponent("DatabasePoolSpec"))
         }
         

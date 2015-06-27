@@ -15,7 +15,7 @@ public extension Database {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
-            fragments.append(join(",", columns!))
+            fragments.append(",".join(columns!))
         } else {
             fragments.append("*")
         }
@@ -53,7 +53,7 @@ public extension Database {
             }
         }
         
-        var statement = prepareStatement(join(" ", fragments), error: error)
+        var statement = prepareStatement(" ".join(fragments), error: error)
         if statement != nil && parameters.count > 0 {
             if false == statement!.bind(parameters, error:error) {
                 statement = nil
@@ -146,7 +146,7 @@ public extension Database {
         }
         
         var rowIds = [RowId]()
-        for step in statement!.query(error:error) {
+        for step in statement!.query(error: error) {
             if step == nil {
                 return nil
             }
@@ -176,7 +176,7 @@ public extension Database {
                           parameters:  [Bindable?] = [],
                           error:       NSErrorPointer = nil) -> Int64? {
 
-        let countExpr = "count(" + join(",", columns ?? ["*"]) + ")"
+        let countExpr = "count(" + ",".join(columns ?? ["*"]) + ")"
         if let statement = prepareSelectFrom(from,
                                              columns:   [countExpr],
                                              whereExpr: whereExpr,
@@ -184,7 +184,7 @@ public extension Database {
                                              error:     error) {
             
             var count: Int64? = 0
-            for step in statement.query(error:error) {
+            for step in statement.query(error: error) {
                 count = step?.int64ValueAtIndex(0)
                 break
             }

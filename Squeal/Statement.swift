@@ -57,7 +57,7 @@ public class Statement : NSObject {
         parameterCount = Int(sqlite3_bind_parameter_count(sqliteStatement))
         
         var columnNames = [String]()
-        var columnCount = sqlite3_column_count(sqliteStatement)
+        let columnCount = sqlite3_column_count(sqliteStatement)
         for columnIndex in 0..<columnCount {
             let columnName = sqlite3_column_name(sqliteStatement, columnIndex)
             if columnName != nil {
@@ -127,11 +127,7 @@ public class Statement : NSObject {
     public func bindStringValue(stringValue:String, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
         let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
         
-        let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
-        let opaquePointer = COpaquePointer(negativeOne)
-        let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
-        
-        let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, transient)
+        let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, SQUEAL_TRANSIENT)
         if resultCode != SQLITE_OK {
             if error != nil {
                 error.memory = database.sqliteError
@@ -325,13 +321,9 @@ public class Statement : NSObject {
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
     public func bindBlobValue(blobValue:NSData, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
-        let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
-        let opaquePointer = COpaquePointer(negativeOne)
-        let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
-        
         var resultCode: Int32
         if blobValue.bytes != nil {
-            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), blobValue.bytes, Int32(blobValue.length), transient)
+            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), blobValue.bytes, Int32(blobValue.length), SQUEAL_TRANSIENT)
         } else {
             resultCode = sqlite3_bind_zeroblob(sqliteStatement, Int32(index), 0);
         }
@@ -426,7 +418,7 @@ public class Statement : NSObject {
         case SQLITE_ROW:
             // more rows to process
             return true
-        case let (stepResult):
+        default:
             // error
             if error != nil {
                 error.memory = database.sqliteError
@@ -445,7 +437,7 @@ public class Statement : NSObject {
     ///
     /// This method is intended to be used with a for-in loop.
     ///
-    public func query(error:NSErrorPointer = nil) -> StepSequence {
+    public func query(error error:NSErrorPointer = nil) -> StepSequence {
         reset()
         return StepSequence(statement:self, errorPointer:error, hasError:false)
     }
@@ -457,7 +449,7 @@ public class Statement : NSObject {
     ///
     /// This method is intended to be used with a for-in loop.
     ///
-    public func query(#parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+    public func query(parameters parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
         clearParameters()
         if self.bind(parameters, error:error) {
             return query(error:error)
@@ -473,7 +465,7 @@ public class Statement : NSObject {
     ///
     /// This method is intended to be used with a for-in loop.
     ///
-    public func query(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
+    public func query(namedParameters namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
         clearParameters()
         if self.bind(namedParameters:namedParameters, error:error) {
             return query(error:error)
@@ -488,7 +480,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the statement succeeded, `false` if it failed.
     ///
-    public func execute(error:NSErrorPointer = nil) -> Bool {
+    public func execute(error error:NSErrorPointer = nil) -> Bool {
         for step in self.query(error:error) {
             if step == nil {
                 return false
@@ -505,8 +497,8 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the statement was reset, `false` otherwise.
     ///
-    public func reset(error:NSErrorPointer = nil) -> Bool {
-        var resultCode = sqlite3_reset(sqliteStatement)
+    public func reset(error error:NSErrorPointer = nil) -> Bool {
+        let resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
             if error != nil {
                 error.memory = database.sqliteError
@@ -538,7 +530,7 @@ public class Statement : NSObject {
     /// :returns:   The index of the column, or nil if it wasn't found.
     ///
     public func indexOfColumnNamed(columnName:String) -> Int? {
-        return find(columnNames, columnName)
+        return columnNames.indexOf(columnName)
     }
     
     public func nameOfColumnAtIndex(columnIndex:Int) -> String {
@@ -873,7 +865,7 @@ public struct StepGenerator : GeneratorType {
         }
         
         if let statement = self.statement {
-            switch statement.next(error:errorPointer) {
+            switch statement.next(errorPointer) {
             case .Some(false):
                 // no more steps
                 break

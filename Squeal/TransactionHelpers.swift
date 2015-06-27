@@ -67,7 +67,7 @@ public extension Database {
     ///
     public func transaction(block:(db:Database)->TransactionResult) -> TransactionResult {
         var localError : NSError?
-        var didBegin = beginTransaction(error: &localError)
+        let didBegin = beginTransaction(&localError)
         if !didBegin {
             return .Failed(localError!)
         }
@@ -75,19 +75,19 @@ public extension Database {
         let result = block(db: self)
         switch result {
         case .Commit:
-            var didCommit = commit(error: &localError)
+            let didCommit = commit(&localError)
             if !didCommit {
                 return .Failed(localError!)
             }
         
         case .Rollback:
-            var didRollback = rollback(error: &localError)
+            let didRollback = rollback(&localError)
             if !didRollback {
                 return .Failed(localError!)
             }
         case .Failed:
             // Attempt a rollback but preserve the original error
-            rollback(error: nil)
+            rollback(nil)
             break
         }
         
@@ -144,7 +144,7 @@ public extension Database {
     ///
     public func savepoint(name:String, block:(db:Database)->TransactionResult) -> TransactionResult {
         var localError : NSError?
-        var didBegin = beginSavepoint(name, error: &localError)
+        let didBegin = beginSavepoint(name, error: &localError)
         if !didBegin {
             return .Failed(localError!)
         }
@@ -152,12 +152,12 @@ public extension Database {
         let result = block(db: self)
         switch result {
         case .Commit:
-            var didCommit = releaseSavepoint(name, error: &localError)
+            let didCommit = releaseSavepoint(name, error: &localError)
             if !didCommit {
                 return .Failed(localError!)
             }
         case .Rollback:
-            var didRollback = rollbackSavepoint(name, error: &localError)
+            let didRollback = rollbackSavepoint(name, error: &localError)
             if !didRollback {
                 return .Failed(localError!)
             }

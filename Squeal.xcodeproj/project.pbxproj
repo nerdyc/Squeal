@@ -73,6 +73,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6249AD1C1B3F1402002253EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7FC49A1A197EE500E73C0A /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5663E81A4C8D8500193C88;
+			remoteInfo = "QuickFocused-OSXTests";
+		};
+		6249AD1E1B3F1402002253EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7FC49A1A197EE500E73C0A /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA9876B21A4C70EB0004AA17;
+			remoteInfo = "QuickFocused-iOSTests";
+		};
 		CD61584819BCD74000E63F56 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CD7247EE1996880300151E1E /* Project object */;
@@ -402,7 +416,7 @@
 				CD72482D1996A5AB00151E1E /* Nimble.framework */,
 				CD72482F1996A5AB00151E1E /* NimbleTests.xctest */,
 				CD7248311996A5AB00151E1E /* Nimble.framework */,
-				CD7248331996A5AB00151E1E /* Nimble-OSXTests.xctest */,
+				CD7248331996A5AB00151E1E /* NimbleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -412,8 +426,10 @@
 			children = (
 				CD7FC4A31A197EE500E73C0A /* Quick.framework */,
 				CD7FC4A51A197EE500E73C0A /* Quick-OSXTests.xctest */,
+				6249AD1D1B3F1402002253EF /* QuickFocused-OSXTests.xctest */,
 				CD7FC4A71A197EE500E73C0A /* Quick.framework */,
 				CD7FC4A91A197EE500E73C0A /* Quick-iOSTests.xctest */,
+				6249AD1F1B3F1402002253EF /* QuickFocused-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -649,6 +665,7 @@
 		CD7247EE1996880300151E1E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Vulpine Labs LLC";
 				TargetAttributes = {
@@ -706,6 +723,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		6249AD1D1B3F1402002253EF /* QuickFocused-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "QuickFocused-OSXTests.xctest";
+			remoteRef = 6249AD1C1B3F1402002253EF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6249AD1F1B3F1402002253EF /* QuickFocused-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "QuickFocused-iOSTests.xctest";
+			remoteRef = 6249AD1E1B3F1402002253EF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CD72482D1996A5AB00151E1E /* Nimble.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -727,10 +758,10 @@
 			remoteRef = CD7248301996A5AB00151E1E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CD7248331996A5AB00151E1E /* Nimble-OSXTests.xctest */ = {
+		CD7248331996A5AB00151E1E /* NimbleTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "Nimble-OSXTests.xctest";
+			path = NimbleTests.xctest;
 			remoteRef = CD7248321996A5AB00151E1E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1055,6 +1086,7 @@
 		CD72480B1996880400151E1E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1067,12 +1099,14 @@
 				PRODUCT_NAME = Squeal;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		CD72480C1996880400151E1E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;

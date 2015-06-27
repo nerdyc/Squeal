@@ -37,7 +37,7 @@ public class DatabasePool : NSObject {
     /// :param: error   An error pointer.
     /// :returns: An open Database, or nil if the database could not be opened.
     ///
-    public func dequeueDatabase(error:NSErrorPointer = nil) -> Database? {
+    public func dequeueDatabase(error error:NSErrorPointer = nil) -> Database? {
         var database : Database? = nil
         dispatch_sync(syncQueue) {
             if self.inactiveDatabases.isEmpty {
@@ -89,11 +89,11 @@ public class DatabasePool : NSObject {
     
     private func deactivateDatabase(database:Database) {
         dispatch_sync(syncQueue) {
-            if let index = find(self.activeDatabases, database) {
+            if let index = self.activeDatabases.indexOf(database) {
                 self.activeDatabases.removeAtIndex(index)
             }
             
-            if let index = find(self.inactiveDatabases, database) {
+            if let index = self.inactiveDatabases.indexOf(database) {
                 self.inactiveDatabases.removeAtIndex(index)
             }
         }

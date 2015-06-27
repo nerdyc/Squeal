@@ -34,7 +34,7 @@ extension Statement {
             let bindIndex = parameterIndex + 1 // parameters are bound with 1-based indices
             
             if let parameter = parameters[parameterIndex] {
-                var wasBound = parameter.bindToStatement(self, atIndex: bindIndex, error: error)
+                let wasBound = parameter.bindToStatement(self, atIndex: bindIndex, error: error)
                 if !wasBound {
                     return false
                 }
@@ -55,9 +55,9 @@ extension Statement {
     /// :param:     error            An error pointer.
     ///
     /// :returns:   `true` if all parameters were bound, `false` otherwise.
-    public func bind(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> Bool {
+    public func bind(namedParameters namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> Bool {
         for (name, value) in namedParameters {
-            var success = bindParameter(name, value: value, error: error)
+            let success = bindParameter(name, value: value, error: error)
             if !success {
                 return false
             }
