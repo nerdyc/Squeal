@@ -19,34 +19,28 @@ class DatabaseSpec: QuickSpec {
         
         var database : Database!
         var tempPath : String!
-        var error : NSError?
         
         beforeEach {
-            tempPath = Database.createTemporaryDirectory()
-            database = Database(path:tempPath + "/Squeal", error:&error)
-            expect(database).notTo(beNil())
-            expect(error).to(beNil())
+            tempPath = try! Database.createTemporaryDirectory()
+            database = try! Database(path:tempPath + "/Squeal")
         }
         
         afterEach {
             database = nil
             tempPath = nil
-            error = nil
         }
 
         // =============================================================================================================
         // MARK:- Initialization
         
-        describe("newInMemoryDatabase(error:)") {
+        describe("newInMemoryDatabase()") {
             
             it("returns an in-memory database") {
-                let inMemoryDB = Database.newInMemoryDatabase(error:&error)
-                expect(inMemoryDB).notTo(beNil())
-                expect(error).to(beNil())
+                let inMemoryDB = Database.newInMemoryDatabase()
                 
-                expect(inMemoryDB!.isInMemoryDatabase).to(beTruthy())
-                expect(inMemoryDB!.isTemporaryDatabase).to(beFalsy())
-                expect(inMemoryDB!.isPersistentDatabase).to(beFalsy())
+                expect(inMemoryDB.isInMemoryDatabase).to(beTruthy())
+                expect(inMemoryDB.isTemporaryDatabase).to(beFalsy())
+                expect(inMemoryDB.isPersistentDatabase).to(beFalsy())
             }
             
         }
@@ -54,13 +48,11 @@ class DatabaseSpec: QuickSpec {
         describe("newTemporaryDatabase(error:)") {
             
             it("returns a temporary database") {
-                let temporaryDB = Database.newTemporaryDatabase(error:&error)
-                expect(temporaryDB).notTo(beNil())
-                expect(error).to(beNil())
+                let temporaryDB = Database.newTemporaryDatabase()
                 
-                expect(temporaryDB!.isInMemoryDatabase).to(beFalsy())
-                expect(temporaryDB!.isTemporaryDatabase).to(beTruthy())
-                expect(temporaryDB!.isPersistentDatabase).to(beFalsy())
+                expect(temporaryDB.isInMemoryDatabase).to(beFalsy())
+                expect(temporaryDB.isTemporaryDatabase).to(beTruthy())
+                expect(temporaryDB.isPersistentDatabase).to(beFalsy())
             }
             
         }
@@ -78,20 +70,21 @@ class DatabaseSpec: QuickSpec {
         
         describe("prepareStatement(sql:error:)") {
             
-            var statement: Statement?
-            
             it("returns a Statement when the sql is valid") {
-                statement = database.prepareStatement("CREATE TABLE people (personId INTEGER PRIMARY KEY)",
-                                                      error: &error)
-                expect(statement).notTo(beNil())
-                expect(error).to(beNil())
+                do {
+                    try database.prepareStatement("CREATE TABLE people (personId INTEGER PRIMARY KEY)")
+                } catch let e {
+                    fail("Unexpected error thrown when preparing statement: \(e)")
+                }
             }
             
             it("provides an error when the sql is invalid") {
-                statement = database.prepareStatement("CREATE TABLE people (personId INTE",
-                    error: &error)
-                expect(statement).to(beNil())
-                expect(error).notTo(beNil())
+                do {
+                    try database.prepareStatement("CREATE TABLE people (personId INTE")
+                    fail("Expected an error to be thrown")
+                } catch {
+                    
+                }
             }
             
         }

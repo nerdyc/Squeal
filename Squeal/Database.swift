@@ -47,26 +47,26 @@ public class Database : NSObject {
     // MARK:  Initialization
     
     /// :returns: A Database whose contents are stored in-memory, and discarded when the Database is released.
-    public class func newInMemoryDatabase(error error:NSErrorPointer = nil) -> Database? {
-        return Database(error:error)
+    public class func newInMemoryDatabase() -> Database {
+        return Database()
     }
         
     /// :returns: A Database whose contents are stored in a temporary location on disk, and discarded when the Database
     ///           is no longer used.
-    public class func newTemporaryDatabase(error error:NSErrorPointer = nil) -> Database? {
-        return Database(path:"", error:error)
+    public class func newTemporaryDatabase() -> Database {
+        return try! Database(path:"")
     }
     
     /// :returns: An in-memory Database.
-    public convenience init?(error:NSErrorPointer = nil) {
-        self.init(path:":memory:", error:error)
+    public convenience override init() {
+        try! self.init(path:":memory:")
     }
     
     /// :param: path    The location of the database on disk. The empty string will create a temporary Database, and
     ///                 the special path ':memory:' creates an in-memory database.
     ///
     /// :returns: A Database whose contents are stored at the given path on disk.
-    public init?(path:String, error:NSErrorPointer = nil) {
+    public init(path:String) throws {
         self.path = path
         
         var sqliteDatabase : SQLiteDBPointer = nil
@@ -79,11 +79,7 @@ public class Database : NSObject {
         super.init()
         
         if result != SQLITE_OK {
-            if error != nil {
-                error.memory = errorFromSQLiteResultCode(sqliteDatabase)
-            }
-            
-            return nil
+            throw errorFromSQLiteResultCode(sqliteDatabase)
         }
     }
     
@@ -119,7 +115,7 @@ public class Database : NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Statements
     
-    private func prepareSQLiteStatement(sqlString:String, error:NSErrorPointer) -> SQLiteStatementPointer {
+    private func prepareSQLiteStatement(sqlString:String) throws -> SQLiteStatementPointer {
         let cString = sqlString.cStringUsingEncoding(NSUTF8StringEncoding)
         var sqliteStatement : SQLiteStatementPointer = nil
         
@@ -129,10 +125,7 @@ public class Database : NSObject {
                                             &sqliteStatement,
                                             nil)
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = errorFromSQLiteResultCode(sqliteDatabase)
-            }
-            return nil
+            throw errorFromSQLiteResultCode(sqliteDatabase)
         }
         
         return sqliteStatement
@@ -148,12 +141,8 @@ public class Database : NSObject {
     /// :returns:               The compiled SQL as a Statement. On error, `nil` will be returned and an NSError object
     //                          will be provided via the `error` parameter.
     ///
-    public func prepareStatement(sqlString:String, error:NSErrorPointer = nil) -> Statement? {
-        let sqliteStatement = prepareSQLiteStatement(sqlString, error:error)
-        if sqliteStatement == nil {
-            return nil
-        }
-        
+    public func prepareStatement(sqlString:String) throws -> Statement {
+        let sqliteStatement = try prepareSQLiteStatement(sqlString)
         return Statement(database:self, sqliteStatement: sqliteStatement)
     }
     
@@ -167,12 +156,9 @@ public class Database : NSObject {
     /// :returns:               `true` if the statment was executed, `false` otherwise. On error, an NSError object will be
     ///                         provided via the `error` parameter.
     ///
-    public func execute(sqlString:String, error:NSErrorPointer = nil) -> Bool {
-        if let statement = prepareStatement(sqlString, error:error) {
-            return statement.execute(error: error)
-        } else {
-            return false
-        }
+    public func execute(sqlString:String) throws {
+        let statement = try prepareStatement(sqlString)
+        try statement.execute()
     }
     
     /// Returns the id of the last row inserted into the database via this Database object. This is useful after
@@ -199,17 +185,25 @@ public class Database : NSObject {
     }
     
     public func query(sqlString:String, parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        if let statement = prepareStatement(sqlString, error:error) {
+        do {
+            let statement = try prepareStatement(sqlString)
             return statement.query(parameters:parameters, error:error)
-        } else {
+        } catch let prepareError as NSError {
+            if error != nil {
+                error.memory = prepareError
+            }
             return StepSequence(statement:nil, errorPointer:error, hasError:true)
         }
     }
 
     public func query(sqlString:String, namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        if let statement = prepareStatement(sqlString, error:error) {
+        do {
+            let statement = try prepareStatement(sqlString)
             return statement.query(namedParameters:namedParameters, error:error)
-        } else {
+        } catch let prepareError as NSError {
+            if error != nil {
+                error.memory = prepareError
+            }
             return StepSequence(statement:nil, errorPointer:error, hasError:true)
         }
     }

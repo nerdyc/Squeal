@@ -2,7 +2,7 @@ import Foundation
 
 public extension Database {
     
-    public func prepareInsertInto(tableName:String, columns:[String], error:NSErrorPointer = nil) -> Statement? {
+    public func prepareInsertInto(tableName:String, columns:[String]) throws -> Statement {
         var sqlFragments = ["INSERT INTO"]
         sqlFragments.append(escapeIdentifier(tableName))
         sqlFragments.append("(")
@@ -13,7 +13,7 @@ public extension Database {
         sqlFragments.append(",".join(columns.map { _ in "?" }))
         sqlFragments.append(")")
         
-        return prepareStatement(" ".join(sqlFragments), error: error)
+        return try prepareStatement(" ".join(sqlFragments))
     }
     
     /// Inserts a table row. This is a helper for executing an INSERT INTO statement.
@@ -27,16 +27,12 @@ public extension Database {
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
     ///             INTEGER value. `nil` is returned when an error occurs.
     ///
-    public func insertInto(tableName:String, columns:[String], values:[Bindable?], error:NSErrorPointer = nil) -> Int64? {
-        var rowId : Int64?
-        if let statement = prepareInsertInto(tableName, columns:columns, error: error) {
-            if statement.bind(values, error: error) {
-                if statement.execute(error: error) {
-                    rowId = lastInsertedRowId
-                }
-            }
-        }
-        return rowId
+    public func insertInto(tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
+        let statement = try prepareInsertInto(tableName, columns:columns)
+        try statement.bind(values)
+        try statement.execute()
+        
+        return lastInsertedRowId
     }
 
     /// Inserts a table row. This is a helper for executing an INSERT INTO statement.
@@ -48,7 +44,7 @@ public extension Database {
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
     ///             INTEGER value. `nil` is returned when an error occurs.
     ///
-    public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?], error:NSErrorPointer = nil) -> Int64? {
+    public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
         var columns = [String]()
         var values = [Bindable?]()
         for (columnName, value) in valuesDictionary {
@@ -56,7 +52,7 @@ public extension Database {
             values.append(value)
         }
         
-        return insertInto(tableName, columns:columns, values:values, error:error)
+        return try insertInto(tableName, columns:columns, values:values)
     }
     
 }

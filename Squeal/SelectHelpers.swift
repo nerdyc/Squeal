@@ -10,8 +10,7 @@ public extension Database {
                                   orderBy:     String? = nil,
                                   limit:       Int? = nil,
                                   offset:      Int? = nil,
-                                  parameters:  [Bindable?] = [],
-                                  error:       NSErrorPointer = nil) -> Statement? {
+                                  parameters:  [Bindable?] = []) throws -> Statement {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
@@ -53,11 +52,9 @@ public extension Database {
             }
         }
         
-        var statement = prepareStatement(" ".join(fragments), error: error)
-        if statement != nil && parameters.count > 0 {
-            if false == statement!.bind(parameters, error:error) {
-                statement = nil
-            }
+        let statement = try prepareStatement(" ".join(fragments))
+        if parameters.count > 0 {
+            try statement.bind(parameters)
         }
         
         return statement
@@ -96,22 +93,18 @@ public extension Database {
                            limit:       Int? = nil,
                            offset:      Int? = nil,
                            parameters:  [Bindable?] = [],
-                           error:       NSErrorPointer = nil) -> StepSequence {
+                           error:NSErrorPointer = nil) throws -> StepSequence {
         
-        let statement = prepareSelectFrom(from,
-                                          columns:   columns,
-                                          whereExpr: whereExpr,
-                                          groupBy:   groupBy,
-                                          having:    having,
-                                          orderBy:   orderBy,
-                                          limit:     limit,
-                                          offset:    offset,
-                                          error:     error)
-        if statement == nil {
-            return StepSequence(statement:nil, errorPointer:error, hasError:true)
-        }
+        let statement = try prepareSelectFrom(from,
+                                              columns:   columns,
+                                              whereExpr: whereExpr,
+                                              groupBy:   groupBy,
+                                              having:    having,
+                                              orderBy:   orderBy,
+                                              limit:     limit,
+                                              offset:    offset)
 
-        return statement!.query(parameters:parameters, error:error)
+        return statement.query(parameters:parameters, error:error)
     }
     
     /// Fetches the IDs of all rows that match the given WHERE clause. This makes use of SQLite's `_ROWID_` alias to
@@ -130,28 +123,24 @@ public extension Database {
                                  orderBy:     String? = nil,
                                  limit:       Int? = nil,
                                  offset:      Int? = nil,
-                                 parameters:  [Bindable?] = [],
-                                 error:       NSErrorPointer = nil) -> [RowId]? {
+                                 parameters:  [Bindable?] = []) throws -> [RowId] {
         
-        let statement = prepareSelectFrom(tableName,
-                                          columns:   ["_ROWID_"],
-                                          whereExpr: whereExpr,
-                                          orderBy:   orderBy,
-                                          limit:     limit,
-                                          offset:    offset,
-                                          parameters:parameters,
-                                          error:     error)
-        if statement == nil {
-            return nil
-        }
+        let statement = try prepareSelectFrom(tableName,
+                                              columns:   ["_ROWID_"],
+                                              whereExpr: whereExpr,
+                                              orderBy:   orderBy,
+                                              limit:     limit,
+                                              offset:    offset,
+                                              parameters:parameters)
         
         var rowIds = [RowId]()
-        for step in statement!.query(error: error) {
+        var error:NSError?
+        for step in statement.query(error: &error) {
             if step == nil {
-                return nil
+                throw error!
             }
             
-            rowIds.append(statement!.int64ValueAtIndex(0) ?? 0)
+            rowIds.append(statement.int64ValueAtIndex(0) ?? 0)
         }
         return rowIds
     }
@@ -173,25 +162,25 @@ public extension Database {
     public func countFrom(from:        String,
                           columns:     [String]? = nil,
                           whereExpr:   String? = nil,
-                          parameters:  [Bindable?] = [],
-                          error:       NSErrorPointer = nil) -> Int64? {
+                          parameters:  [Bindable?] = []) throws -> Int64 {
 
         let countExpr = "count(" + ",".join(columns ?? ["*"]) + ")"
-        if let statement = prepareSelectFrom(from,
-                                             columns:   [countExpr],
-                                             whereExpr: whereExpr,
-                                             parameters:parameters,
-                                             error:     error) {
+        let statement = try prepareSelectFrom(from,
+                                              columns:   [countExpr],
+                                              whereExpr: whereExpr,
+                                              parameters:parameters)
             
-            var count: Int64? = 0
-            for step in statement.query(error: error) {
-                count = step?.int64ValueAtIndex(0)
-                break
+        var count: Int64 = 0
+        var error:NSError?
+        for step in statement.query(error: &error) {
+            if step == nil {
+                throw error!
             }
-            return count
-        } else {
-            return nil
+            
+            count = step!.int64ValueAtIndex(0) ?? 0
+            break
         }
+        return count
     }
     
 }

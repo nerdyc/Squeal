@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		CD3DE27E19BCD44B00DED437 /* SquealSpecHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
-		CD3DE29A19BCD57A00DED437 /* StatementSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */; };
 		CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C2C19B29D27004497BF /* DatabasePool.swift */; };
 		CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
 		CD61584C19BCD74A00E63F56 /* SquealSpecHelpers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */; };
@@ -66,7 +65,6 @@
 		CDCBEB7519C5F77900862BFD /* SquealSpecHelpers-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDCBEB8D19C5F7C800862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
 		CDCBEB8E19C5F7DB00862BFD /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
-		CDCBEB8F19C5F7DB00862BFD /* StatementSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */; };
 		CDCBEB9019C5F98E00862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
 		CDD59C26199C69F500FB662D /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* SchemaHelpers.swift */; };
 		CDD59C30199C6A5300FB662D /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */; };
@@ -185,7 +183,6 @@
 		CD3DE27C19BCD44B00DED437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SquealSpecHelpers.h; sourceTree = "<group>"; };
 		CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpecHelpers.swift; sourceTree = "<group>"; };
-		CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpecHelpers.swift; sourceTree = "<group>"; };
 		CD4B4C2C19B29D27004497BF /* DatabasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePool.swift; sourceTree = "<group>"; };
 		CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePoolSpec.swift; sourceTree = "<group>"; };
 		CD7247F71996880300151E1E /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -294,7 +291,6 @@
 			children = (
 				CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */,
 				CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */,
-				CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */,
 				CD3DE27B19BCD44B00DED437 /* Supporting Files */,
 			);
 			path = SquealSpecHelpers;
@@ -844,7 +840,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD3DE29A19BCD57A00DED437 /* StatementSpecHelpers.swift in Sources */,
 				CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -924,7 +919,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDCBEB8E19C5F7DB00862BFD /* DatabaseSpecHelpers.swift in Sources */,
-				CDCBEB8F19C5F7DB00862BFD /* StatementSpecHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

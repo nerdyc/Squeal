@@ -6,15 +6,13 @@ import SquealSpecHelpers
 class InsertHelpersSpec: QuickSpec {
     override func spec() {
         var database : Database!
-        var error : NSError?
         
         beforeEach {
-            database = Database.openTemporaryDatabase()
+            database = Database()
         }
         
         afterEach {
             database = nil
-            error = nil
         }
         
         describe(".insertInto(tableName:columns:values:error:)") {
@@ -22,23 +20,20 @@ class InsertHelpersSpec: QuickSpec {
             var result : Int64?
             
             beforeEach {
-                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                result = database.insertInto("contacts",
-                                            columns:["name"],
-                                            values:["Amelia"],
-                                            error:&error)
+                try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
+                result = try! database.insertInto("contacts",
+                                                  columns:["name"],
+                                                  values:["Amelia"])
             }
             
             it("inserts the row into the table, and returns its row id") {
                 expect(result).to(equal(1))
-                expect(error).to(beNil())
+
+                let contacts = try! database.queryRows("SELECT * FROM contacts")
+                expect(contacts.count).to(equal(1))
                 
-                let contacts = database.queryRows("SELECT * FROM contacts")
-                expect(contacts).notTo(beNil())
-                expect(contacts?.count).to(equal(1))
-                
-                expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
-                expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
+                expect(contacts.first?["contactId"] as? Int64).to(equal(1))
+                expect(contacts.first?["name"] as? String).to(equal("Amelia"))
             }
             
         }
@@ -48,25 +43,23 @@ class InsertHelpersSpec: QuickSpec {
             var result : Int64?
 
             beforeEach {
-                database.executeOrFail("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, title TEXT)")
+                try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, title TEXT)")
             }
 
             describe("when all values are non-nil") {
             
                 beforeEach {
-                    result = database.insertInto("contacts", values:["name":"Amelia"], error:&error)
+                    result = try! database.insertInto("contacts", values:["name":"Amelia"])
                 }
                 
                 it("inserts the row into the table, and returns its row id") {
                     expect(result).to(equal(1))
-                    expect(error).to(beNil())
                     
-                    let contacts = database.queryRows("SELECT * FROM contacts")
-                    expect(contacts).notTo(beNil())
-                    expect(contacts?.count).to(equal(1))
+                    let contacts = try! database.queryRows("SELECT * FROM contacts")
+                    expect(contacts.count).to(equal(1))
                     
-                    expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
-                    expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
+                    expect(contacts.first?["contactId"] as? Int64).to(equal(1))
+                    expect(contacts.first?["name"] as? String).to(equal("Amelia"))
                 }
             
             }
@@ -74,20 +67,18 @@ class InsertHelpersSpec: QuickSpec {
             describe("when a value is nil") {
                 
                 beforeEach {
-                    result = database.insertInto("contacts", values:["title": nil, "name":"Amelia"], error:&error)
+                    result = try! database.insertInto("contacts", values:["title": nil, "name":"Amelia"])
                 }
                 
                 it("inserts the row into the table, and returns its row id") {
                     expect(result).to(equal(1))
-                    expect(error).to(beNil())
                     
-                    let contacts = database.queryRows("SELECT * FROM contacts")
-                    expect(contacts).notTo(beNil())
-                    expect(contacts?.count).to(equal(1))
+                    let contacts = try! database.queryRows("SELECT * FROM contacts")
+                    expect(contacts.count).to(equal(1))
                     
-                    expect(contacts?.first?["contactId"] as? Int64).to(equal(1))
-                    expect(contacts?.first?["name"] as? String).to(equal("Amelia"))
-                    expect(contacts?.first?["title"] as? String).to(beNil())
+                    expect(contacts.first?["contactId"] as? Int64).to(equal(1))
+                    expect(contacts.first?["name"] as? String).to(equal("Amelia"))
+                    expect(contacts.first?["title"] as? String).to(beNil())
                 }
 
             }

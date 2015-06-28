@@ -7,10 +7,9 @@ class DatabasePoolSpec: QuickSpec {
     override func spec() {
         
         var databasePool : DatabasePool!
-        var error : NSError?
         
         beforeEach {
-            let tempPath = Database.createTemporaryDirectory()
+            let tempPath = try! Database.createTemporaryDirectory()
             databasePool = DatabasePool(databasePath: tempPath.stringByAppendingPathComponent("DatabasePoolSpec"))
         }
         
@@ -25,60 +24,47 @@ class DatabasePoolSpec: QuickSpec {
             var otherDatabase : Database?
             
             beforeEach {
-                database = databasePool.dequeueDatabase(error: &error)
+                database = try! databasePool.dequeueDatabase()
             }
             
             afterEach {
                 if database != nil {
                     databasePool.removeDatabase(database)
+                    database = nil
                 }
                 
                 if otherDatabase != nil {
                     databasePool.removeDatabase(otherDatabase!)
                 }
+                
             }
             
             it("returns a database") {
-                expect(database).notTo(beNil())
-                expect(error).to(beNil())
                 expect(databasePool.activeDatabaseCount).to(equal(1))
                 expect(databasePool.inactiveDatabaseCount).to(equal(0))
             }
             
             it("returns a new database if a database isn't available") {
-                otherDatabase = databasePool.dequeueDatabase(error: &error)
-                expect(otherDatabase).notTo(beNil())
-                expect(error).to(beNil())
-                
-                if otherDatabase != nil {
-                    expect(otherDatabase! !== database).to(beTruthy())
-                }
+                otherDatabase = try! databasePool.dequeueDatabase()
+                expect(otherDatabase! !== database).to(beTruthy())
             }
             
             it("returns an existing database if one exists") {
-                if database != nil {
-                    databasePool.enqueueDatabase(database)
-                    
-                    otherDatabase = databasePool.dequeueDatabase(error: &error)
-                    expect(otherDatabase).notTo(beNil())
-                    expect(error).to(beNil())
-                    
-                    if otherDatabase != nil {
-                        expect(otherDatabase! === database).to(beTruthy())
-                    }
-                }
+                databasePool.enqueueDatabase(database)
+                
+                otherDatabase = try! databasePool.dequeueDatabase()
+                expect(otherDatabase).notTo(beNil())
+                expect(otherDatabase! === database).to(beTruthy())
             }
             
         }
         
         describe(".enqueueDatabase(database:)") {
             
-            var database : Database?
+            var database : Database!
             
             beforeEach {
-                database = databasePool.dequeueDatabase(error: &error)
-                expect(database).notTo(beNil())
-                expect(error).to(beNil())
+                database = try! databasePool.dequeueDatabase()
             }
             
             afterEach {
@@ -86,7 +72,7 @@ class DatabasePoolSpec: QuickSpec {
             }
             
             it("returns the database to the queue") {
-                databasePool.enqueueDatabase(database!)
+                databasePool.enqueueDatabase(database)
                 
                 expect(databasePool.activeDatabaseCount).to(equal(0))
                 expect(databasePool.inactiveDatabaseCount).to(equal(1))
@@ -96,12 +82,10 @@ class DatabasePoolSpec: QuickSpec {
         
         describe(".removeDatabase(database:)") {
             
-            var database : Database?
+            var database : Database!
             
             beforeEach {
-                database = databasePool.dequeueDatabase(error: &error)
-                expect(database).notTo(beNil())
-                expect(error).to(beNil())
+                database = try! databasePool.dequeueDatabase()
             }
             
             afterEach {
@@ -109,7 +93,7 @@ class DatabasePoolSpec: QuickSpec {
             }
             
             it("removes the database from the pool") {
-                databasePool.removeDatabase(database!)
+                databasePool.removeDatabase(database)
                 
                 expect(databasePool.activeDatabaseCount).to(equal(0))
                 expect(databasePool.inactiveDatabaseCount).to(equal(0))
@@ -123,15 +107,10 @@ class DatabasePoolSpec: QuickSpec {
             var otherDatabase : Database!
             
             beforeEach {
-                database = databasePool.dequeueDatabase(error: &error)
-                expect(database).notTo(beNil())
-                expect(error).to(beNil())
+                database = try! databasePool.dequeueDatabase()
+                otherDatabase = try! databasePool.dequeueDatabase()
                 
-                otherDatabase = databasePool.dequeueDatabase(error: &error)
-                expect(otherDatabase).notTo(beNil())
-                expect(error).to(beNil())
-                
-                databasePool.enqueueDatabase(otherDatabase!)
+                databasePool.enqueueDatabase(otherDatabase)
             }
             
             afterEach {

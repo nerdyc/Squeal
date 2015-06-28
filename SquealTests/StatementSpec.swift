@@ -11,9 +11,9 @@ class StatementSpec: QuickSpec {
         var error : NSError?
         
         beforeEach {
-            database = Database.openTemporaryDatabase()
-            database.executeOrFail("CREATE TABLE people (personId INTEGER PRIMARY KEY, name TEXT, age REAL, is_adult INTEGER, photo BLOB)")
-            database.executeOrFail("INSERT INTO people (name, age, is_adult, photo) VALUES (\"Amelia\", 1.5, 0, NULL),(\"Brian\", 43.375, 1, X''),(\"Cara\", NULL, 1, X'696D616765')")
+            database = Database()
+            try! database.execute("CREATE TABLE people (personId INTEGER PRIMARY KEY, name TEXT, age REAL, is_adult INTEGER, photo BLOB)")
+            try! database.execute("INSERT INTO people (name, age, is_adult, photo) VALUES (\"Amelia\", 1.5, 0, NULL),(\"Brian\", 43.375, 1, X''),(\"Cara\", NULL, 1, X'696D616765')")
             // 696D616765 is "image" in Hex.
         }
         
@@ -24,10 +24,10 @@ class StatementSpec: QuickSpec {
         }
         
 #if arch(x86_64) || arch(arm64)
-// this test only works on 64-bit architectures because weak references are cleared immediately on 640bit runtimes, but
+// this test only works on 64-bit architectures because weak references are cleared immediately on 64-bit runtimes, but
 // not on 32-bit. Probably because of tagged pointers?
         it("retains the database until the statement has been finalized") {
-            statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+            statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             weak var db = database
             
             // remove the last non-weak external reference to the database; only the statement has retained it.
@@ -46,7 +46,7 @@ class StatementSpec: QuickSpec {
         describe(".columnCount, .columnNames, etc.") {
         
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("describe the selected columns") {
@@ -72,7 +72,7 @@ class StatementSpec: QuickSpec {
         describe(".dictionaryValue") {
 
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns row values in a dictionary") {
@@ -92,7 +92,7 @@ class StatementSpec: QuickSpec {
         
         describe(".valueOf()") {
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
@@ -107,7 +107,7 @@ class StatementSpec: QuickSpec {
         
         describe(".[columnName]") {
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
@@ -122,7 +122,7 @@ class StatementSpec: QuickSpec {
         describe(".values") {
             
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns row values in a dictionary") {
@@ -139,7 +139,7 @@ class StatementSpec: QuickSpec {
         
         describe(".valueAtIndex(columnIndex:)") {
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
@@ -154,7 +154,7 @@ class StatementSpec: QuickSpec {
         
         describe(".[columnIndex]") {
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
@@ -171,11 +171,11 @@ class StatementSpec: QuickSpec {
         
         describe(".query(error:)") {
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
             }
             
             it("iterates through each row of the statement") {
-                statement.bindOrFail(1)
+                try! statement.bind([1])
                 
                 var ids = [RowId]()
                 for s in statement.query(error:&error) {
@@ -200,11 +200,11 @@ class StatementSpec: QuickSpec {
         
         describe(".query(parameters:error:)") {
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
             }
             
             it("clears parameters and iterates through each step of the statement") {
-                statement.bindOrFail(3) // bind another value to prove the value is cleared
+                try! statement.bind([3]) // bind another value to prove the value is cleared
                 
                 var ids = [RowId]()
                 for s in statement.query(parameters:[1], error:&error) {
@@ -220,11 +220,11 @@ class StatementSpec: QuickSpec {
         describe(".generate()") {
             
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
             }
             
             it("is an alias for .query") {
-                statement.bindOrFail(1)
+                try! statement.bind([1])
                 
                 var ids = [RowId]()
                 for row in statement {
@@ -241,7 +241,7 @@ class StatementSpec: QuickSpec {
         describe("next(error:)") {
             
             beforeEach {
-                statement = database.prepareStatement("SELECT personId, name, age, photo FROM people")
+                statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("advances to the next row, returning false when there are no more rows") {
@@ -292,8 +292,8 @@ class StatementSpec: QuickSpec {
         describe("reset()") {
             
             beforeEach {
-                statement = database.prepareStatement("SELECT * FROM people WHERE name IS ?")
-                statement.bindOrFail("Brian")
+                statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS ?")
+                try! statement.bind(["Brian"])
                 statement.next()
                 statement.reset()
             }
@@ -308,7 +308,7 @@ class StatementSpec: QuickSpec {
         describe("parameterCount") {
             
             beforeEach {
-                statement = database.prepareStatement("SELECT * FROM people WHERE name IS ? AND age > ?")
+                statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS ? AND age > ?")
             }
             
             it("returns the number of parameters") {
@@ -322,7 +322,7 @@ class StatementSpec: QuickSpec {
         
         describe("indexOfParameterNamed(name:)") {
             beforeEach {
-                statement = database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
+                statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
             }
             
             it("returns the index of the parameter when it exists") {

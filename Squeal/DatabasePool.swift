@@ -37,20 +37,31 @@ public class DatabasePool : NSObject {
     /// :param: error   An error pointer.
     /// :returns: An open Database, or nil if the database could not be opened.
     ///
-    public func dequeueDatabase(error error:NSErrorPointer = nil) -> Database? {
-        var database : Database? = nil
+    public func dequeueDatabase() throws -> Database {
+        var database:Database?
+        var error:NSError?
         dispatch_sync(syncQueue) {
             if self.inactiveDatabases.isEmpty {
-                database = self.openDatabase(error)
-                if database != nil {
+                do {
+                    database = try self.openDatabase()
                     self.activeDatabases.append(database!)
+                } catch let openError as NSError {
+                    error = openError
+                    return
+                } catch let e {
+                    fatalError("Unexpected error thrown opening a database \(e)")
                 }
             } else {
                 database = self.inactiveDatabases.removeLast()
                 self.activeDatabases.append(database!)
             }
         }
-        return database
+        
+        if let dequeuedDatabase = database {
+            return dequeuedDatabase
+        } else {
+            throw error!
+        }
     }
     
     ///
@@ -83,8 +94,8 @@ public class DatabasePool : NSObject {
         }
     }
     
-    private func openDatabase(error:NSErrorPointer) -> Database? {
-        return Database(path: databasePath, error: error)
+    private func openDatabase() throws -> Database {
+        return try Database(path: databasePath)
     }
     
     private func deactivateDatabase(database:Database) {
