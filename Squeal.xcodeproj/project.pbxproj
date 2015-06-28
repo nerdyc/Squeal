@@ -680,7 +680,6 @@
 					};
 					CDCBEB4B19C5F6F500862BFD = {
 						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = D7K65AYKY9;
 					};
 					CDCBEB5519C5F6F500862BFD = {
 						CreatedOnToolsVersion = 6.1;
@@ -976,7 +975,7 @@
 				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -995,7 +994,7 @@
 				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -1099,7 +1098,7 @@
 				INFOPLIST_FILE = Squeal/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -1120,7 +1119,7 @@
 				INFOPLIST_FILE = Squeal/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -1166,6 +1165,7 @@
 		CDCBEB6019C5F6F500862BFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1179,7 +1179,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1191,6 +1191,7 @@
 		CDCBEB6119C5F6F500862BFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1200,7 +1201,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1269,7 +1270,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1290,7 +1291,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vulpinelabs.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
