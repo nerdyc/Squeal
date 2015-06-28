@@ -56,7 +56,7 @@
 		CDB05D1019CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */; };
 		CDB05D1219CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
 		CDB05D1319CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
-		CDCBEB5119C5F6F500862BFD /* Squeal-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CDCBEB5119C5F6F500862BFD /* Squeal.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB5019C5F6F500862BFD /* Squeal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDCBEB5719C5F6F500862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
 		CDCBEB6519C5F70800862BFD /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
 		CDCBEB6619C5F70800862BFD /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */; };
@@ -219,7 +219,7 @@
 		CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpersSpec.swift; sourceTree = "<group>"; };
 		CDCBEB4C19C5F6F500862BFD /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCBEB4F19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-iOS.h"; sourceTree = "<group>"; };
+		CDCBEB5019C5F6F500862BFD /* Squeal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Squeal.h; sourceTree = "<group>"; };
 		CDCBEB5619C5F6F500862BFD /* Squeal-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCBEB5C19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.0.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
@@ -462,7 +462,7 @@
 		CDCBEB4D19C5F6F500862BFD /* Squeal-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */,
+				CDCBEB5019C5F6F500862BFD /* Squeal.h */,
 				CDCBEB4E19C5F6F500862BFD /* Supporting Files */,
 			);
 			path = "Squeal-iOS";
@@ -533,7 +533,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB5119C5F6F500862BFD /* Squeal-iOS.h in Headers */,
+				CDCBEB5119C5F6F500862BFD /* Squeal.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
