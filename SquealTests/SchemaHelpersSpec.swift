@@ -77,7 +77,7 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("is non-zero when set by the developer") {
-                var result = database.updateUserVersionNumber(123, error:&error)
+                let result = database.updateUserVersionNumber(123, error:&error)
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
                 
@@ -168,7 +168,7 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("drops the table from the database") {
-                var result = database.dropTable("contacts", error: &error)
+                let result = database.dropTable("contacts", error: &error)
 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
@@ -176,14 +176,14 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("provides an error if the table doesn't exist") {
-                var result = database.dropTable("phones", error: &error)
+                let result = database.dropTable("phones", error: &error)
                 
                 expect(result).to(beFalsy())
                 expect(error).notTo(beNil())
             }
             
             it("doesn't error if the table doesn't exist and ifExists is true") {
-                var result = database.dropTable("phones", ifExists:true, error: &error)
+                let result = database.dropTable("phones", ifExists:true, error: &error)
                 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
@@ -291,7 +291,7 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("drops the index from the database") {
-                var result = database.dropIndex("contacts_name", error: &error)
+                let result = database.dropIndex("contacts_name", error: &error)
                 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())
@@ -299,14 +299,14 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("provides an error if the index doesn't exist") {
-                var result = database.dropIndex("contacts_not_an_index", error: &error)
+                let result = database.dropIndex("contacts_not_an_index", error: &error)
                 
                 expect(result).to(beFalsy())
                 expect(error).notTo(beNil())
             }
             
             it("doesn't error if the index doesn't exist and ifExists is true") {
-                var result = database.dropIndex("contacts_not_an_index", ifExists:true, error: &error)
+                let result = database.dropIndex("contacts_not_an_index", ifExists:true, error: &error)
                 
                 expect(result).to(beTruthy())
                 expect(error).to(beNil())

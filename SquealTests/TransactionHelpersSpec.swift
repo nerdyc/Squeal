@@ -6,7 +6,6 @@ import SquealSpecHelpers
 class TransactionHelpersSpec: QuickSpec {
     override func spec() {
         var database : Database!
-        var error : NSError?
         
         beforeEach {
             database = Database.openTemporaryDatabase()
@@ -14,7 +13,6 @@ class TransactionHelpersSpec: QuickSpec {
         
         afterEach {
             database = nil
-            error = nil
         }
         
         describe(".transaction()") {
@@ -26,7 +24,7 @@ class TransactionHelpersSpec: QuickSpec {
             context("when the transaction is committed") {
                 
                 it("persists all changes") {
-                    var result = database.transaction {
+                    database.transaction {
                         $0.insert("people", row: ["name":"Amelia"])
                         $0.insert("people", row: ["name":"Brian"])
                         $0.insert("people", row: ["name":"Cara"])
@@ -42,7 +40,7 @@ class TransactionHelpersSpec: QuickSpec {
             context("when the transaction is rolled back") {
                 
                 it("discards changes") {
-                    var result = database.transaction {
+                    database.transaction {
                         $0.insert("people", row: ["name":"Amelia"])
                         $0.insert("people", row: ["name":"Brian"])
                         $0.insert("people", row: ["name":"Cara"])

@@ -86,7 +86,7 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement is invalid") {
                 
                 beforeEach {
-                    for s in database.selectFrom("contacts", whereExpr: "sdfsdfsf IS NULL", error:&error) {
+                    for _ in database.selectFrom("contacts", whereExpr: "sdfsdfsf IS NULL", error:&error) {
                         // skip
                     }
                 }

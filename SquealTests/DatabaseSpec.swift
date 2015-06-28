@@ -40,7 +40,7 @@ class DatabaseSpec: QuickSpec {
         describe("newInMemoryDatabase(error:)") {
             
             it("returns an in-memory database") {
-                var inMemoryDB = Database.newInMemoryDatabase(error:&error)
+                let inMemoryDB = Database.newInMemoryDatabase(error:&error)
                 expect(inMemoryDB).notTo(beNil())
                 expect(error).to(beNil())
                 
@@ -54,7 +54,7 @@ class DatabaseSpec: QuickSpec {
         describe("newTemporaryDatabase(error:)") {
             
             it("returns a temporary database") {
-                var temporaryDB = Database.newTemporaryDatabase(error:&error)
+                let temporaryDB = Database.newTemporaryDatabase(error:&error)
                 expect(temporaryDB).notTo(beNil())
                 expect(error).to(beNil())
                 
