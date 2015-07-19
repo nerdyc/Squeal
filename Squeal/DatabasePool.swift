@@ -57,11 +57,11 @@ public class DatabasePool : NSObject {
             }
         }
         
-        if let dequeuedDatabase = database {
-            return dequeuedDatabase
-        } else {
+        guard let dequeuedDatabase = database else {
             throw error!
         }
+        
+        return dequeuedDatabase
     }
     
     ///
