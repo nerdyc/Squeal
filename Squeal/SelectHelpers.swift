@@ -21,15 +21,15 @@ public extension Database {
     ///
     /// :returns:   An array of all values read, or nil if an error occurs.
     ///
-    public func selectFrom(from:        String,
-                           columns:     [String]? = nil,
-                           whereExpr:   String? = nil,
-                           groupBy:     String? = nil,
-                           having:      String? = nil,
-                           orderBy:     String? = nil,
-                           limit:       Int? = nil,
-                           offset:      Int? = nil,
-                           parameters:  [Bindable?] = []) throws -> Statement {
+    public func prepareSelectFrom(from:        String,
+                                  columns:     [String]? = nil,
+                                  whereExpr:   String? = nil,
+                                  groupBy:     String? = nil,
+                                  having:      String? = nil,
+                                  orderBy:     String? = nil,
+                                  limit:       Int? = nil,
+                                  offset:      Int? = nil,
+                                  parameters:  [Bindable?] = []) throws -> Statement {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
@@ -79,24 +79,24 @@ public extension Database {
         return statement
     }
     
-    public func selectIdsFrom(from:        String,
-                              whereExpr:   String? = nil,
-                              groupBy:     String? = nil,
-                              having:      String? = nil,
-                              orderBy:     String? = nil,
-                              limit:       Int? = nil,
-                              offset:      Int? = nil,
-                              parameters:  [Bindable?] = []) throws -> Statement {
+    public func prepareSelectIdsFrom(from:        String,
+                                     whereExpr:   String? = nil,
+                                     groupBy:     String? = nil,
+                                     having:      String? = nil,
+                                     orderBy:     String? = nil,
+                                     limit:       Int? = nil,
+                                     offset:      Int? = nil,
+                                     parameters:  [Bindable?] = []) throws -> Statement {
 
-        return try selectFrom(from,
-                              columns: ["_ROWID_"],
-                              whereExpr: whereExpr,
-                              groupBy: groupBy,
-                              having: having,
-                              orderBy: orderBy,
-                              limit: limit,
-                              offset: offset,
-                              parameters: parameters)
+        return try prepareSelectFrom(from,
+                                     columns:    ["_ROWID_"],
+                                     whereExpr:  whereExpr,
+                                     groupBy:    groupBy,
+                                     having:     having,
+                                     orderBy:    orderBy,
+                                     limit:      limit,
+                                     offset:     offset,
+                                     parameters: parameters)
     }
     
     // ---------------------------------------------------------------------------------------------
@@ -118,10 +118,10 @@ public extension Database {
                           parameters:  [Bindable?] = []) throws -> Int64 {
 
         let countExpr = "count(" + ",".join(columns ?? ["*"]) + ")"
-        let statement = try selectFrom(from,
-                                       columns:   [countExpr],
-                                       whereExpr: whereExpr,
-                                       parameters:parameters)
+        let statement = try prepareSelectFrom(from,
+                                              columns:   [countExpr],
+                                              whereExpr: whereExpr,
+                                              parameters:parameters)
                                     
         var count:Int64 = 0
         if try statement.next() {
@@ -133,26 +133,32 @@ public extension Database {
     // ---------------------------------------------------------------------------------------------
     // MARK: Query
     
-    public func queryFrom<T>(from:        String,
-                             columns:     [String]? = nil,
-                             whereExpr:   String? = nil,
-                             groupBy:     String? = nil,
-                             having:      String? = nil,
-                             orderBy:     String? = nil,
-                             limit:       Int? = nil,
-                             offset:      Int? = nil,
-                             parameters:  [Bindable?] = [],
-                             block:       ((Statement) throws -> T)) throws -> [T] {
+    public func selectFrom<T>(from:        String,
+                              columns:     [String]? = nil,
+                              whereExpr:   String? = nil,
+                              groupBy:     String? = nil,
+                              having:      String? = nil,
+                              orderBy:     String? = nil,
+                              limit:       Int? = nil,
+                              offset:      Int? = nil,
+                              parameters:  [Bindable?] = [],
+                              block:       ((Statement) throws -> T)) throws -> [T] {
                                 
-        let statement = try selectFrom(from, columns:columns, whereExpr:whereExpr, groupBy:groupBy,
-                                       having:having, orderBy:orderBy, limit:limit, offset:offset,
-                                       parameters:parameters)
+        let statement = try prepareSelectFrom(from,
+                                              columns:columns,
+                                              whereExpr:whereExpr,
+                                              groupBy:groupBy,
+                                              having:having,
+                                              orderBy:orderBy,
+                                              limit:limit,
+                                              offset:offset,
+                                              parameters:parameters)
         
-        return try statement.query(block:block)
+        return try statement.select(block:block)
     }
     
-    public func queryIdsFrom(from:        String,
-                             whereExpr:   String? = nil,
+    public func selectIdsFrom(from:        String,
+                              whereExpr:   String? = nil,
                              groupBy:     String? = nil,
                              having:      String? = nil,
                              orderBy:     String? = nil,
@@ -160,23 +166,23 @@ public extension Database {
                              offset:      Int? = nil,
                              parameters:  [Bindable?] = []) throws -> [RowId] {
 
-        let statement = try selectIdsFrom(from,
-                                          whereExpr: whereExpr,
-                                          groupBy: groupBy,
-                                          having: having,
-                                          orderBy: orderBy,
-                                          limit: limit,
-                                          offset: offset,
-                                          parameters: parameters)
+        let statement = try prepareSelectIdsFrom(from,
+                                                 whereExpr: whereExpr,
+                                                 groupBy: groupBy,
+                                                 having: having,
+                                                 orderBy: orderBy,
+                                                 limit: limit,
+                                                 offset: offset,
+                                                 parameters: parameters)
         
-        return try statement.queryIds()
+        return try statement.select() { $0.int64ValueAtIndex(0) ?? 0 }
     }
     
 }
 
 public extension Statement {
     
-    public func queryNext<T>(block:((Statement) throws -> T)) throws -> T? {
+    public func selectNext<T>(block:((Statement) throws -> T)) throws -> T? {
         guard try next() else {
             return nil
         }
@@ -184,11 +190,7 @@ public extension Statement {
         return try block(self)
     }
     
-    public func queryIds(parameters:[Bindable?]? = nil) throws -> [RowId] {
-        return try query(parameters) { $0.int64ValueAtIndex(0) ?? 0 }
-    }
-    
-    public func query<T>(parameters:[Bindable?]? = nil, block:((Statement) throws -> T)) throws -> [T] {
+    public func select<T>(parameters:[Bindable?]? = nil, block:((Statement) throws -> T)) throws -> [T] {
         try reset()
         
         if let parametersToBind = parameters {
@@ -197,7 +199,7 @@ public extension Statement {
         }
         
         var rows = [T]()
-        while let row = try queryNext(block) {
+        while let row = try selectNext(block) {
             rows.append(row)
         }
         return rows

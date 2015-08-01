@@ -174,11 +174,11 @@ class StatementSpec: QuickSpec {
             }
             
             it("iterates through each row of the statement") {
-                let ids = try! statement.query { $0.int64ValueAtIndex(0) ?? 0 }
+                let ids = try! statement.select { $0.int64ValueAtIndex(0) ?? 0 }
                 expect(ids).to(equal([2, 3]))
                 
                 // now prove that it resets the statement
-                let sameIds = try! statement.query { $0.int64ValueAtIndex(0) ?? 0 }
+                let sameIds = try! statement.select { $0.int64ValueAtIndex(0) ?? 0 }
                 expect(sameIds).to(equal([2, 3]))
             }
         }
@@ -191,7 +191,7 @@ class StatementSpec: QuickSpec {
             it("clears parameters and iterates through each step of the statement") {
                 try! statement.bind([3]) // bind another value to prove the value is cleared
                 
-                let ids = try! statement.query([1]) { $0.int64ValueAtIndex(0) ?? 0 }
+                let ids = try! statement.select([1]) { $0.int64ValueAtIndex(0) ?? 0 }
                 expect(ids).to(equal([2, 3]))
             }
         }

@@ -32,7 +32,7 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement is valid") {
                 
                 beforeEach {
-                    values = try! database.selectFrom("contacts").query { $0["name"] as! String }
+                    values = try! database.selectFrom("contacts") { $0["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -50,7 +50,7 @@ class SelectHelpersSpec: QuickSpec {
                     values = try! database.selectFrom("contacts",
                                                       whereExpr:  "contactId > ?",
                                                       orderBy:    "name",
-                                                      parameters: [1]).query { $0["name"] as! String }
+                                                      parameters: [1]) { $0["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -68,7 +68,7 @@ class SelectHelpersSpec: QuickSpec {
                                                       orderBy:    "name",
                                                       limit:      1,
                                                       offset:     1,
-                                                      parameters: [1]).query { $0["name"] as! String }
+                                                      parameters: [1]) { $0["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -86,7 +86,7 @@ class SelectHelpersSpec: QuickSpec {
                 
                 it("provides an error") {
                     do {
-                        try database.selectFrom("contacts", whereExpr: "sdfsdfsf IS NULL")
+                        try database.prepareSelectFrom("contacts", whereExpr: "sdfsdfsf IS NULL")
                         fail("Expected error")
                     } catch {
                         
@@ -105,10 +105,10 @@ class SelectHelpersSpec: QuickSpec {
             var rowIds : [RowId]?
             
             beforeEach {
-                rowIds = try! database.selectFrom("contacts",
-                                                  whereExpr:   "name > ?",
-                                                  orderBy:     "name DESC",
-                                                  parameters:  ["B"]).queryIds()
+                rowIds = try! database.selectIdsFrom("contacts",
+                                                     whereExpr:   "name > ?",
+                                                     orderBy:     "name DESC",
+                                                     parameters:  ["B"])
             }
             
             afterEach {
