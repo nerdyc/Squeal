@@ -99,9 +99,8 @@ class SelectHelpersSpec: QuickSpec {
         
         // -----------------------------------------------------------------------------------------
         // MARK: Query
-
         
-        describe("Statement.queryRowIds()") {
+        describe("Statement.queryIds()") {
             
             var rowIds : [RowId]?
             
@@ -109,7 +108,7 @@ class SelectHelpersSpec: QuickSpec {
                 rowIds = try! database.selectFrom("contacts",
                                                   whereExpr:   "name > ?",
                                                   orderBy:     "name DESC",
-                                                  parameters:  ["B"]).queryRowIds()
+                                                  parameters:  ["B"]).queryIds()
             }
             
             afterEach {

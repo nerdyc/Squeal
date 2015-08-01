@@ -79,6 +79,26 @@ public extension Database {
         return statement
     }
     
+    public func selectIdsFrom(from:        String,
+                              whereExpr:   String? = nil,
+                              groupBy:     String? = nil,
+                              having:      String? = nil,
+                              orderBy:     String? = nil,
+                              limit:       Int? = nil,
+                              offset:      Int? = nil,
+                              parameters:  [Bindable?] = []) throws -> Statement {
+
+        return try selectFrom(from,
+                              columns: ["_ROWID_"],
+                              whereExpr: whereExpr,
+                              groupBy: groupBy,
+                              having: having,
+                              orderBy: orderBy,
+                              limit: limit,
+                              offset: offset,
+                              parameters: parameters)
+    }
+    
     // ---------------------------------------------------------------------------------------------
     // MARK: Count
     
@@ -131,6 +151,27 @@ public extension Database {
         return try statement.query(block:block)
     }
     
+    public func queryIdsFrom(from:        String,
+                             whereExpr:   String? = nil,
+                             groupBy:     String? = nil,
+                             having:      String? = nil,
+                             orderBy:     String? = nil,
+                             limit:       Int? = nil,
+                             offset:      Int? = nil,
+                             parameters:  [Bindable?] = []) throws -> [RowId] {
+
+        let statement = try selectIdsFrom(from,
+                                          whereExpr: whereExpr,
+                                          groupBy: groupBy,
+                                          having: having,
+                                          orderBy: orderBy,
+                                          limit: limit,
+                                          offset: offset,
+                                          parameters: parameters)
+        
+        return try statement.queryIds()
+    }
+    
 }
 
 public extension Statement {
@@ -143,7 +184,7 @@ public extension Statement {
         return try block(self)
     }
     
-    public func queryRowIds(parameters:[Bindable?]? = nil) throws -> [RowId] {
+    public func queryIds(parameters:[Bindable?]? = nil) throws -> [RowId] {
         return try query(parameters) { $0.int64ValueAtIndex(0) ?? 0 }
     }
     
