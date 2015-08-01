@@ -350,19 +350,16 @@ public class Statement : NSObject {
     }
     
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Execute & Query
+    // MARK:  Execute
     
     /// Advances to the next row of results. Statements begin before the first row of data, and iterate through the
     /// results through this method.
     ///
-    /// For statements that return no results (e.g. anything other than a `SELECT`), use the `execute(error:)` method.
+    /// For statements that return no results (e.g. anything other than a `SELECT`), use the `execute()` method.
     ///
-    /// :param:     error           An error pointer.
+    /// :returns:   `true` if a new result is available, `false` if the end of the result set is reached
     ///
-    /// :returns:   `true` if a new result is available, `false` if the end of the result set is reached, or `nil` if
-    ///             an error occurred.
-    ///
-    public func next(error:NSErrorPointer = nil) -> Bool? {
+    public func next() throws -> Bool {
         switch sqlite3_step(sqliteStatement) {
         case SQLITE_DONE:
             // no more steps
@@ -371,104 +368,29 @@ public class Statement : NSObject {
             // more rows to process
             return true
         default:
-            // error
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return nil
+            throw database.sqliteError
         }
     }
     
+    /// Executes the statement, optionally calling a block after each step. This is useful for
+    /// statements like `INSERT` which return no results.
     ///
-    /// Resets and executes the Statement, returning a `Statement?` sequence representing each step of the result set.
-    /// If an error occurs while iterating, the last item of the sequence will be `nil`, and an error will be placed in
-    /// the provided error pointer.
+    /// :param:     block  A block to call after each execution step.
     ///
-    /// Unlike the other `step` methods, this method does not clear any existing parameters, allowing them to be
-    /// reused.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(error error:NSErrorPointer = nil) -> StepSequence {
-        reset()
-        return StepSequence(statement:self, errorPointer:error, hasError:false)
-    }
-    
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(parameters parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        clearParameters()
-        
-        do {
-            try self.bind(parameters)
-        } catch let bindError as NSError {
-            if error != nil {
-                error.memory = bindError
-            }
-            return StepSequence(statement:self, errorPointer:error, hasError:true)
-        }
-        
-        return query(error:error)
-    }
-    
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(namedParameters namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        clearParameters()
-        
-        do {
-            try self.bind(namedParameters:namedParameters)
-            return query(error:error)
-        } catch let bindError as NSError {
-            if error != nil {
-                error.memory = bindError
-            }
-            return StepSequence(statement:self, errorPointer:error, hasError:true)
-        }
-    }
-    
-    /// Executes the statement. This is useful for statements like `INSERT` which return no results.
-    ///
-    /// :param:     error           An error pointer.
-    ///
-    /// :returns:   `true` if the statement succeeded, `false` if it failed.
-    ///
-    public func execute() throws {
-        var error:NSError?
-        for step in self.query(error:&error) {
-            if step == nil {
-                throw error!
-            }
+    public func execute(block:((Statement) throws -> ())? = nil) throws {
+        while try next() {
+            try block?(self)
         }
     }
     
     /// Resets the statement so it can be executed again. Paramters are NOT cleared. To clear them call
     /// `clearParameters()` after this method.
     ///
-    /// :param:     error           An error pointer.
-    ///
-    /// :returns:   `true` if the statement was reset, `false` otherwise.
-    ///
-    public func reset(error error:NSErrorPointer = nil) -> Bool {
+    public func reset() throws {
         let resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw errorFromSQLiteErrorCode(resultCode, message: "Failed to reset statement (resultCode: \(resultCode))")
         }
-        
-        return true
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -782,76 +704,51 @@ public class Statement : NSObject {
     
 }
 
-// =====================================================================================================================
+// =================================================================================================
 // MARK:- SequenceType
 
 public class StepSequence : SequenceType {
     
-    private let statement: Statement?
-    private let errorPointer: NSErrorPointer
-    private let hasError: Bool
+    private let statement: Statement
     
-    init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
+    init(statement:Statement) {
         self.statement = statement
-        self.errorPointer = errorPointer
-        self.hasError = hasError
     }
     
     public func generate() -> StepGenerator {
-        return StepGenerator(statement:statement, errorPointer:errorPointer, hasError:hasError)
+        return StepGenerator(statement:statement)
     }
     
 }
 
 public struct StepGenerator : GeneratorType {
     
-    private let statement: Statement?
-    private let errorPointer: NSErrorPointer
-    private let hasError: Bool
+    private let statement: Statement
+    private var error:NSError?
     private var isComplete: Bool = false
     
-    private init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
+    private init(statement:Statement) {
         self.statement = statement
-        self.errorPointer = errorPointer
-        self.hasError = hasError
     }
     
-    public mutating func next() -> Statement?? {
+    public mutating func next() -> (Statement,NSError?)? {
         if isComplete {
             return nil
         }
         
-        if hasError {
+        let hasNext:Bool
+        do {
+            hasNext = try statement.next()
+        } catch let error as NSError {
             isComplete = true
-            return Statement?.None
+            return (statement, error)
         }
         
-        if let statement = self.statement {
-            switch statement.next(errorPointer) {
-            case .Some(false):
-                // no more steps
-                break
-
-            case .Some(true):
-                // more rows to process
-                return statement
-                
-            default:
-                // error
-                isComplete = true
-                return Statement?.None
-            }
+        if !hasNext {
+            isComplete = true
+            return nil
         }
         
-        isComplete = true
-        return nil
+        return (statement, nil)
     }
-}
-
-extension Statement : SequenceType {
-    
-    public func generate() -> StepGenerator {
-        return self.query().generate()
-    }
-    
 }

@@ -263,25 +263,18 @@ public extension Database {
         
         do {
             let statement = try prepareStatement("SELECT * FROM sqlite_master")
-        
-            var error: NSError?
-            for row in statement.query(error:&error) {
-                if row == nil {
-                    NSLog("Error reading database schema: \(error)")
-                    return Schema()
-                }
-                
-                let schemaEntry = SchemaEntry(type:     row!.stringValue("type"),
-                                              name:     row!.stringValue("name"),
-                                              tableName:row!.stringValue("tbl_name"),
-                                              rootPage: row!.intValue("rootpage"),
-                                              sql:      row!.stringValue("sql"))
+            while try statement.next() {
+                let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
+                                              name:     statement.stringValue("name"),
+                                              tableName:statement.stringValue("tbl_name"),
+                                              rootPage: statement.intValue("rootpage"),
+                                              sql:      statement.stringValue("sql"))
                 
                 schemaEntries.append(schemaEntry)
-                
             }
         } catch let error {
             NSLog("Error preparing statement to read database schema: \(error)")
+            return Schema()
         }
         
         return Schema(schemaEntries: schemaEntries)
@@ -294,21 +287,16 @@ public extension Database {
     /// :returns: A TableInfo object describing the table and its columns. `nil` if an error occurs.
     ///
     public func tableInfoForTableNamed(tableName:String) throws -> TableInfo {
-        let statement = try prepareStatement("PRAGMA table_info(" + escapeIdentifier(tableName) + ")")
         var columns = [ColumnInfo]()
         
-        var error:NSError?
-        for row in statement.query(error:&error) {
-            if row == nil {
-                throw error!
-            }
-            
-            let columnInfo = ColumnInfo(index:          row!.intValue("cid") ?? 0,
-                                        name:           row!.stringValue("name") ?? "",
-                                        type:           row!.stringValue("type"),
-                                        notNull:        row!.boolValue("notnull") ?? false,
-                                        defaultValue:   row!.stringValue("dflt_value"),
-                                        primaryKeyIndex:row!.intValue("pk") ?? 0)
+        let statement = try prepareStatement("PRAGMA table_info(" + escapeIdentifier(tableName) + ")")
+        while try statement.next() {
+            let columnInfo = ColumnInfo(index:          statement.intValue("cid") ?? 0,
+                                        name:           statement.stringValue("name") ?? "",
+                                        type:           statement.stringValue("type"),
+                                        notNull:        statement.boolValue("notnull") ?? false,
+                                        defaultValue:   statement.stringValue("dflt_value"),
+                                        primaryKeyIndex:statement.intValue("pk") ?? 0)
             
             columns.append(columnInfo)
         }
@@ -327,13 +315,8 @@ public extension Database {
         let statement = try prepareStatement(userViewSql)
 
         var userVersionNumber:Int32 = 0
-        var error:NSError?
-        for row in statement.query(error:&error) {
-            if row == nil {
-                throw error!
-            }
-            
-            userVersionNumber = Int32(row!.intValueAtIndex(0) ?? 0)
+        if try statement.next() {
+            userVersionNumber = Int32(statement.intValueAtIndex(0) ?? 0)
         }
         return userVersionNumber
     }

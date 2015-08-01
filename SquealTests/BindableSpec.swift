@@ -27,163 +27,163 @@ class BindableSpec: QuickSpec {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS ?")
                 try! statement.bind(["Brian"])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
                 
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Int values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([Int(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Int64 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([Int64(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Int32 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([Int32(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Int16 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([Int16(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Int8 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([Int8(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds UInt64 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([UInt64(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds UInt32 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([UInt32(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds UInt16 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([UInt16(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds UInt8 values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId IS ?")
                 try! statement.bind([UInt8(1)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Double values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE age > ?")
                 try! statement.bind([Double(43.374)])
 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Float values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE age > ?")
                 try! statement.bind([Float(43.374)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds Bool values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE is_adult IS ?")
                 try! statement.bind([false])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
 
             it("binds blob values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
                 try! statement.bind(["image".dataUsingEncoding(NSUTF8StringEncoding)])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Cara"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds empty blob values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
                 try! statement.bind([NSData()])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds NULL blob values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
                 try! statement.bind([nil])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds nil values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE age IS ?")
                 try! statement.bind([nil])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Cara"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds multiple values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId > ? AND personId < ?")
                 try! statement.bind([1, 3])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
         }
@@ -194,18 +194,18 @@ class BindableSpec: QuickSpec {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
                 try! statement.bind(namedParameters:[ "$NAME": "Brian" ])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
             it("binds multiple values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId > $MIN_ID AND personId < $MAX_ID")
                 try! statement.bind(namedParameters:["$MIN_ID": 1, "$MAX_ID": 3])
                 
-                expect(statement.next()).to(equal(.Some(true)))
+                expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.next()).to(equal(.Some(false)))
+                expect(try! statement.next()).to(equal(false))
             }
             
         }

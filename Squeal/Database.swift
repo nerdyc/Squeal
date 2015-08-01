@@ -177,35 +177,4 @@ public class Database : NSObject {
         return errorFromSQLiteResultCode(sqliteDatabase)
     }
     
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Query
-    
-    public func query(sqlString:String, error:NSErrorPointer = nil) -> StepSequence {
-        return query(sqlString, parameters:[], error:error)
-    }
-    
-    public func query(sqlString:String, parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        do {
-            let statement = try prepareStatement(sqlString)
-            return statement.query(parameters:parameters, error:error)
-        } catch let prepareError as NSError {
-            if error != nil {
-                error.memory = prepareError
-            }
-            return StepSequence(statement:nil, errorPointer:error, hasError:true)
-        }
-    }
-
-    public func query(sqlString:String, namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        do {
-            let statement = try prepareStatement(sqlString)
-            return statement.query(namedParameters:namedParameters, error:error)
-        } catch let prepareError as NSError {
-            if error != nil {
-                error.memory = prepareError
-            }
-            return StepSequence(statement:nil, errorPointer:error, hasError:true)
-        }
-    }
-    
 }

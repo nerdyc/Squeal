@@ -15,14 +15,10 @@ public extension Database {
     }
     
     public func queryRows(sqlString:String) throws -> [[String:Bindable]] {
+        let statement = try prepareStatement(sqlString)
         var rows = [[String:Bindable]]()
-        var error:NSError?
-        for row in self.query(sqlString, error:&error) {
-            if row == nil {
-                throw error!
-            }
-            
-            rows.append(row!.dictionaryValue)
+        while try statement.next() {
+            rows.append(statement.dictionaryValue)
         }
         return rows
     }

@@ -34,10 +34,10 @@ class UpdateHelpersSpec: QuickSpec {
             it("updates the values in the database") {
                 expect(result).to(equal(1))
 
-                let names = try! database.selectFrom("contacts").map { $0!["name"] as! String }
+                let names = try! database.queryFrom("contacts") { $0["name"] as! String }
                 expect(names).to(equal(["Amelia", "Bobby", "Cara"]))
                 
-                let emails = try! database.selectFrom("contacts").map { $0!["email"] as! String }
+                let emails = try! database.queryFrom("contacts") { $0["email"] as! String }
                 expect(emails).to(equal(["amelia@squeal.test", "bobby@squeal.test", "cara@squeal.test"]))
             }
             
@@ -52,8 +52,8 @@ class UpdateHelpersSpec: QuickSpec {
             }
             
             it("updates the values in the database") {
-                let values = try! database.selectFrom("contacts",
-                                                      orderBy:"_ROWID_").map { $0!["name"] as! String }
+                let values = try! database.queryFrom("contacts",
+                                                      orderBy:"_ROWID_") { $0["name"] as! String }
                 
                 expect(result).to(equal(2))
                 expect(values).to(equal(["Bobby", "Brian", "Bobby"]))

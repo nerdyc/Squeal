@@ -2,15 +2,34 @@ import Foundation
 
 public extension Database {
     
-    public func prepareSelectFrom(from:        String,
-                                  columns:     [String]? = nil,
-                                  whereExpr:   String? = nil,
-                                  groupBy:     String? = nil,
-                                  having:      String? = nil,
-                                  orderBy:     String? = nil,
-                                  limit:       Int? = nil,
-                                  offset:      Int? = nil,
-                                  parameters:  [Bindable?] = []) throws -> Statement {
+    // ---------------------------------------------------------------------------------------------
+    // MARK: SELECT
+    
+    /// Compiles a SELECT statement, optionally binding values. Use the `next` method to begin
+    /// iterating results.
+    ///
+    /// :param: from        The name of the table to select from, including any JOIN clauses.
+    /// :param: columns     The columns to select. These are not escaped, and can contain expressions. If nil, all
+    ///                     columns are returned (e.g. '*').
+    /// :param: whereExpr   The WHERE clause. If nil, then all rows are returned.
+    /// :param: groupBy     The GROUP BY expression.
+    /// :param: having      The HAVING clause.
+    /// :param: orderBy     The ORDER BY clause.
+    /// :param: limit       The LIMIT.
+    /// :param: offset      The OFFSET.
+    /// :param: parameters  An array of parameters to bind to the statement.
+    ///
+    /// :returns:   An array of all values read, or nil if an error occurs.
+    ///
+    public func selectFrom(from:        String,
+                           columns:     [String]? = nil,
+                           whereExpr:   String? = nil,
+                           groupBy:     String? = nil,
+                           having:      String? = nil,
+                           orderBy:     String? = nil,
+                           limit:       Int? = nil,
+                           offset:      Int? = nil,
+                           parameters:  [Bindable?] = []) throws -> Statement {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
@@ -60,102 +79,16 @@ public extension Database {
         return statement
     }
     
-    // =================================================================================================================
-    // MARK:- SELECT
+    // ---------------------------------------------------------------------------------------------
+    // MARK: Count
     
-    /// Selects table rows and iterates over them. This is a helper for executing a SELECT statement, and reading the
-    /// results.
-    ///
-    /// Results are read by the `collector` block. The block will be invoked for each row of the result set, and is
-    /// expected to return a value read from the row. It will be provided a Statement, from which the row can be read.
-    ///
-    /// :param: from        The name of the table to select from, including any JOIN clauses.
-    /// :param: columns     The columns to select. These are not escaped, and can contain expressions. If nil, all
-    ///                     columns are returned (e.g. '*').
-    /// :param: whereExpr   The WHERE clause. If nil, then all rows are returned.
-    /// :param: groupBy     The GROUP BY expression.
-    /// :param: having      The HAVING clause.
-    /// :param: orderBy     The ORDER BY clause.
-    /// :param: limit       The LIMIT.
-    /// :param: offset      The OFFSET.
-    /// :param: parameters  An array of parameters to bind to the statement.
-    /// :param: error       An error pointer.
-    /// :param: collector   A block used to read each row.
-    ///
-    /// :returns:   An array of all values read, or nil if an error occurs.
-    ///
-    public func selectFrom(from:        String,
-                           columns:     [String]? = nil,
-                           whereExpr:   String? = nil,
-                           groupBy:     String? = nil,
-                           having:      String? = nil,
-                           orderBy:     String? = nil,
-                           limit:       Int? = nil,
-                           offset:      Int? = nil,
-                           parameters:  [Bindable?] = [],
-                           error:NSErrorPointer = nil) throws -> StepSequence {
-        
-        let statement = try prepareSelectFrom(from,
-                                              columns:   columns,
-                                              whereExpr: whereExpr,
-                                              groupBy:   groupBy,
-                                              having:    having,
-                                              orderBy:   orderBy,
-                                              limit:     limit,
-                                              offset:    offset)
-
-        return statement.query(parameters:parameters, error:error)
-    }
-    
-    /// Fetches the IDs of all rows that match the given WHERE clause. This makes use of SQLite's `_ROWID_` alias to
-    /// select the primary key from the given table.
-    ///
-    /// :param: tableName   The name of the table to select from. Should not include join clauses.
-    /// :param: whereExpr   The WHERE clause. If nil, then all rows are returned.
-    /// :param: orderBy     The ORDER BY clause.
-    /// :param: limit       The LIMIT.
-    /// :param: offset      The OFFSET.
-    /// :param: parameters  An array of parameters to bind to the statement.
-    /// :param: error       An error pointer.
-    ///
-    public func selectRowIdsFrom(tableName:   String,
-                                 whereExpr:   String? = nil,
-                                 orderBy:     String? = nil,
-                                 limit:       Int? = nil,
-                                 offset:      Int? = nil,
-                                 parameters:  [Bindable?] = []) throws -> [RowId] {
-        
-        let statement = try prepareSelectFrom(tableName,
-                                              columns:   ["_ROWID_"],
-                                              whereExpr: whereExpr,
-                                              orderBy:   orderBy,
-                                              limit:     limit,
-                                              offset:    offset,
-                                              parameters:parameters)
-        
-        var rowIds = [RowId]()
-        var error:NSError?
-        for step in statement.query(error: &error) {
-            if step == nil {
-                throw error!
-            }
-            
-            rowIds.append(statement.int64ValueAtIndex(0) ?? 0)
-        }
-        return rowIds
-    }
-
-    // =================================================================================================================
-    // MARK:- COUNT
-    
-    /// Counts rows in a table. This is a helper for executing a SELECT count(...) FROM statement and reading the
-    /// result.
+    /// Counts rows in a table. This is a helper for executing a SELECT count(...) FROM statement
+    /// and reading the result.
     ///
     /// :param: from        The name of the table to select from, including any JOIN clauses.
     /// :param: columns     The columns to count. If nil, then 'count(*)' is returned.
     /// :param: whereExpr   The WHERE clause. If nil, then all rows are returned.
     /// :param: parameters  An array of parameters to bind to the statement.
-    /// :param: error       An error pointer.
     ///
     /// :returns:   The number of rows counted, or nil if an error occurs.
     ///
@@ -165,22 +98,68 @@ public extension Database {
                           parameters:  [Bindable?] = []) throws -> Int64 {
 
         let countExpr = "count(" + ",".join(columns ?? ["*"]) + ")"
-        let statement = try prepareSelectFrom(from,
-                                              columns:   [countExpr],
-                                              whereExpr: whereExpr,
-                                              parameters:parameters)
-            
-        var count: Int64 = 0
-        var error:NSError?
-        for step in statement.query(error: &error) {
-            if step == nil {
-                throw error!
-            }
-            
-            count = step!.int64ValueAtIndex(0) ?? 0
-            break
+        let statement = try selectFrom(from,
+                                       columns:   [countExpr],
+                                       whereExpr: whereExpr,
+                                       parameters:parameters)
+                                    
+        var count:Int64 = 0
+        if try statement.next() {
+            count = statement.int64ValueAtIndex(0) ?? 0
         }
         return count
+    }
+    
+    // ---------------------------------------------------------------------------------------------
+    // MARK: Query
+    
+    public func queryFrom<T>(from:        String,
+                             columns:     [String]? = nil,
+                             whereExpr:   String? = nil,
+                             groupBy:     String? = nil,
+                             having:      String? = nil,
+                             orderBy:     String? = nil,
+                             limit:       Int? = nil,
+                             offset:      Int? = nil,
+                             parameters:  [Bindable?] = [],
+                             block:       ((Statement) throws -> T)) throws -> [T] {
+                                
+        let statement = try selectFrom(from, columns:columns, whereExpr:whereExpr, groupBy:groupBy,
+                                       having:having, orderBy:orderBy, limit:limit, offset:offset,
+                                       parameters:parameters)
+        
+        return try statement.query(block:block)
+    }
+    
+}
+
+public extension Statement {
+    
+    public func queryNext<T>(block:((Statement) throws -> T)) throws -> T? {
+        guard try next() else {
+            return nil
+        }
+        
+        return try block(self)
+    }
+    
+    public func queryRowIds(parameters:[Bindable?]? = nil) throws -> [RowId] {
+        return try query(parameters) { $0.int64ValueAtIndex(0) ?? 0 }
+    }
+    
+    public func query<T>(parameters:[Bindable?]? = nil, block:((Statement) throws -> T)) throws -> [T] {
+        try reset()
+        
+        if let parametersToBind = parameters {
+            clearParameters()
+            try bind(parametersToBind)
+        }
+        
+        var rows = [T]()
+        while let row = try queryNext(block) {
+            rows.append(row)
+        }
+        return rows
     }
     
 }
