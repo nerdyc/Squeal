@@ -1,5 +1,12 @@
 import Foundation
 
+public protocol DatabasePoolDelegate : class {
+    
+    func databaseOpened(database:Database) throws
+    func databaseClosed(database:Database)
+    
+}
+
 ///
 /// Manages a pool of Database objects. The pool does not have a maximum size, and will not block. The pool can be
 /// safely accessed from multiple threads concurrently.
@@ -7,11 +14,13 @@ import Foundation
 public class DatabasePool : NSObject {
     
     public let databasePath : String
+    public weak var delegate : DatabasePoolDelegate?
     private let syncQueue : dispatch_queue_t
     
-    public init(databasePath:String) {
+    public init(databasePath:String, delegate:DatabasePoolDelegate? = nil) {
         self.databasePath = databasePath
         self.syncQueue = dispatch_queue_create("DatabasePool-(\(databasePath))", DISPATCH_QUEUE_SERIAL)
+        self.delegate = delegate
     }
     
     // =================================================================================================================
@@ -95,7 +104,9 @@ public class DatabasePool : NSObject {
     }
     
     private func openDatabase() throws -> Database {
-        return try Database(path: databasePath)
+        let database = try Database(path: databasePath)
+        try delegate?.databaseOpened(database)
+        return database
     }
     
     private func deactivateDatabase(database:Database) {
@@ -107,6 +118,8 @@ public class DatabasePool : NSObject {
             if let index = self.inactiveDatabases.indexOf(database) {
                 self.inactiveDatabases.removeAtIndex(index)
             }
+            
+            self.delegate?.databaseClosed(database)
         }
     }
     
