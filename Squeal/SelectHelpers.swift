@@ -33,7 +33,7 @@ public extension Database {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
-            fragments.append(",".join(columns!))
+            fragments.append(columns!.joinWithSeparator(","))
         } else {
             fragments.append("*")
         }
@@ -71,7 +71,7 @@ public extension Database {
             }
         }
         
-        let statement = try prepareStatement(" ".join(fragments))
+        let statement = try prepareStatement(fragments.joinWithSeparator(" "))
         if parameters.count > 0 {
             try statement.bind(parameters)
         }
@@ -117,7 +117,7 @@ public extension Database {
                           whereExpr:   String? = nil,
                           parameters:  [Bindable?] = []) throws -> Int64 {
 
-        let countExpr = "count(" + ",".join(columns ?? ["*"]) + ")"
+        let countExpr = "count(" + (columns ?? ["*"]).joinWithSeparator(",") + ")"
         let statement = try prepareSelectFrom(from,
                                               columns:   [countExpr],
                                               whereExpr: whereExpr,

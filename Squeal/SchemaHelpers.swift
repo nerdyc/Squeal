@@ -354,10 +354,10 @@ public extension Database {
         }
         createTableSql.append(escapeIdentifier(tableName))
         createTableSql.append("(")
-        createTableSql.append(",".join(definitions))
+        createTableSql.append(definitions.joinWithSeparator(","))
         createTableSql.append(")")
                                 
-        return try execute(" ".join(createTableSql))
+        return try execute(createTableSql.joinWithSeparator(" "))
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -449,10 +449,10 @@ public extension Database {
         createIndexSql.append("ON")
         createIndexSql.append(escapeIdentifier(tableName))
         createIndexSql.append("(")
-        createIndexSql.append(", ".join(columns))
+        createIndexSql.append(columns.joinWithSeparator(", "))
         createIndexSql.append(")")
         
-        return try execute(" ".join(createIndexSql))
+        return try execute(createIndexSql.joinWithSeparator(" "))
     }
     
     // -----------------------------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ public extension Database {
                               columns:     [String],
                               whereExpr:   String? = nil) throws -> Statement {
         
-        let columnsToSet = ", ".join(columns.map { escapeIdentifier($0) + " = ?" })
+        let columnsToSet = columns.map { escapeIdentifier($0) + " = ?" }.joinWithSeparator(", ")
         var fragments = ["UPDATE", escapeIdentifier(tableName), "SET", columnsToSet]
                                 
         if whereExpr != nil {
@@ -14,7 +14,7 @@ public extension Database {
             fragments.append(whereExpr!)
         }
 
-        return try prepareStatement(" ".join(fragments))
+        return try prepareStatement(fragments.joinWithSeparator(" "))
     }
     
     /// Updates table rows. This is a helper for executing an UPDATE ... SET ... WHERE statement.
@@ -84,7 +84,7 @@ public extension Database {
         
         let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
         
-        let whereExpr = "_ROWID_ IN (" + ",".join(rowIds.map { _ -> String in "?" }) + ")"
+        let whereExpr = "_ROWID_ IN (" + rowIds.map { _ -> String in "?" }.joinWithSeparator(",") + ")"
         return try update(tableName, set:values, whereExpr:whereExpr, parameters:parameters)
     }
     

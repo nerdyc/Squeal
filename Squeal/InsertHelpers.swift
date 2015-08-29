@@ -6,14 +6,14 @@ public extension Database {
         var sqlFragments = ["INSERT INTO"]
         sqlFragments.append(escapeIdentifier(tableName))
         sqlFragments.append("(")
-        sqlFragments.append(", ".join(columns.map { escapeIdentifier($0) }))
+        sqlFragments.append(columns.map { escapeIdentifier($0) }.joinWithSeparator(", "))
         sqlFragments.append(")")
         sqlFragments.append("VALUES")
         sqlFragments.append("(")
-        sqlFragments.append(",".join(columns.map { _ in "?" }))
+        sqlFragments.append(columns.map { _ in "?" }.joinWithSeparator(","))
         sqlFragments.append(")")
         
-        return try prepareStatement(" ".join(sqlFragments))
+        return try prepareStatement(sqlFragments.joinWithSeparator(" "))
     }
     
     /// Inserts a table row. This is a helper for executing an INSERT INTO statement.
