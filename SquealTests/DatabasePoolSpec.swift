@@ -10,7 +10,7 @@ class DatabasePoolSpec: QuickSpec {
         
         beforeEach {
             let tempPath = try! Database.createTemporaryDirectory()
-            databasePool = DatabasePool(databasePath: tempPath.stringByAppendingPathComponent("DatabasePoolSpec"))
+            databasePool = DatabasePool(databasePath: tempPath + "/DatabasePoolSpec")
         }
         
         afterEach {

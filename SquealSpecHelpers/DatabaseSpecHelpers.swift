@@ -5,13 +5,14 @@ public extension Database {
     
     public class func createTemporaryDirectory(prefix:String = "Squeal") throws -> String {
         let suffix = NSUUID().UUIDString
-        let tempDirectoryPath = NSTemporaryDirectory().stringByAppendingPathComponent(prefix + "-" + suffix)
+        let globalTempDirectoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let tempDirectoryURL = globalTempDirectoryURL.URLByAppendingPathComponent(prefix + "-" + suffix)
         
-        try NSFileManager.defaultManager().createDirectoryAtPath(tempDirectoryPath,
-                                                                 withIntermediateDirectories: true,
-                                                                 attributes:                  nil)
+        try NSFileManager.defaultManager().createDirectoryAtURL(tempDirectoryURL,
+                                                                withIntermediateDirectories: true,
+                                                                attributes:                  nil)
         
-        return tempDirectoryPath
+        return tempDirectoryURL.path!
     }
     
     public func queryRows(sqlString:String) throws -> [[String:Bindable]] {
