@@ -2,7 +2,7 @@ import Foundation
 
 /// Escapes a SQL string. For example, escaping `it's it` will produce `'it''s it'`.
 public func escapeIdentifier(identifier:String) -> String {
-    var escapedString = identifier.stringByReplacingOccurrencesOfString("'",
+    let escapedString = identifier.stringByReplacingOccurrencesOfString("'",
                                                                         withString: "''",
                                                                         options:    .LiteralSearch,
                                                                         range:      nil)
@@ -261,25 +261,20 @@ public extension Database {
     public var schema: Schema {
         var schemaEntries = [SchemaEntry]()
         
-        var error: NSError?
-        if let statement = prepareStatement("SELECT * FROM sqlite_master", error:&error) {
-            for row in statement.query(error:&error) {
-                if row == nil {
-                    NSLog("Error reading database schema: \(error)")
-                    return Schema()
-                }
-                
-                let schemaEntry = SchemaEntry(type:     row!.stringValue("type"),
-                                              name:     row!.stringValue("name"),
-                                              tableName:row!.stringValue("tbl_name"),
-                                              rootPage: row!.intValue("rootpage"),
-                                              sql:      row!.stringValue("sql"))
+        do {
+            let statement = try prepareStatement("SELECT * FROM sqlite_master")
+            while try statement.next() {
+                let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
+                                              name:     statement.stringValue("name"),
+                                              tableName:statement.stringValue("tbl_name"),
+                                              rootPage: statement.intValue("rootpage"),
+                                              sql:      statement.stringValue("sql"))
                 
                 schemaEntries.append(schemaEntry)
-                
             }
-        } else {
+        } catch let error {
             NSLog("Error preparing statement to read database schema: \(error)")
+            return Schema()
         }
         
         return Schema(schemaEntries: schemaEntries)
@@ -291,30 +286,22 @@ public extension Database {
     /// :param: error       An error pointer
     /// :returns: A TableInfo object describing the table and its columns. `nil` if an error occurs.
     ///
-    public func tableInfoForTableNamed(tableName:String, error:NSErrorPointer = nil) -> TableInfo? {
-        let selectSql = "PRAGMA table_info(" + escapeIdentifier(tableName) + ")"
-        if let statement = prepareStatement(selectSql, error:error) {
-            var columns = [ColumnInfo]()
+    public func tableInfoForTableNamed(tableName:String) throws -> TableInfo {
+        var columns = [ColumnInfo]()
+        
+        let statement = try prepareStatement("PRAGMA table_info(" + escapeIdentifier(tableName) + ")")
+        while try statement.next() {
+            let columnInfo = ColumnInfo(index:          statement.intValue("cid") ?? 0,
+                                        name:           statement.stringValue("name") ?? "",
+                                        type:           statement.stringValue("type"),
+                                        notNull:        statement.boolValue("notnull") ?? false,
+                                        defaultValue:   statement.stringValue("dflt_value"),
+                                        primaryKeyIndex:statement.intValue("pk") ?? 0)
             
-            for row in statement.query(error:error) {
-                if row == nil {
-                    return nil
-                }
-                
-                let columnInfo = ColumnInfo(index:          row!.intValue("cid") ?? 0,
-                                            name:           row!.stringValue("name") ?? "",
-                                            type:           row!.stringValue("type"),
-                                            notNull:        row!.boolValue("notnull") ?? false,
-                                            defaultValue:   row!.stringValue("dflt_value"),
-                                            primaryKeyIndex:row!.intValue("pk") ?? 0)
-                
-                columns.append(columnInfo)
-            }
-            
-            return TableInfo(name: tableName, columns: columns)
-        } else {
-            return nil
+            columns.append(columnInfo)
         }
+            
+        return TableInfo(name: tableName, columns: columns)
     }
     
     /// Fetches the 'user_version' value, a user-defined version number for the database. This is useful for managing
@@ -323,21 +310,15 @@ public extension Database {
     /// :param: error       An error pointer
     /// :returns: The user version, or `nil` if an error occurs.
     ///
-    public func queryUserVersionNumber(error:NSErrorPointer = nil) -> Int32? {
+    public func queryUserVersionNumber() throws -> Int32 {
         let userViewSql = "PRAGMA user_version"
-        if let statement = prepareStatement(userViewSql, error:error) {
-            var userVersionNumber:Int32 = 0
-            for row in statement.query(error:error) {
-                if row == nil {
-                    return nil
-                }
-                
-                userVersionNumber = Int32(row!.intValueAtIndex(0) ?? 0)
-            }
-            return userVersionNumber
-        } else {
-            return nil
+        let statement = try prepareStatement(userViewSql)
+
+        var userVersionNumber:Int32 = 0
+        if try statement.next() {
+            userVersionNumber = Int32(statement.intValueAtIndex(0) ?? 0)
         }
+        return userVersionNumber
     }
 
     /// Sets the 'user_version' value, a user-defined version number for the database. This is useful for managing
@@ -347,8 +328,8 @@ public extension Database {
     /// :param: error       An error pointer
     /// :returns: `true` if the version was set, `false` if an error occurs.
     ///
-    public func updateUserVersionNumber(number:Int32, error:NSErrorPointer = nil) -> Bool {
-        return execute("PRAGMA user_version=\(number)", error: error)
+    public func updateUserVersionNumber(number:Int32) throws {
+        return try execute("PRAGMA user_version=\(number)")
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -366,19 +347,17 @@ public extension Database {
     ///
     public func createTable(tableName:String,
                             definitions:[String],
-                            ifNotExists:Bool = false,
-                            error:NSErrorPointer = nil) -> Bool {
+                            ifNotExists:Bool = false) throws {
         var createTableSql = [ "CREATE TABLE" ]
         if ifNotExists {
             createTableSql.append("IF NOT EXISTS")
         }
         createTableSql.append(escapeIdentifier(tableName))
         createTableSql.append("(")
-        createTableSql.append(join(",", definitions))
+        createTableSql.append(definitions.joinWithSeparator(","))
         createTableSql.append(")")
                                 
-        return execute(join(" ", createTableSql),
-                       error: error)
+        return try execute(createTableSql.joinWithSeparator(" "))
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -393,14 +372,14 @@ public extension Database {
     ///
     /// :returns: true if the table was dropped, false if an error occurs.
     ///
-    public func dropTable(tableName:String, ifExists:Bool = false, error:NSErrorPointer = nil) -> Bool {
+    public func dropTable(tableName:String, ifExists:Bool = false) throws {
         var dropTableSql = "DROP TABLE "
         if ifExists {
             dropTableSql += "IF EXISTS "
         }
         dropTableSql += escapeIdentifier(tableName)
         
-        return execute(dropTableSql, error: error)
+        return try execute(dropTableSql)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -414,11 +393,11 @@ public extension Database {
     ///
     /// :returns: true if the table was renamed, false if an error occurs.
     ///
-    public func renameTable(tableName:String, to:String, error:NSErrorPointer = nil) -> Bool {
+    public func renameTable(tableName:String, to:String) throws {
         let renameTableSql = "ALTER TABLE " + escapeIdentifier(tableName)
                                 + " RENAME TO " + escapeIdentifier(to)
         
-        return execute(renameTableSql, error: error)
+        return try execute(renameTableSql)
     }
     
     /// Adds a column to a table. This is a helper for executing a ALTER TABLE ... ADD COLUMN statement.
@@ -429,11 +408,11 @@ public extension Database {
     ///
     /// :returns: true if the column was added, false if an error occurs.
     ///
-    public func addColumnToTable(tableName:String, column:String, error:NSErrorPointer = nil) -> Bool {
+    public func addColumnToTable(tableName:String, column:String) throws {
         let addColumnSql = "ALTER TABLE " + escapeIdentifier(tableName)
                                 + " ADD COLUMN " + column
         
-        return execute(addColumnSql, error: error)
+        return try execute(addColumnSql)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -455,8 +434,7 @@ public extension Database {
                             tableName:String,
                             columns:[String],
                             unique:Bool = false,
-                            ifNotExists:Bool = false,
-                            error:NSErrorPointer = nil) -> Bool {
+                            ifNotExists:Bool = false) throws {
                                 
         var createIndexSql = [ "CREATE" ]
         if unique {
@@ -471,10 +449,10 @@ public extension Database {
         createIndexSql.append("ON")
         createIndexSql.append(escapeIdentifier(tableName))
         createIndexSql.append("(")
-        createIndexSql.append(join(", ", columns))
+        createIndexSql.append(columns.joinWithSeparator(", "))
         createIndexSql.append(")")
         
-        return execute(join(" ", createIndexSql), error: error)
+        return try execute(createIndexSql.joinWithSeparator(" "))
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -489,13 +467,13 @@ public extension Database {
     ///
     /// :returns: true if the index was removed, false if an error occurs.
     ///
-    public func dropIndex(indexName:String, ifExists:Bool = false, error:NSErrorPointer = nil) -> Bool {
+    public func dropIndex(indexName:String, ifExists:Bool = false) throws {
         var dropIndexSql = "DROP INDEX "
         if ifExists {
             dropIndexSql += "IF EXISTS "
         }
         dropIndexSql += escapeIdentifier(indexName)
         
-        return execute(dropIndexSql, error: error)
+        return try execute(dropIndexSql)
     }
 }

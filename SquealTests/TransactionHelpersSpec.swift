@@ -6,35 +6,33 @@ import SquealSpecHelpers
 class TransactionHelpersSpec: QuickSpec {
     override func spec() {
         var database : Database!
-        var error : NSError?
         
         beforeEach {
-            database = Database.openTemporaryDatabase()
+            database = Database()
         }
         
         afterEach {
             database = nil
-            error = nil
         }
         
         describe(".transaction()") {
             
             beforeEach {
-                database.executeOrFail("CREATE TABLE people (id PRIMARY KEY, name TEXT)")
+                try! database.execute("CREATE TABLE people (id PRIMARY KEY, name TEXT)")
             }
             
             context("when the transaction is committed") {
                 
                 it("persists all changes") {
-                    var result = database.transaction {
-                        $0.insert("people", row: ["name":"Amelia"])
-                        $0.insert("people", row: ["name":"Brian"])
-                        $0.insert("people", row: ["name":"Cara"])
+                    try! database.transaction {
+                        try! $0.insertInto("people", values: ["name":"Amelia"])
+                        try! $0.insertInto("people", values: ["name":"Brian"])
+                        try! $0.insertInto("people", values: ["name":"Cara"])
                         
                         return .Commit
                     }
                     
-                    expect(database.countFrom("people")).to(equal(3))
+                    expect(try! database.countFrom("people")).to(equal(3))
                 }
                 
             }
@@ -42,15 +40,15 @@ class TransactionHelpersSpec: QuickSpec {
             context("when the transaction is rolled back") {
                 
                 it("discards changes") {
-                    var result = database.transaction {
-                        $0.insert("people", row: ["name":"Amelia"])
-                        $0.insert("people", row: ["name":"Brian"])
-                        $0.insert("people", row: ["name":"Cara"])
+                    try! database.transaction {
+                        try! $0.insertInto("people", values: ["name":"Amelia"])
+                        try! $0.insertInto("people", values: ["name":"Brian"])
+                        try! $0.insertInto("people", values: ["name":"Cara"])
                         
                         return .Rollback
                     }
                     
-                    expect(database.countFrom("people")).to(equal(0))
+                    expect(try! database.countFrom("people")).to(equal(0))
                 }
                 
             }

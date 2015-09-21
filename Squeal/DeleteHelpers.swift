@@ -3,8 +3,7 @@ import Foundation
 public extension Database {
     
     public func prepareDeleteFrom(tableName:   String,
-                                  whereExpr:   String? = nil,
-                                  error:       NSErrorPointer = nil) -> Statement? {
+                                  whereExpr:   String? = nil) throws -> Statement {
         
         var fragments = ["DELETE FROM", escapeIdentifier(tableName)]
         if whereExpr != nil {
@@ -12,7 +11,7 @@ public extension Database {
             fragments.append(whereExpr!)
         }
 
-        return prepareStatement(join(" ", fragments), error: error)
+        return try prepareStatement(fragments.joinWithSeparator(" "))
     }
 
     /// Deletes table rows. This is a helper for executing an DELETE FROM ... WHERE statement.
@@ -26,18 +25,13 @@ public extension Database {
     ///
     public func deleteFrom(tableName:   String,
                            whereExpr:   String? = nil,
-                           parameters:  [Bindable?] = [],
-                           error:       NSErrorPointer = nil) -> Int? {
+                           parameters:  [Bindable?] = []) throws -> Int {
             
-        var numberOfChangedRows : Int?
-        if let statement = prepareDeleteFrom(tableName, whereExpr: whereExpr, error: error) {
-            if statement.bind(parameters, error: error) {
-                if statement.execute(error: error) {
-                    numberOfChangedRows = self.numberOfChangedRows
-                }
-            }
-        }
-        return numberOfChangedRows
+        let statement = try prepareDeleteFrom(tableName, whereExpr: whereExpr)
+        try statement.bind(parameters)
+        try statement.execute()
+                            
+        return self.numberOfChangedRows
     }
     
     /// Deletes table rows identified by their IDs.
@@ -49,15 +43,14 @@ public extension Database {
     /// :returns:   The number of rows removed, or nil if an error occurs.
     ///
     public func deleteFrom(tableName: String,
-                           rowIds:    [RowId],
-                           error:     NSErrorPointer = nil) -> Int? {
+                           rowIds:    [RowId]) throws -> Int {
         if rowIds.count == 0 {
             return 0
         }
         
         let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
         
-        let whereExpr = "_ROWID_ IN (" + join(",", rowIds.map { _ -> String in "?" }) + ")"
-        return deleteFrom(tableName, whereExpr: whereExpr, parameters: parameters, error: error)
+        let whereExpr = "_ROWID_ IN (" + rowIds.map { _ -> String in "?" }.joinWithSeparator(",") + ")"
+        return try deleteFrom(tableName, whereExpr: whereExpr, parameters: parameters)
     }
 }

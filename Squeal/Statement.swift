@@ -57,7 +57,7 @@ public class Statement : NSObject {
         parameterCount = Int(sqlite3_bind_parameter_count(sqliteStatement))
         
         var columnNames = [String]()
-        var columnCount = sqlite3_column_count(sqliteStatement)
+        let columnCount = sqlite3_column_count(sqliteStatement)
         for columnIndex in 0..<columnCount {
             let columnName = sqlite3_column_name(sqliteStatement, columnIndex)
             if columnName != nil {
@@ -124,22 +124,13 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindStringValue(stringValue:String, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
+    public func bindStringValue(stringValue:String, atIndex index:Int) throws {
         let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
         
-        let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
-        let opaquePointer = COpaquePointer(negativeOne)
-        let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
-        
-        let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, transient)
+        let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, SQUEAL_TRANSIENT)
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw database.sqliteError
         }
-        
-        return true
     }
     
     /// Binds a string value to a named parameter.
@@ -150,15 +141,12 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindStringValue(stringValue:String, named name:String, error:NSErrorPointer = nil) -> Bool {
-        if let parameterIndex = indexOfParameterNamed(name) {
-            return bindStringValue(stringValue, atIndex: parameterIndex, error: error)
-        } else {
-            if error != nil {
-                error.memory = unknownBindParameterError(name)
-            }
-            return false
+    public func bindStringValue(stringValue:String, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
         }
+        
+        try bindStringValue(stringValue, atIndex: parameterIndex)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -172,8 +160,8 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindIntValue(intValue:Int, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
-        return bindInt64Value(Int64(intValue), atIndex: index, error: error)
+    public func bindIntValue(intValue:Int, atIndex index:Int) throws {
+        try bindInt64Value(Int64(intValue), atIndex: index)
     }
     
     /// Binds an Int value to a named parameter.
@@ -184,8 +172,8 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindIntValue(intValue:Int, named name:String, error:NSErrorPointer = nil) -> Bool {
-        return bindInt64Value(Int64(intValue), named: name, error: error)
+    public func bindIntValue(intValue:Int, named name:String) throws {
+        try bindInt64Value(Int64(intValue), named: name)
     }
     
     /// Binds an Int64 value to the parameter at the 1-based index.
@@ -196,16 +184,11 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindInt64Value(int64Value:Int64, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
+    public func bindInt64Value(int64Value:Int64, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw database.sqliteError
         }
-        
-        return true
     }
     
     /// Binds an Int64 value to a named parameter.
@@ -216,15 +199,12 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindInt64Value(int64Value:Int64, named name:String, error:NSErrorPointer = nil) -> Bool {
-        if let parameterIndex = indexOfParameterNamed(name) {
-            return bindInt64Value(int64Value, atIndex: parameterIndex, error: error)
-        } else {
-            if error != nil {
-                error.memory = unknownBindParameterError(name)
-            }
-            return false
+    public func bindInt64Value(int64Value:Int64, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
         }
+        
+        try bindInt64Value(int64Value, atIndex: parameterIndex)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -239,16 +219,11 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindDoubleValue(doubleValue:Double, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
+    public func bindDoubleValue(doubleValue:Double, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw database.sqliteError
         }
-        
-        return true
     }
 
     /// Binds a Double value to a named parameter.
@@ -259,15 +234,12 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindDoubleValue(doubleValue:Double, named name:String, error:NSErrorPointer = nil) -> Bool {
-        if let parameterIndex = indexOfParameterNamed(name) {
-            return bindDoubleValue(doubleValue, atIndex: parameterIndex, error: error)
-        } else {
-            if error != nil {
-                error.memory = unknownBindParameterError(name)
-            }
-            return false
+    public func bindDoubleValue(doubleValue:Double, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
         }
+        
+        try bindDoubleValue(doubleValue, atIndex: parameterIndex)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -281,16 +253,11 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBoolValue(boolValue:Bool, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
+    public func bindBoolValue(boolValue:Bool, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw database.sqliteError
         }
-        
-        return true
     }
     
     /// Binds a Bool value to a named parameter.
@@ -301,15 +268,12 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBoolValue(boolValue:Bool, named name:String, error:NSErrorPointer = nil) -> Bool {
-        if let parameterIndex = indexOfParameterNamed(name) {
-            return bindBoolValue(boolValue, atIndex: parameterIndex, error: error)
-        } else {
-            if error != nil {
-                error.memory = unknownBindParameterError(name)
-            }
-            return false
+    public func bindBoolValue(boolValue:Bool, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
         }
+        
+        try bindBoolValue(boolValue, atIndex: parameterIndex)
     }
     
     
@@ -324,26 +288,17 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBlobValue(blobValue:NSData, atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
-        let negativeOne = UnsafeMutablePointer<Int>(bitPattern: -1)
-        let opaquePointer = COpaquePointer(negativeOne)
-        let transient = CFunctionPointer<((UnsafeMutablePointer<()>) -> Void)>(opaquePointer)
-        
+    public func bindBlobValue(blobValue:NSData, atIndex index:Int) throws {
         var resultCode: Int32
         if blobValue.bytes != nil {
-            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), blobValue.bytes, Int32(blobValue.length), transient)
+            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), blobValue.bytes, Int32(blobValue.length), SQUEAL_TRANSIENT)
         } else {
             resultCode = sqlite3_bind_zeroblob(sqliteStatement, Int32(index), 0);
         }
         
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw database.sqliteError
         }
-        
-        return true
     }
     
     /// Binds a BLOB value to a named parameter.
@@ -354,15 +309,12 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindBlobValue(blobValue:NSData, named name:String, error:NSErrorPointer = nil) -> Bool {
-        if let parameterIndex = indexOfParameterNamed(name) {
-            return bindBlobValue(blobValue, atIndex: parameterIndex, error: error)
-        } else {
-            if error != nil {
-                error.memory = unknownBindParameterError(name)
-            }
-            return false
+    public func bindBlobValue(blobValue:NSData, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
         }
+        
+        try bindBlobValue(blobValue, atIndex: parameterIndex)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -375,16 +327,11 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindNullParameter(atIndex index:Int, error:NSErrorPointer = nil) -> Bool {
+    public func bindNullParameter(atIndex index:Int) throws {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw database.sqliteError
         }
-        
-        return true
     }
 
     /// Binds a NULL value to a named parameter.
@@ -394,31 +341,25 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
-    public func bindNullParameter(name:String, error:NSErrorPointer = nil) -> Bool {
-        if let parameterIndex = indexOfParameterNamed(name) {
-            return bindNullParameter(atIndex:parameterIndex, error: error)
-        } else {
-            if error != nil {
-                error.memory = unknownBindParameterError(name)
-            }
-            return false
+    public func bindNullParameter(name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
         }
+        
+        try bindNullParameter(atIndex:parameterIndex)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Execute & Query
+    // MARK:  Execute
     
     /// Advances to the next row of results. Statements begin before the first row of data, and iterate through the
     /// results through this method.
     ///
-    /// For statements that return no results (e.g. anything other than a `SELECT`), use the `execute(error:)` method.
+    /// For statements that return no results (e.g. anything other than a `SELECT`), use the `execute()` method.
     ///
-    /// :param:     error           An error pointer.
+    /// :returns:   `true` if a new result is available, `false` if the end of the result set is reached
     ///
-    /// :returns:   `true` if a new result is available, `false` if the end of the result set is reached, or `nil` if
-    ///             an error occurred.
-    ///
-    public func next(error:NSErrorPointer = nil) -> Bool? {
+    public func next() throws -> Bool {
         switch sqlite3_step(sqliteStatement) {
         case SQLITE_DONE:
             // no more steps
@@ -426,95 +367,30 @@ public class Statement : NSObject {
         case SQLITE_ROW:
             // more rows to process
             return true
-        case let (stepResult):
-            // error
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return nil
+        default:
+            throw database.sqliteError
         }
     }
     
+    /// Executes the statement, optionally calling a block after each step. This is useful for
+    /// statements like `INSERT` which return no results.
     ///
-    /// Resets and executes the Statement, returning a `Statement?` sequence representing each step of the result set.
-    /// If an error occurs while iterating, the last item of the sequence will be `nil`, and an error will be placed in
-    /// the provided error pointer.
+    /// :param:     block  A block to call after each execution step.
     ///
-    /// Unlike the other `step` methods, this method does not clear any existing parameters, allowing them to be
-    /// reused.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(error:NSErrorPointer = nil) -> StepSequence {
-        reset()
-        return StepSequence(statement:self, errorPointer:error, hasError:false)
-    }
-    
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(#parameters:[Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        clearParameters()
-        if self.bind(parameters, error:error) {
-            return query(error:error)
-        } else {
-            return StepSequence(statement:self, errorPointer:error, hasError:true)
+    public func execute(block:((Statement) throws -> ())? = nil) throws {
+        while try next() {
+            try block?(self)
         }
-    }
-    
-    ///
-    /// Replaces the parameters and executes the Statement, returning a sequence of `[String:Bindable]?` representing
-    /// each row of the result set. If an error occurs while iterating, the last item of the sequence will be `nil`,
-    /// and an error will be placed in the provided error pointer.
-    ///
-    /// This method is intended to be used with a for-in loop.
-    ///
-    public func query(#namedParameters:[String:Bindable?], error:NSErrorPointer = nil) -> StepSequence {
-        clearParameters()
-        if self.bind(namedParameters:namedParameters, error:error) {
-            return query(error:error)
-        } else {
-            return StepSequence(statement:self, errorPointer:error, hasError:true)
-        }
-    }
-    
-    /// Executes the statement. This is useful for statements like `INSERT` which return no results.
-    ///
-    /// :param:     error           An error pointer.
-    ///
-    /// :returns:   `true` if the statement succeeded, `false` if it failed.
-    ///
-    public func execute(error:NSErrorPointer = nil) -> Bool {
-        for step in self.query(error:error) {
-            if step == nil {
-                return false
-            }
-        }
-        
-        return true
     }
     
     /// Resets the statement so it can be executed again. Paramters are NOT cleared. To clear them call
     /// `clearParameters()` after this method.
     ///
-    /// :param:     error           An error pointer.
-    ///
-    /// :returns:   `true` if the statement was reset, `false` otherwise.
-    ///
-    public func reset(error:NSErrorPointer = nil) -> Bool {
-        var resultCode = sqlite3_reset(sqliteStatement)
+    public func reset() throws {
+        let resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
-            if error != nil {
-                error.memory = database.sqliteError
-            }
-            return false
+            throw errorFromSQLiteErrorCode(resultCode, message: "Failed to reset statement (resultCode: \(resultCode))")
         }
-        
-        return true
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -538,7 +414,7 @@ public class Statement : NSObject {
     /// :returns:   The index of the column, or nil if it wasn't found.
     ///
     public func indexOfColumnNamed(columnName:String) -> Int? {
-        return find(columnNames, columnName)
+        return columnNames.indexOf(columnName)
     }
     
     public func nameOfColumnAtIndex(columnIndex:Int) -> String {
@@ -828,76 +704,51 @@ public class Statement : NSObject {
     
 }
 
-// =====================================================================================================================
+// =================================================================================================
 // MARK:- SequenceType
 
 public class StepSequence : SequenceType {
     
-    private let statement: Statement?
-    private let errorPointer: NSErrorPointer
-    private let hasError: Bool
+    private let statement: Statement
     
-    init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
+    init(statement:Statement) {
         self.statement = statement
-        self.errorPointer = errorPointer
-        self.hasError = hasError
     }
     
     public func generate() -> StepGenerator {
-        return StepGenerator(statement:statement, errorPointer:errorPointer, hasError:hasError)
+        return StepGenerator(statement:statement)
     }
     
 }
 
 public struct StepGenerator : GeneratorType {
     
-    private let statement: Statement?
-    private let errorPointer: NSErrorPointer
-    private let hasError: Bool
+    private let statement: Statement
+    private var error:NSError?
     private var isComplete: Bool = false
     
-    private init(statement:Statement?, errorPointer:NSErrorPointer, hasError:Bool) {
+    private init(statement:Statement) {
         self.statement = statement
-        self.errorPointer = errorPointer
-        self.hasError = hasError
     }
     
-    public mutating func next() -> Statement?? {
+    public mutating func next() -> (Statement,NSError?)? {
         if isComplete {
             return nil
         }
         
-        if hasError {
+        let hasNext:Bool
+        do {
+            hasNext = try statement.next()
+        } catch let error as NSError {
             isComplete = true
-            return Statement?.None
+            return (statement, error)
         }
         
-        if let statement = self.statement {
-            switch statement.next(error:errorPointer) {
-            case .Some(false):
-                // no more steps
-                break
-
-            case .Some(true):
-                // more rows to process
-                return statement
-                
-            default:
-                // error
-                isComplete = true
-                return Statement?.None
-            }
+        if !hasNext {
+            isComplete = true
+            return nil
         }
         
-        isComplete = true
-        return nil
+        return (statement, nil)
     }
-}
-
-extension Statement : SequenceType {
-    
-    public func generate() -> StepGenerator {
-        return self.query().generate()
-    }
-    
 }

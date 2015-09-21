@@ -1,10 +1,18 @@
+//
+//  Squeal-iOS.h
+//  Squeal-iOS
+//
+//  Created by Christian Niles on 9/14/14.
+//  Copyright (c) 2014 Vulpine Labs LLC. All rights reserved.
+//
+
 #import <Foundation/Foundation.h>
 
-//! Project version number for Squeal.
-FOUNDATION_EXPORT double SquealVersionNumber;
+//! Project version number for Squeal-iOS.
+FOUNDATION_EXPORT double Squeal_iOSVersionNumber;
 
-//! Project version string for Squeal.
-FOUNDATION_EXPORT const unsigned char SquealVersionString[];
+//! Project version string for Squeal-iOS.
+FOUNDATION_EXPORT const unsigned char Squeal_iOSVersionString[];
 
 // sqlite uses some magic function pointers to represent pre-defined destructor behavior when
 // working with blobs. Those are not imported into Swift because they are pre-processor macros. So

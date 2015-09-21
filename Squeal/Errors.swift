@@ -13,6 +13,17 @@ import sqlite3_osx
 /// Error domain for sqlite errors
 let SQLiteErrorDomain = "sqlite3"
 
+func errorFromSQLiteErrorCode(errorCode:Int32, message:String?) -> NSError {
+    var userInfo: [String:AnyObject]?
+    if message != nil {
+        userInfo = [ NSLocalizedDescriptionKey:message! ]
+    }
+    
+    return NSError(domain:  SQLiteErrorDomain,
+                   code:    Int(errorCode),
+                   userInfo:userInfo)
+}
+
 /// Error domain for Squeal errors. Typically this implies a programming error, since Squeal simply wraps sqlite.
 let SquealErrorDomain = "Squeal"
 

@@ -18,31 +18,30 @@ public extension Database {
     public enum TransactionResult {
         case Commit
         case Rollback
-        case Failed(NSError)
     }
 
     /// Begins a database transaction by executing a BEGIN TRANSACTION statement. Transactions cannot be nested. If
     /// nested operations are needed, consider using savepoints instead.
     ///
     /// :returns: `true` if the transaction began, `false` otherwise.
-    public func beginTransaction(error:NSErrorPointer = nil) -> Bool {
-        return execute("BEGIN TRANSACTION", error: error)
+    public func beginTransaction() throws {
+        try execute("BEGIN TRANSACTION")
     }
 
     /// Ends the current transaction and discards changes since the transaction began. All savepoints are also rolled
     /// back. See sqlite docs for details on transaction support.
     ///
     /// :returns: `true` if the transaction was rolled back, `false` otherwise.
-    public func rollback(error:NSErrorPointer = nil) -> Bool {
-        return execute("ROLLBACK", error: error)
+    public func rollback() throws {
+        try execute("ROLLBACK")
     }
 
     /// Commits the current transaction and persists changes since the transaction began. All savepoints are also
     /// committed. See sqlite docs for details on transaction support.
     ///
     /// :returns: `true` if the transaction was committed, `false` otherwise.
-    public func commit(error:NSErrorPointer = nil) -> Bool {
-        return execute("COMMIT", error: error)
+    public func commit() throws {
+        try execute("COMMIT")
     }
 
     ///
@@ -65,33 +64,28 @@ public extension Database {
     /// :returns:       The result of the transaction. This should nearly always be the same value returned by the
     ///                 block, except when the BEGIN, ROLLBACK, or COMMIT statements fail.
     ///
-    public func transaction(block:(db:Database)->TransactionResult) -> TransactionResult {
-        var localError : NSError?
-        var didBegin = beginTransaction(error: &localError)
-        if !didBegin {
-            return .Failed(localError!)
-        }
+    public func transaction(block:(db:Database) throws -> TransactionResult) throws -> TransactionResult {
+        try beginTransaction()
 
-        let result = block(db: self)
-        switch result {
-        case .Commit:
-            var didCommit = commit(error: &localError)
-            if !didCommit {
-                return .Failed(localError!)
+        do {
+            let result = try block(db: self)
+            switch result {
+            case .Commit:
+                try commit()
+                
+            case .Rollback:
+                try rollback()
             }
-        
-        case .Rollback:
-            var didRollback = rollback(error: &localError)
-            if !didRollback {
-                return .Failed(localError!)
+            return result
+        } catch let error {
+            do {
+                try rollback()
+            } catch {
+                // ignore the rollback if it fails
             }
-        case .Failed:
-            // Attempt a rollback but preserve the original error
-            rollback(error: nil)
-            break
+            
+            throw error
         }
-        
-        return result
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -101,25 +95,23 @@ public extension Database {
     /// except that they are named, and can be nested. This is useful when factoring large database operations.
     ///
     /// :returns: `true` if the savepoint began, `false` otherwise.
-    public func beginSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
-        return execute("SAVEPOINT " + escapeIdentifier(savepointName), error: error)
+    public func beginSavepoint(savepointName:String) throws {
+        try execute("SAVEPOINT " + escapeIdentifier(savepointName))
     }
 
     /// Rolls back the database to the point where a savepoint was begun. All changes since then are discarded. Nested
     /// savepoints are also rolled back.
     ///
     /// :returns: `true` if the savepoint was rolled back, `false` otherwise.
-    public func rollbackSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
-        return execute("ROLLBACK TO SAVEPOINT " + escapeIdentifier(savepointName),
-                       error: error)
+    public func rollbackSavepoint(savepointName:String) throws {
+        try execute("ROLLBACK TO SAVEPOINT " + escapeIdentifier(savepointName))
     }
 
     /// Commits a savepoint via a RELEASE statement, persisting its changes when the enclosing transaction completes.
     ///
     /// :returns: `true` if the savepoint was committed (released), `false` otherwise.
-    public func releaseSavepoint(savepointName:String, error:NSErrorPointer = nil) -> Bool {
-        return execute("RELEASE " + escapeIdentifier(savepointName),
-                       error: error)
+    public func releaseSavepoint(savepointName:String) throws {
+        try execute("RELEASE " + escapeIdentifier(savepointName))
     }
 
     ///
@@ -142,32 +134,27 @@ public extension Database {
     /// :returns:       The result of the savepoint. This should nearly always be the same value returned by the
     ///                 block, except when the SAVEPOINT, ROLLBACK TO SAVEPOINT, or RELEASE statements fail.
     ///
-    public func savepoint(name:String, block:(db:Database)->TransactionResult) -> TransactionResult {
-        var localError : NSError?
-        var didBegin = beginSavepoint(name, error: &localError)
-        if !didBegin {
-            return .Failed(localError!)
-        }
+    public func savepoint(name:String, block:(db:Database)throws->TransactionResult) throws -> TransactionResult {
+        try beginSavepoint(name)
 
-        let result = block(db: self)
-        switch result {
-        case .Commit:
-            var didCommit = releaseSavepoint(name, error: &localError)
-            if !didCommit {
-                return .Failed(localError!)
+        do {
+            let result = try block(db: self)
+            switch result {
+            case .Commit:
+                try releaseSavepoint(name)
+            case .Rollback:
+                try rollbackSavepoint(name)
             }
-        case .Rollback:
-            var didRollback = rollbackSavepoint(name, error: &localError)
-            if !didRollback {
-                return .Failed(localError!)
+            return result
+        } catch let error {
+            do {
+                // Attempt a rollback but preserve the original error
+                try rollbackSavepoint(name)
+            } catch {
+                // ignore the rollback error
             }
-        case .Failed:
-            // Attempt a rollback but preserve the original error
-            rollbackSavepoint(name, error: &localError)
-            break
+            throw error
         }
-        
-        return result
     }
     
 }

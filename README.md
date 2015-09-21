@@ -16,6 +16,8 @@ while still providing complete access to SQLite's advanced features.
 
 ## Overview
 
+**BEWARE**: This documentation is out of date for Swift 2.
+
 Using Squeal to create, populate, and select values from a database looks like this:
 
 ```swift

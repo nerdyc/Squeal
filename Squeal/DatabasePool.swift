@@ -1,5 +1,12 @@
 import Foundation
 
+public protocol DatabasePoolDelegate : class {
+    
+    func databaseOpened(database:Database) throws
+    func databaseClosed(database:Database)
+    
+}
+
 ///
 /// Manages a pool of Database objects. The pool does not have a maximum size, and will not block. The pool can be
 /// safely accessed from multiple threads concurrently.
@@ -7,11 +14,13 @@ import Foundation
 public class DatabasePool : NSObject {
     
     public let databasePath : String
+    public weak var delegate : DatabasePoolDelegate?
     private let syncQueue : dispatch_queue_t
     
-    public init(databasePath:String) {
+    public init(databasePath:String, delegate:DatabasePoolDelegate? = nil) {
         self.databasePath = databasePath
         self.syncQueue = dispatch_queue_create("DatabasePool-(\(databasePath))", DISPATCH_QUEUE_SERIAL)
+        self.delegate = delegate
     }
     
     // =================================================================================================================
@@ -37,20 +46,31 @@ public class DatabasePool : NSObject {
     /// :param: error   An error pointer.
     /// :returns: An open Database, or nil if the database could not be opened.
     ///
-    public func dequeueDatabase(error:NSErrorPointer = nil) -> Database? {
-        var database : Database? = nil
+    public func dequeueDatabase() throws -> Database {
+        var database:Database?
+        var error:NSError?
         dispatch_sync(syncQueue) {
             if self.inactiveDatabases.isEmpty {
-                database = self.openDatabase(error)
-                if database != nil {
+                do {
+                    database = try self.openDatabase()
                     self.activeDatabases.append(database!)
+                } catch let openError as NSError {
+                    error = openError
+                    return
+                } catch let e {
+                    fatalError("Unexpected error thrown opening a database \(e)")
                 }
             } else {
                 database = self.inactiveDatabases.removeLast()
                 self.activeDatabases.append(database!)
             }
         }
-        return database
+        
+        guard let dequeuedDatabase = database else {
+            throw error!
+        }
+        
+        return dequeuedDatabase
     }
     
     ///
@@ -83,19 +103,23 @@ public class DatabasePool : NSObject {
         }
     }
     
-    private func openDatabase(error:NSErrorPointer) -> Database? {
-        return Database(path: databasePath, error: error)
+    private func openDatabase() throws -> Database {
+        let database = try Database(path: databasePath)
+        try delegate?.databaseOpened(database)
+        return database
     }
     
     private func deactivateDatabase(database:Database) {
         dispatch_sync(syncQueue) {
-            if let index = find(self.activeDatabases, database) {
+            if let index = self.activeDatabases.indexOf(database) {
                 self.activeDatabases.removeAtIndex(index)
             }
             
-            if let index = find(self.inactiveDatabases, database) {
+            if let index = self.inactiveDatabases.indexOf(database) {
                 self.inactiveDatabases.removeAtIndex(index)
             }
+            
+            self.delegate?.databaseClosed(database)
         }
     }
     

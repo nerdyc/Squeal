@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		CD3DE27E19BCD44B00DED437 /* SquealSpecHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
-		CD3DE29A19BCD57A00DED437 /* StatementSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */; };
 		CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C2C19B29D27004497BF /* DatabasePool.swift */; };
 		CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
 		CD61584C19BCD74A00E63F56 /* SquealSpecHelpers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */; };
@@ -56,7 +55,7 @@
 		CDB05D1019CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */; };
 		CDB05D1219CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
 		CDB05D1319CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
-		CDCBEB5119C5F6F500862BFD /* Squeal-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CDCBEB5119C5F6F500862BFD /* Squeal.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB5019C5F6F500862BFD /* Squeal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDCBEB5719C5F6F500862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
 		CDCBEB6519C5F70800862BFD /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
 		CDCBEB6619C5F70800862BFD /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */; };
@@ -66,13 +65,26 @@
 		CDCBEB7519C5F77900862BFD /* SquealSpecHelpers-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDCBEB8D19C5F7C800862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
 		CDCBEB8E19C5F7DB00862BFD /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
-		CDCBEB8F19C5F7DB00862BFD /* StatementSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */; };
 		CDCBEB9019C5F98E00862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
 		CDD59C26199C69F500FB662D /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* SchemaHelpers.swift */; };
 		CDD59C30199C6A5300FB662D /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6249AD1C1B3F1402002253EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7FC49A1A197EE500E73C0A /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5663E81A4C8D8500193C88;
+			remoteInfo = "QuickFocused-OSXTests";
+		};
+		6249AD1E1B3F1402002253EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD7FC49A1A197EE500E73C0A /* Quick.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA9876B21A4C70EB0004AA17;
+			remoteInfo = "QuickFocused-iOSTests";
+		};
 		CD61584819BCD74000E63F56 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CD7247EE1996880300151E1E /* Project object */;
@@ -171,7 +183,6 @@
 		CD3DE27C19BCD44B00DED437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SquealSpecHelpers.h; sourceTree = "<group>"; };
 		CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpecHelpers.swift; sourceTree = "<group>"; };
-		CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpecHelpers.swift; sourceTree = "<group>"; };
 		CD4B4C2C19B29D27004497BF /* DatabasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePool.swift; sourceTree = "<group>"; };
 		CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePoolSpec.swift; sourceTree = "<group>"; };
 		CD7247F71996880300151E1E /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,7 +216,7 @@
 		CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpersSpec.swift; sourceTree = "<group>"; };
 		CDCBEB4C19C5F6F500862BFD /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCBEB4F19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-iOS.h"; sourceTree = "<group>"; };
+		CDCBEB5019C5F6F500862BFD /* Squeal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Squeal.h; sourceTree = "<group>"; };
 		CDCBEB5619C5F6F500862BFD /* Squeal-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCBEB5C19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.0.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
@@ -280,7 +291,6 @@
 			children = (
 				CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */,
 				CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */,
-				CD3DE29919BCD57A00DED437 /* StatementSpecHelpers.swift */,
 				CD3DE27B19BCD44B00DED437 /* Supporting Files */,
 			);
 			path = SquealSpecHelpers;
@@ -402,7 +412,7 @@
 				CD72482D1996A5AB00151E1E /* Nimble.framework */,
 				CD72482F1996A5AB00151E1E /* NimbleTests.xctest */,
 				CD7248311996A5AB00151E1E /* Nimble.framework */,
-				CD7248331996A5AB00151E1E /* Nimble-OSXTests.xctest */,
+				CD7248331996A5AB00151E1E /* NimbleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -412,8 +422,10 @@
 			children = (
 				CD7FC4A31A197EE500E73C0A /* Quick.framework */,
 				CD7FC4A51A197EE500E73C0A /* Quick-OSXTests.xctest */,
+				6249AD1D1B3F1402002253EF /* QuickFocused-OSXTests.xctest */,
 				CD7FC4A71A197EE500E73C0A /* Quick.framework */,
 				CD7FC4A91A197EE500E73C0A /* Quick-iOSTests.xctest */,
+				6249AD1F1B3F1402002253EF /* QuickFocused-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -446,7 +458,7 @@
 		CDCBEB4D19C5F6F500862BFD /* Squeal-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB5019C5F6F500862BFD /* Squeal-iOS.h */,
+				CDCBEB5019C5F6F500862BFD /* Squeal.h */,
 				CDCBEB4E19C5F6F500862BFD /* Supporting Files */,
 			);
 			path = "Squeal-iOS";
@@ -517,7 +529,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB5119C5F6F500862BFD /* Squeal-iOS.h in Headers */,
+				CDCBEB5119C5F6F500862BFD /* Squeal.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -649,7 +661,8 @@
 		CD7247EE1996880300151E1E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Vulpine Labs LLC";
 				TargetAttributes = {
 					CD3DE27819BCD44B00DED437 = {
@@ -663,7 +676,6 @@
 					};
 					CDCBEB4B19C5F6F500862BFD = {
 						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = D7K65AYKY9;
 					};
 					CDCBEB5519C5F6F500862BFD = {
 						CreatedOnToolsVersion = 6.1;
@@ -706,6 +718,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		6249AD1D1B3F1402002253EF /* QuickFocused-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "QuickFocused-OSXTests.xctest";
+			remoteRef = 6249AD1C1B3F1402002253EF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6249AD1F1B3F1402002253EF /* QuickFocused-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "QuickFocused-iOSTests.xctest";
+			remoteRef = 6249AD1E1B3F1402002253EF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CD72482D1996A5AB00151E1E /* Nimble.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -727,10 +753,10 @@
 			remoteRef = CD7248301996A5AB00151E1E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CD7248331996A5AB00151E1E /* Nimble-OSXTests.xctest */ = {
+		CD7248331996A5AB00151E1E /* NimbleTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "Nimble-OSXTests.xctest";
+			path = NimbleTests.xctest;
 			remoteRef = CD7248321996A5AB00151E1E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -814,7 +840,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD3DE29A19BCD57A00DED437 /* StatementSpecHelpers.swift in Sources */,
 				CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -894,7 +919,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDCBEB8E19C5F7DB00862BFD /* DatabaseSpecHelpers.swift in Sources */,
-				CDCBEB8F19C5F7DB00862BFD /* StatementSpecHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +969,7 @@
 				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -963,6 +988,7 @@
 				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -989,6 +1015,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1055,6 +1082,7 @@
 		CD72480B1996880400151E1E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1064,15 +1092,18 @@
 				INFOPLIST_FILE = Squeal/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		CD72480C1996880400151E1E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1082,6 +1113,7 @@
 				INFOPLIST_FILE = Squeal/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -1102,6 +1134,7 @@
 				);
 				INFOPLIST_FILE = SquealTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
 			};
@@ -1117,6 +1150,7 @@
 				);
 				INFOPLIST_FILE = SquealTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
 			};
@@ -1125,6 +1159,7 @@
 		CDCBEB6019C5F6F500862BFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1138,6 +1173,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1149,6 +1185,7 @@
 		CDCBEB6119C5F6F500862BFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1158,6 +1195,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
 				PRODUCT_NAME = Squeal;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1183,6 +1221,7 @@
 				INFOPLIST_FILE = "Squeal-iOSTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -1201,6 +1240,7 @@
 				INFOPLIST_FILE = "Squeal-iOSTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
@@ -1224,6 +1264,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1244,6 +1285,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
 				PRODUCT_NAME = SquealSpecHelpers;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

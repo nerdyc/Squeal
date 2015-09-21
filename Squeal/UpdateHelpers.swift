@@ -4,10 +4,9 @@ public extension Database {
     
     public func prepareUpdate(tableName:   String,
                               columns:     [String],
-                              whereExpr:   String? = nil,
-                              error:       NSErrorPointer = nil) -> Statement? {
+                              whereExpr:   String? = nil) throws -> Statement {
         
-        let columnsToSet = join(", ", columns.map { escapeIdentifier($0) + " = ?" })
+        let columnsToSet = columns.map { escapeIdentifier($0) + " = ?" }.joinWithSeparator(", ")
         var fragments = ["UPDATE", escapeIdentifier(tableName), "SET", columnsToSet]
                                 
         if whereExpr != nil {
@@ -15,7 +14,7 @@ public extension Database {
             fragments.append(whereExpr!)
         }
 
-        return prepareStatement(join(" ", fragments), error: error)
+        return try prepareStatement(fragments.joinWithSeparator(" "))
     }
     
     /// Updates table rows. This is a helper for executing an UPDATE ... SET ... WHERE statement.
@@ -33,18 +32,13 @@ public extension Database {
                        columns:     [String],
                        values:      [Bindable?],
                        whereExpr:   String? = nil,
-                       parameters:  [Bindable?] = [],
-                       error:       NSErrorPointer = nil) -> Int? {
+                       parameters:  [Bindable?] = []) throws -> Int {
         
-        var numberOfChangedRows : Int?
-        if let statement = prepareUpdate(tableName, columns: columns, whereExpr: whereExpr, error: error) {
-            if statement.bind(values + parameters, error: error) {
-                if statement.execute(error: error) {
-                    numberOfChangedRows = self.numberOfChangedRows
-                }
-            }
-        }
-        return numberOfChangedRows
+        let statement = try prepareUpdate(tableName, columns: columns, whereExpr: whereExpr)
+        try statement.bind(values + parameters)
+        try statement.execute()
+        
+        return self.numberOfChangedRows
     }
     
     /// Updates table rows. This is a helper for executing an UPDATE ... SET ... WHERE statement.
@@ -60,8 +54,7 @@ public extension Database {
     public func update(tableName:   String,
                        set:         [String:Bindable?],
                        whereExpr:   String? = nil,
-                       parameters:  [Bindable?] = [],
-                       error:       NSErrorPointer = nil) -> Int? {
+                       parameters:  [Bindable?] = []) throws -> Int {
         
         var columns = [String]()
         var values = [Bindable?]()
@@ -70,7 +63,7 @@ public extension Database {
             values.append(value)
         }
         
-        return update(tableName, columns:columns, values:values, whereExpr:whereExpr, parameters:parameters, error:error)
+        return try update(tableName, columns:columns, values:values, whereExpr:whereExpr, parameters:parameters)
     }
     
     /// Updates table rows given a set of row IDs.
@@ -84,16 +77,15 @@ public extension Database {
     ///
     public func update(tableName: String,
                        rowIds:    [RowId],
-                       values:    [String:Bindable?],
-                       error:     NSErrorPointer = nil) -> Int? {
+                       values:    [String:Bindable?]) throws -> Int {
         if rowIds.count == 0 {
             return 0
         }
         
         let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
         
-        let whereExpr = "_ROWID_ IN (" + join(",", rowIds.map { _ -> String in "?" }) + ")"
-        return update(tableName, set:values, whereExpr:whereExpr, parameters:parameters, error:error)
+        let whereExpr = "_ROWID_ IN (" + rowIds.map { _ -> String in "?" }.joinWithSeparator(",") + ")"
+        return try update(tableName, set:values, whereExpr:whereExpr, parameters:parameters)
     }
     
 }
