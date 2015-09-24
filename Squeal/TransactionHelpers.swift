@@ -22,24 +22,18 @@ public extension Database {
 
     /// Begins a database transaction by executing a BEGIN TRANSACTION statement. Transactions cannot be nested. If
     /// nested operations are needed, consider using savepoints instead.
-    ///
-    /// :returns: `true` if the transaction began, `false` otherwise.
     public func beginTransaction() throws {
         try execute("BEGIN TRANSACTION")
     }
 
     /// Ends the current transaction and discards changes since the transaction began. All savepoints are also rolled
     /// back. See sqlite docs for details on transaction support.
-    ///
-    /// :returns: `true` if the transaction was rolled back, `false` otherwise.
     public func rollback() throws {
         try execute("ROLLBACK")
     }
 
     /// Commits the current transaction and persists changes since the transaction began. All savepoints are also
     /// committed. See sqlite docs for details on transaction support.
-    ///
-    /// :returns: `true` if the transaction was committed, `false` otherwise.
     public func commit() throws {
         try execute("COMMIT")
     }
@@ -93,23 +87,17 @@ public extension Database {
 
     /// Begins a database savepoint by executing a SAVEPOINT statement. Savepoints are nearly identical to transactions,
     /// except that they are named, and can be nested. This is useful when factoring large database operations.
-    ///
-    /// :returns: `true` if the savepoint began, `false` otherwise.
     public func beginSavepoint(savepointName:String) throws {
         try execute("SAVEPOINT " + escapeIdentifier(savepointName))
     }
 
     /// Rolls back the database to the point where a savepoint was begun. All changes since then are discarded. Nested
     /// savepoints are also rolled back.
-    ///
-    /// :returns: `true` if the savepoint was rolled back, `false` otherwise.
     public func rollbackSavepoint(savepointName:String) throws {
         try execute("ROLLBACK TO SAVEPOINT " + escapeIdentifier(savepointName))
     }
 
     /// Commits a savepoint via a RELEASE statement, persisting its changes when the enclosing transaction completes.
-    ///
-    /// :returns: `true` if the savepoint was committed (released), `false` otherwise.
     public func releaseSavepoint(savepointName:String) throws {
         try execute("RELEASE " + escapeIdentifier(savepointName))
     }

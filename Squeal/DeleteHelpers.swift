@@ -19,9 +19,8 @@ public extension Database {
     /// :param: tableName   The name of the table to update.
     /// :param: whereExpr   A WHERE clause to select which rows to update. If nil, all rows are deleted.
     /// :param: parameters  Parameters to the WHERE clause.
-    /// :param: error       An error pointer.
     ///
-    /// :returns:   The number of rows removed, or nil if an error occurs.
+    /// :returns:   The number of rows removed.
     ///
     public func deleteFrom(tableName:   String,
                            whereExpr:   String? = nil,
@@ -38,9 +37,8 @@ public extension Database {
     ///
     /// :param: tableName   The name of the table to update.
     /// :param: rowIds      The IDs of the rows to delete.
-    /// :param: error       An error pointer.
     ///
-    /// :returns:   The number of rows removed, or nil if an error occurs.
+    /// :returns:   The number of rows removed.
     ///
     public func deleteFrom(tableName: String,
                            rowIds:    [RowId]) throws -> Int {

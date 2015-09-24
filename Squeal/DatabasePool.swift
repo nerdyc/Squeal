@@ -41,10 +41,7 @@ public class DatabasePool : NSObject {
     /// Creates or reuses a Database object. The database should be returned to the pool when it is no longer in use by
     /// calling `enqueueDatabase(database:)`.
     ///
-    ///
-    ///
-    /// :param: error   An error pointer.
-    /// :returns: An open Database, or nil if the database could not be opened.
+    /// :returns: An open Database.
     ///
     public func dequeueDatabase() throws -> Database {
         var database:Database?

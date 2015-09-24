@@ -22,10 +22,9 @@ public extension Database {
     /// :param: columns     The column names of the values to insert.
     /// :param: values      The values to insert. The values in this array must be in the same order as the respective
     ///                     `columns`.
-    /// :param: error       An error pointer.
     ///
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
-    ///             INTEGER value. `nil` is returned when an error occurs.
+    ///             INTEGER value.
     ///
     public func insertInto(tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
         let statement = try prepareInsertInto(tableName, columns:columns)
@@ -39,10 +38,9 @@ public extension Database {
     ///
     /// :param: tableName   The name of the table to insert into.
     /// :param: values      The values to insert, keyed by the column name.
-    /// :param: error       An error pointer.
     ///
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
-    ///             INTEGER value. `nil` is returned when an error occurs.
+    ///             INTEGER value.
     ///
     public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
         var columns = [String]()

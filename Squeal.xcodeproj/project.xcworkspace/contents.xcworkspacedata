@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Squeal.xcodeproj">
+      location = "group:../SquealPlayground.playground">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

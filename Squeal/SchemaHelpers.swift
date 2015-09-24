@@ -307,9 +307,6 @@ public extension Database {
     /// Fetches the 'user_version' value, a user-defined version number for the database. This is useful for managing
     /// migrations.
     ///
-    /// :param: error       An error pointer
-    /// :returns: The user version, or `nil` if an error occurs.
-    ///
     public func queryUserVersionNumber() throws -> Int32 {
         let userViewSql = "PRAGMA user_version"
         let statement = try prepareStatement(userViewSql)
@@ -325,8 +322,6 @@ public extension Database {
     /// migrations.
     ///
     /// :param: number      The version number to set
-    /// :param: error       An error pointer
-    /// :returns: `true` if the version was set, `false` if an error occurs.
     ///
     public func updateUserVersionNumber(number:Int32) throws {
         return try execute("PRAGMA user_version=\(number)")
@@ -341,9 +336,6 @@ public extension Database {
     /// :param: definitions Column and constraint definitions. For example, "name TEXT NOT NULL".
     /// :param: ifNotExists If `true`, don't create the table if it already exists. If `false`, then this method will
     ///                     return an error if the table exists already. Defaults to false.
-    /// :param: error       An error pointer.
-    ///
-    /// :returns: true if the table was created, false if an error occurs.
     ///
     public func createTable(tableName:String,
                             definitions:[String],
@@ -368,9 +360,6 @@ public extension Database {
     /// :param: tableName   The name of the table.
     /// :param: ifExists    If `true`, only drop the table if it exists. If `false`, then this method will return an
     ///                     error if the table doesn't exist. Defaults to false.
-    /// :param: error       An error pointer.
-    ///
-    /// :returns: true if the table was dropped, false if an error occurs.
     ///
     public func dropTable(tableName:String, ifExists:Bool = false) throws {
         var dropTableSql = "DROP TABLE "
@@ -389,9 +378,6 @@ public extension Database {
     ///
     /// :param: tableName   The current name of the table.
     /// :param: to          The new name of the table.
-    /// :param: error       An error pointer.
-    ///
-    /// :returns: true if the table was renamed, false if an error occurs.
     ///
     public func renameTable(tableName:String, to:String) throws {
         let renameTableSql = "ALTER TABLE " + escapeIdentifier(tableName)
@@ -404,9 +390,6 @@ public extension Database {
     ///
     /// :param: tableName   The name of the table.
     /// :param: column      The column definition, such as "name TEXT NOT NULL DEFAULT ''"
-    /// :param: error       An error pointer.
-    ///
-    /// :returns: true if the column was added, false if an error occurs.
     ///
     public func addColumnToTable(tableName:String, column:String) throws {
         let addColumnSql = "ALTER TABLE " + escapeIdentifier(tableName)
@@ -426,9 +409,6 @@ public extension Database {
     /// :param: unique      Whether to create a unique index of not. Defaults to false.
     /// :param: ifNotExists If `true`, don't create the index if it already exists. If `false`, then this method will
     ///                     return an error if the index already exists. Defaults to false.
-    /// :param: error       An error pointer.
-    ///
-    /// :returns: true if the table was created, false if an error occurs.
     ///
     public func createIndex(name:String,
                             tableName:String,
@@ -463,9 +443,6 @@ public extension Database {
     /// :param: name        The name of the index.
     /// :param: ifExists    If `true`, only remove the index if it exists. If `false`, then this method will return an
     ///                     error if the index doesn't exist. Defaults to false.
-    /// :param: error       An error pointer.
-    ///
-    /// :returns: true if the index was removed, false if an error occurs.
     ///
     public func dropIndex(indexName:String, ifExists:Bool = false) throws {
         var dropIndexSql = "DROP INDEX "

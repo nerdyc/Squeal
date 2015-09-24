@@ -24,9 +24,8 @@ public extension Database {
     /// :param: values      The updated values. These values must be in the same order as the columns.
     /// :param: whereExpr   A WHERE clause to select which rows to update. If nil, all rows are updated.
     /// :param: parameters  Parameters to the WHERE clause.
-    /// :param: error       An error pointer.
     ///
-    /// :returns:   The number of rows updated, or nil if an error occurs.
+    /// :returns:   The number of rows updated.
     ///
     public func update(tableName:   String,
                        columns:     [String],
@@ -47,9 +46,8 @@ public extension Database {
     /// :param: set         The updated values, keyed by column names.
     /// :param: whereExpr   A WHERE clause to select which rows to update. If nil, all rows are updated.
     /// :param: parameters  Parameters to the WHERE clause.
-    /// :param: error       An error pointer.
     ///
-    /// :returns:   The number of rows updated, or nil if an error occurs.
+    /// :returns:   The number of rows updated.
     ///
     public func update(tableName:   String,
                        set:         [String:Bindable?],
@@ -71,9 +69,8 @@ public extension Database {
     /// :param: tableName   The name of the table to update.
     /// :param: rowIds      The IDs of the rows to update.
     /// :param: values      The updated values. These values must be in the same order as the columns.
-    /// :param: error       An error pointer.
     ///
-    /// :returns:   The number of rows updated, or nil if an error occurs.
+    /// :returns:   The number of rows updated.
     ///
     public func update(tableName: String,
                        rowIds:    [RowId],

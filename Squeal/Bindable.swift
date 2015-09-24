@@ -26,9 +26,7 @@ extension Statement {
     /// Binds an array of parameters to the statement.
     ///
     /// :param:     parameters  The array of parameters to bind.
-    /// :param:     error       An error pointer.
     ///
-    /// :returns:   `true` if all parameters were bound, `false` otherwise.
     public func bind(parameters:[Bindable?]) throws {
         for parameterIndex in (0..<parameters.count) {
             let bindIndex = parameterIndex + 1 // parameters are bound with 1-based indices
@@ -45,9 +43,7 @@ extension Statement {
     /// Binds named parameters using the values from a dictionary.
     ///
     /// :param:     namedParameters  A dictionary of values to bind.
-    /// :param:     error            An error pointer.
     ///
-    /// :returns:   `true` if all parameters were bound, `false` otherwise.
     public func bind(namedParameters namedParameters:[String:Bindable?]) throws {
         for (name, value) in namedParameters {
             try bindParameter(name, value: value)
@@ -58,9 +54,6 @@ extension Statement {
     ///
     /// :param:     name    The name of the parameter to bind.
     /// :param:     value   The value to bind.
-    /// :param:     error   An error pointer.
-    ///
-    /// :returns:   `true` if the parameter was bound, `false` otherwise.
     ///
     public func bindParameter(name:String, value:Bindable?) throws {
         if let bindIndex = indexOfParameterNamed(name) {

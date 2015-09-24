@@ -137,9 +137,7 @@ public class Database : NSObject {
     /// multiple times. See the Statement object for details, including providing parameters.
     ///
     /// :param:     sqlString   A SQL statement to compile.
-    /// :param:     error       An error pointer to set if an error occurs. May be `nil`.
-    /// :returns:               The compiled SQL as a Statement. On error, `nil` will be returned and an NSError object
-    //                          will be provided via the `error` parameter.
+    /// :returns:               The compiled SQL as a Statement.
     ///
     public func prepareStatement(sqlString:String) throws -> Statement {
         let sqliteStatement = try prepareSQLiteStatement(sqlString)
@@ -147,14 +145,11 @@ public class Database : NSObject {
     }
     
     ///
-    /// Compiles and executes a SQL statement. Since this method simply returns `true` or `false`, it is useful for
-    /// statements that return no data. For example, a `CREATE TABLE` statement. For other statements, consider the
-    /// `prepareStatement` or `query` methods, or one of the SQL convenience methods like `select(...)`.
+    /// Compiles and executes a SQL statement. This method is useful for statements that return no
+    /// data. For example, a `CREATE TABLE` statement. For SELECT statements, prepare the statement
+    /// using `prepareStatement` and iterate through rows using the `next` method on the Statement.
     ///
     /// :param:     sqlString   A SQL statement to execute.
-    /// :param:     error       An error pointer to set if an error occurs. May be `nil`.
-    /// :returns:               `true` if the statment was executed, `false` otherwise. On error, an NSError object will be
-    ///                         provided via the `error` parameter.
     ///
     public func execute(sqlString:String) throws {
         let statement = try prepareStatement(sqlString)
