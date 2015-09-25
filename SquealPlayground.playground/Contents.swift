@@ -82,12 +82,14 @@ As your app evolves, your database schema will need to change. SQLite databases 
 */
 let currentVersion = try db.queryUserVersionNumber()
 if currentVersion < 2 {
-    try db.createTable("companies",
-                       definitions: ["companyId INTEGER PRIMARY KEY",
-                                     "name TEXT NOT NULL",
-                                     "domain TEXT"])
-    
-    try db.updateUserVersionNumber(2)
+    try db.transaction { _ in
+        try db.createTable("companies",
+                           definitions: ["companyId INTEGER PRIMARY KEY",
+                                         "name TEXT NOT NULL",
+                                         "domain TEXT"])
+        
+        try db.updateUserVersionNumber(2)
+    }
 }
 let updatedVersion = try db.queryUserVersionNumber()
 
