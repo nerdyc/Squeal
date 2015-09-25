@@ -13,12 +13,6 @@ public extension Database {
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Transactions
-    
-    /// Result type used to commit or rollback transactions and savepoints.
-    public enum TransactionResult {
-        case Commit
-        case Rollback
-    }
 
     /// Begins a database transaction by executing a BEGIN TRANSACTION statement. Transactions cannot be nested. If
     /// nested operations are needed, consider using savepoints instead.
@@ -39,47 +33,24 @@ public extension Database {
     }
 
     ///
-    /// Begins a transaction, invokes the provided closure, and uses its result to determine how to terminate the
-    /// transaction. Using this method is more concise than creating and managing the transaction yourself. For example:
-    /// 
-    ///     let result = db.transaction {
-    ///         var error : NSError?
-    ///         if let rowId = $0.insertInto("people", values:["name":"Agnes Pigott"], error:&error) {
-    ///             return .Failed(error)
-    ///         }
+    /// Begins a new transaction, executes the block, and commits the transaction if no errors
+    /// are thrown. The transaction is rolled back if any error is thrown.
     ///
-    ///         // more SQL statements...
+    /// :param: block The operation to perform within the transaction.
     ///
-    ///         return .Commit
-    ///     }
-    ///
-    /// :param: block   The operation to perform within the transaction. It should not close the transaction itself, but
-    ///                 instead return a TransactionResult.
-    /// :returns:       The result of the transaction. This should nearly always be the same value returned by the
-    ///                 block, except when the BEGIN, ROLLBACK, or COMMIT statements fail.
-    ///
-    public func transaction(block:(db:Database) throws -> TransactionResult) throws -> TransactionResult {
+    public func transaction(block:() throws -> ()) throws {
         try beginTransaction()
-
         do {
-            let result = try block(db: self)
-            switch result {
-            case .Commit:
-                try commit()
-                
-            case .Rollback:
-                try rollback()
-            }
-            return result
-        } catch let error {
+            try block()
+        } catch {
             do {
                 try rollback()
             } catch {
                 // ignore the rollback if it fails
             }
-            
             throw error
         }
+        try commit()
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -103,38 +74,16 @@ public extension Database {
     }
 
     ///
-    /// Begins a savepoint, invokes the provided closure, and uses its result to determine how to terminate the
-    /// savepoint. Using this method is more concise than creating and managing the savepoint yourself. For example:
+    /// Executes the provided block within a savepoint, and commits the results if no errors are
+    /// thrown. The savepoint is automatically released if any error is thrown.
     ///
-    ///     let result = db.savepoint("insert agnes") {
-    ///         var error : NSError?
-    ///         if let rowId = $0.insertInto("people", values:["name":"Agnes Pigott"], error:&error) {
-    ///             return .Failed(error)
-    ///         }
+    /// :param: block The operation to perform within the savepoint.
     ///
-    ///         // more SQL statements...
-    ///
-    ///         return .Commit
-    ///     }
-    ///
-    /// :param: block   The operation to perform within the savepoint. It should not close the savepoint itself, but
-    ///                 instead return a TransactionResult.
-    /// :returns:       The result of the savepoint. This should nearly always be the same value returned by the
-    ///                 block, except when the SAVEPOINT, ROLLBACK TO SAVEPOINT, or RELEASE statements fail.
-    ///
-    public func savepoint(name:String, block:(db:Database)throws->TransactionResult) throws -> TransactionResult {
+    public func savepoint(name:String, block:()throws->()) throws -> () {
         try beginSavepoint(name)
-
         do {
-            let result = try block(db: self)
-            switch result {
-            case .Commit:
-                try releaseSavepoint(name)
-            case .Rollback:
-                try rollbackSavepoint(name)
-            }
-            return result
-        } catch let error {
+            try block()
+        } catch {
             do {
                 // Attempt a rollback but preserve the original error
                 try rollbackSavepoint(name)
@@ -143,6 +92,7 @@ public extension Database {
             }
             throw error
         }
+        try releaseSavepoint(name)
     }
     
 }
