@@ -3,7 +3,7 @@ import Squeal
 
 public extension Database {
     
-    public class func createTemporaryDirectory(prefix:String = "Squeal") throws -> String {
+    public class func createTemporaryDirectoryURL(prefix:String = "Squeal") throws -> NSURL {
         let suffix = NSUUID().UUIDString
         let globalTempDirectoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         let tempDirectoryURL = globalTempDirectoryURL.URLByAppendingPathComponent(prefix + "-" + suffix)
@@ -12,7 +12,11 @@ public extension Database {
                                                                 withIntermediateDirectories: true,
                                                                 attributes:                  nil)
         
-        return tempDirectoryURL.path!
+        return tempDirectoryURL
+    }
+
+    public class func createTemporaryDirectory(prefix:String = "Squeal") throws -> String {
+        return try createTemporaryDirectoryURL(prefix).path!
     }
     
     public func queryRows(sqlString:String) throws -> [[String:Bindable]] {
