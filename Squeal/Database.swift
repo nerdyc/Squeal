@@ -150,12 +150,14 @@ public class Database : NSObject {
     /// using `prepareStatement` and iterate through rows using the `next` method on the Statement.
     ///
     /// :param:     sqlString   A SQL statement to execute.
+    /// :param:     parameters  An optional array of parameters to pass to the statement.
     ///
-    public func execute(sqlString:String) throws {
+    public func execute(sqlString:String, parameters:[Bindable?] = []) throws {
         let statement = try prepareStatement(sqlString)
+        try statement.bind(parameters)
         try statement.execute()
     }
-    
+
     /// Returns the id of the last row inserted into the database via this Database object. This is useful after
     /// executing an INSERT statement, but undefined at other times.
     public var lastInsertedRowId : RowId {
