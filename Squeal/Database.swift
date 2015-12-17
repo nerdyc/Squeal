@@ -139,9 +139,13 @@ public class Database : NSObject {
     /// :param:     sqlString   A SQL statement to compile.
     /// :returns:               The compiled SQL as a Statement.
     ///
-    public func prepareStatement(sqlString:String) throws -> Statement {
+    public func prepareStatement(sqlString:String, parameters:[Bindable?] = []) throws -> Statement {
         let sqliteStatement = try prepareSQLiteStatement(sqlString)
-        return Statement(database:self, sqliteStatement: sqliteStatement)
+        let statement = Statement(database:self, sqliteStatement: sqliteStatement)
+        if parameters.count > 0 {
+            try statement.bind(parameters)
+        }
+        return statement
     }
     
     ///
@@ -153,8 +157,7 @@ public class Database : NSObject {
     /// :param:     parameters  An optional array of parameters to pass to the statement.
     ///
     public func execute(sqlString:String, parameters:[Bindable?] = []) throws {
-        let statement = try prepareStatement(sqlString)
-        try statement.bind(parameters)
+        let statement = try prepareStatement(sqlString, parameters:parameters)
         try statement.execute()
     }
 

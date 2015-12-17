@@ -350,6 +350,23 @@ public class Statement : NSObject {
         }
     }
     
+    public func selectNextRow<T>(block:(Statement)->(T)) throws -> T? {
+        guard try next() else {
+            return nil
+        }
+        
+        return block(self)
+    }
+    
+    public func selectRows<T>(block:(Statement)->(T)) throws -> [T] {
+        var results = [T]()
+        while try next() {
+            let value = block(self)
+            results.append(value)
+        }
+        return results
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Columns
     
@@ -497,6 +514,14 @@ public class Statement : NSObject {
         
         return Int(sqlite3_column_int64(sqliteStatement, Int32(columnIndex)))
     }
+    
+    public func selectNextInt() throws -> Int? {
+        guard try next() else {
+            return nil
+        }
+        
+        return intValueAtIndex(0)
+    }
 
     /// Reads the value of a named column in the current row, as a 64-bit integer.
     ///
@@ -524,6 +549,14 @@ public class Statement : NSObject {
         }
         
         return sqlite3_column_int64(sqliteStatement, Int32(columnIndex))
+    }
+    
+    public func selectNextInt64() throws -> Int64? {
+        guard try next() else {
+            return nil
+        }
+        
+        return int64ValueAtIndex(0)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -567,6 +600,13 @@ public class Statement : NSObject {
         return sqlite3_column_double(sqliteStatement, Int32(columnIndex))
     }
     
+    public func selectNextDouble() throws -> Double? {
+        guard try next() else {
+            return nil
+        }
+        return doubleValueAtIndex(0)
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  String
     
@@ -600,6 +640,14 @@ public class Statement : NSObject {
         return NSString(UTF8String:columnTextI) as String?
     }
     
+    public func selectNextString() throws -> String? {
+        guard try next() else {
+            return nil
+        }
+        
+        return stringValueAtIndex(0)
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Boolean
     
@@ -625,6 +673,14 @@ public class Statement : NSObject {
         } else {
             return nil
         }
+    }
+    
+    public func selectNextBool() throws -> Bool? {
+        guard try next() else {
+            return nil
+        }
+        
+        return boolValueAtIndex(0)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -657,6 +713,14 @@ public class Statement : NSObject {
         
         let columnBytes = sqlite3_column_bytes(sqliteStatement, Int32(columnIndex))
         return NSData(bytes: columnBlob, length: Int(columnBytes))
+    }
+    
+    public func selectNextBlob() throws -> NSData? {
+        guard try next() else {
+            return nil
+        }
+        
+        return blobValueAtIndex(0)
     }
     
 }

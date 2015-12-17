@@ -133,6 +133,63 @@ public extension Database {
     // ---------------------------------------------------------------------------------------------
     // MARK: Query
     
+    ///
+    /// Executes the given SELECT statement and returns the first column of the first row as an Int.
+    /// This is great for counting, or getting a single id. Returns nil if no rows matched, or the
+    /// first column contained a NULL value.
+    ///
+    public func selectInt(sqlString:String, parameters:[Bindable?] = []) throws -> Int? {
+        return try prepareStatement(sqlString, parameters:parameters).selectNextInt()
+    }
+
+    ///
+    /// Executes the given SELECT statement and returns the first column of the first row as an
+    /// Int64. Returns nil if no rows matched, or the first column contained a NULL value.
+    ///
+    public func selectInt64(sqlString:String, parameters:[Bindable?] = []) throws -> Int64? {
+        return try prepareStatement(sqlString, parameters:parameters).selectNextInt64()
+    }
+
+    ///
+    /// Executes the given SELECT statement and returns the first column of the first row as a
+    /// Double. Returns nil if no rows matched, or the first column contained a NULL value.
+    ///
+    public func selectDouble(sqlString:String, parameters:[Bindable?] = []) throws -> Double? {
+        return try prepareStatement(sqlString, parameters:parameters).selectNextDouble()
+    }
+
+    ///
+    /// Executes the given SELECT statement and returns the first column of the first row as a
+    /// String. Returns nil if no rows matched, or the first column contained a NULL value.
+    ///
+    public func selectString(sqlString:String, parameters:[Bindable?] = []) throws -> String? {
+        return try prepareStatement(sqlString, parameters:parameters).selectNextString()
+    }
+
+    ///
+    /// Executes the given SELECT statement and returns the first column of the first row as a
+    /// Bool. Returns nil if no rows matched, or the first column contained a NULL value.
+    ///
+    public func selectBool(sqlString:String, parameters:[Bindable?] = []) throws -> Bool? {
+        return try prepareStatement(sqlString, parameters:parameters).selectNextBool()
+    }
+
+    ///
+    /// Executes the given SELECT statement and returns the first row, transformed by the given
+    /// block. Returns nil if no rows matched.
+    ///
+    public func selectFirst<T>(sqlString:String, parameters:[Bindable?] = [], block:(Statement)->T) throws -> T? {
+        return try prepareStatement(sqlString, parameters:parameters).selectNextRow(block)
+    }
+    
+    ///
+    /// Executes the given SELECT statement and returns all matching rows, transformed by the given
+    /// block.
+    ///
+    public func selectAll<T>(sqlString:String, parameters:[Bindable?] = [], block:(Statement)->T) throws -> [T] {
+        return try prepareStatement(sqlString, parameters:parameters).selectRows(block)
+    }
+    
     public func selectFrom<T>(from:        String,
                               columns:     [String]? = nil,
                               whereExpr:   String? = nil,
