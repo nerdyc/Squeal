@@ -27,16 +27,15 @@ extension Statement {
     ///
     /// :param:     parameters  The array of parameters to bind.
     ///
-    public func bind(parameters:[Bindable?]) throws {
-        for parameterIndex in (0..<parameters.count) {
-            let bindIndex = parameterIndex + 1 // parameters are bound with 1-based indices
-            
-            if let parameter = parameters[parameterIndex] {
+    public func bind<S:SequenceType where S.Generator.Element == Optional<Bindable>>(parameters:S) throws {
+        var bindIndex = 1 // parameters are 1-based
+        for parameter in parameters {
+            if let parameter = parameter {
                 try parameter.bindToStatement(self, atIndex: bindIndex)
             } else {
                 try bindNullParameter(atIndex:bindIndex)
             }
-            
+            bindIndex += 1
         }
     }
 
