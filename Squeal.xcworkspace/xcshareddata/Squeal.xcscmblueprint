@@ -15,8 +15,8 @@
     "910A3B3A1D352F7A0B5C487506E17B8D6367FF66" : "Squeal\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Squeal",
-  "DVTSourceControlWorkspaceBlueprintVersion" : 203,
-  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Squeal.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Squeal.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/nerdyc\/Squeal.git",
