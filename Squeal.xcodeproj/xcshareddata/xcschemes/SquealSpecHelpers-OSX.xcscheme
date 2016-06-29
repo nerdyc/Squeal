@@ -20,20 +20,6 @@
                ReferencedContainer = "container:Squeal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CD7248011996880300151E1E"
-               BuildableName = "Squeal-OSXTests.xctest"
-               BlueprintName = "Squeal-OSXTests"
-               ReferencedContainer = "container:Squeal.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -42,16 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CD7248011996880300151E1E"
-               BuildableName = "Squeal-OSXTests.xctest"
-               BlueprintName = "Squeal-OSXTests"
-               ReferencedContainer = "container:Squeal.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
