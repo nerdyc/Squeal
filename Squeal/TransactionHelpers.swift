@@ -38,7 +38,7 @@ public extension Database {
     ///
     /// :param: block The operation to perform within the transaction.
     ///
-    public func transaction(block:() throws -> ()) throws {
+    public func transaction(@noescape block:() throws -> ()) throws {
         try beginTransaction()
         do {
             try block()
@@ -79,7 +79,7 @@ public extension Database {
     ///
     /// :param: block The operation to perform within the savepoint.
     ///
-    public func savepoint(name:String, block:()throws->()) throws -> () {
+    public func savepoint(name:String, @noescape block:()throws->()) throws -> () {
         try beginSavepoint(name)
         do {
             try block()

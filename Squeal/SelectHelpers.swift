@@ -178,7 +178,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns the first row, transformed by the given
     /// block. Returns nil if no rows matched.
     ///
-    public func selectFirst<T>(sqlString:String, parameters:[Bindable?] = [], block:(Statement)->T) throws -> T? {
+    public func selectFirst<T>(sqlString:String, parameters:[Bindable?] = [], @noescape block:(Statement)->T) throws -> T? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextRow(block)
     }
     
@@ -186,7 +186,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns all matching rows, transformed by the given
     /// block.
     ///
-    public func selectAll<T>(sqlString:String, parameters:[Bindable?] = [], block:(Statement)->T) throws -> [T] {
+    public func selectAll<T>(sqlString:String, parameters:[Bindable?] = [], @noescape block:(Statement)->T) throws -> [T] {
         return try prepareStatement(sqlString, parameters:parameters).selectRows(block)
     }
     
@@ -199,7 +199,7 @@ public extension Database {
                               limit:       Int? = nil,
                               offset:      Int? = nil,
                               parameters:  [Bindable?] = [],
-                              block:       ((Statement) throws -> T)) throws -> [T] {
+                    @noescape block:       ((Statement) throws -> T)) throws -> [T] {
                                 
         let statement = try prepareSelectFrom(from,
                                               columns:columns,
@@ -239,7 +239,7 @@ public extension Database {
 
 public extension Statement {
     
-    public func selectNext<T>(block:((Statement) throws -> T)) throws -> T? {
+    public func selectNext<T>(@noescape block:((Statement) throws -> T)) throws -> T? {
         guard try next() else {
             return nil
         }
@@ -247,7 +247,7 @@ public extension Statement {
         return try block(self)
     }
     
-    public func select<T>(parameters:[Bindable?]? = nil, block:((Statement) throws -> T)) throws -> [T] {
+    public func select<T>(parameters:[Bindable?]? = nil, @noescape block:((Statement) throws -> T)) throws -> [T] {
         try reset()
         
         if let parametersToBind = parameters {

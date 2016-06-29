@@ -334,9 +334,9 @@ public class Statement : NSObject {
     ///
     /// :param:     block  A block to call after each execution step.
     ///
-    public func execute(block:((Statement) throws -> ())? = nil) throws {
+    public func execute(@noescape block:(Statement throws -> Void) = { _ in }) throws {
         while try next() {
-            try block?(self)
+            try block(self)
         }
     }
     
@@ -350,7 +350,7 @@ public class Statement : NSObject {
         }
     }
     
-    public func selectNextRow<T>(block:(Statement)->(T)) throws -> T? {
+    public func selectNextRow<T>(@noescape block:Statement->T) throws -> T? {
         guard try next() else {
             return nil
         }
@@ -358,7 +358,7 @@ public class Statement : NSObject {
         return block(self)
     }
     
-    public func selectRows<T>(block:(Statement)->(T)) throws -> [T] {
+    public func selectRows<T>(@noescape block:Statement->T) throws -> [T] {
         var results = [T]()
         while try next() {
             let value = block(self)
