@@ -53,12 +53,12 @@ class DatabaseSchemaSpec: QuickSpec {
             
             it("returns a TableInfo object describing the table") {
                 let tableInfo = try! database.tableInfoForTableNamed("contacts")
-                expect(tableInfo.name).to(equal("contacts"))
-                expect(tableInfo.columns.count).to(equal(3))
-                expect(tableInfo.columnNames).to(equal(["contactId", "firstName", "lastName"]))
+                expect(tableInfo?.name).to(equal("contacts"))
+                expect(tableInfo?.columns.count).to(equal(3))
+                expect(tableInfo?.columnNames).to(equal(["contactId", "firstName", "lastName"]))
                 
-                expect(tableInfo.indexes.count) == 0
-                expect(tableInfo.indexNames) == []
+                expect(tableInfo?.indexes.count) == 0
+                expect(tableInfo?.indexNames) == []
 
             }
             
@@ -123,7 +123,7 @@ class DatabaseSchemaSpec: QuickSpec {
                 
                 it("creates the table") {
                     expect(database.schema.tableNames).to(equal(["contacts"]))
-                    expect(try! database.tableInfoForTableNamed("contacts").columnNames).to(equal(["contactId", "firstName", "lastName"]))
+                    expect(try! database.tableInfoForTableNamed("contacts")?.columnNames).to(equal(["contactId", "firstName", "lastName"]))
                 }
                 
             }
@@ -229,7 +229,7 @@ class DatabaseSchemaSpec: QuickSpec {
             }
             
             it("adds a column to a table") {
-                expect(try! database.tableInfoForTableNamed("contacts").columnNames).to(equal(["contactId", "name"]))
+                expect(try! database.tableInfoForTableNamed("contacts")?.columnNames).to(equal(["contactId", "name"]))
             }
         }
 

@@ -416,9 +416,9 @@ public extension Database {
     ///
     /// :param: tableName   A table name
     /// :param: error       An error pointer
-    /// :returns: A TableInfo object describing the table and its columns. `nil` if an error occurs.
+    /// :returns: A TableInfo object describing the table and its columns. `nil` if table doesn't exist
     ///
-    public func tableInfoForTableNamed(tableName:String) throws -> TableInfo {
+    public func tableInfoForTableNamed(tableName:String) throws -> TableInfo? {
         var columns = [ColumnInfo]()
         
         let columnInfoRow = try prepareStatement("PRAGMA table_info(" + escapeIdentifier(tableName) + ")")
@@ -426,6 +426,10 @@ public extension Database {
             let columnInfo = ColumnInfo(row:columnInfoRow)
             
             columns.append(columnInfo)
+        }
+        
+        guard !columns.isEmpty else {
+            return nil
         }
         
         var indexes = [IndexInfo]()
