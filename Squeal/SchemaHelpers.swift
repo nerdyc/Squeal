@@ -17,13 +17,13 @@ public func escapeIdentifier(identifier:String) -> String {
 /// `schema` property of a Database object.
 ///
 /// Schema objects are immutable, and will not change when the database is updated.
-public class Schema : NSObject {
+public class SchemaInfo : NSObject {
     
     public convenience override init() {
-        self.init(schemaEntries: [SchemaEntry]())
+        self.init(schemaEntries: [SchemaEntryInfo]())
     }
     
-    public init(schemaEntries:[SchemaEntry]) {
+    public init(schemaEntries:[SchemaEntryInfo]) {
         self.schemaEntries = schemaEntries
     }
     
@@ -31,14 +31,14 @@ public class Schema : NSObject {
     // MARK:  Schema Items
     
     /// The entries in the Schema, each describing a table, index, or other structure.
-    public let schemaEntries: [SchemaEntry]
+    public let schemaEntries: [SchemaEntryInfo]
     
-    public subscript(entryName:String) -> SchemaEntry? {
+    public subscript(entryName:String) -> SchemaEntryInfo? {
         return entryNamed(entryName)
     }
     
     /// Returns the entry with the given name -- table, index, or trigger.
-    public func entryNamed(entryName:String) -> SchemaEntry? {
+    public func entryNamed(entryName:String) -> SchemaEntryInfo? {
         for entry in schemaEntries {
             if entry.name == entryName {
                 return entry
@@ -51,7 +51,7 @@ public class Schema : NSObject {
     // MARK:  Tables
     
     /// All database tables.
-    public var tables: [SchemaEntry] {
+    public var tables: [SchemaEntryInfo] {
         return schemaEntries.filter { $0.isTable }
     }
 
@@ -61,7 +61,7 @@ public class Schema : NSObject {
     }
     
     /// Returns the entry for a particular table.
-    public func tableNamed(tableName:String) -> SchemaEntry? {
+    public func tableNamed(tableName:String) -> SchemaEntryInfo? {
         for entry in schemaEntries {
             if entry.isTable && entry.name == tableName {
                 return entry
@@ -74,7 +74,7 @@ public class Schema : NSObject {
     // MARK:  Indexes
     
     /// All database indexes.
-    public var indexes: [SchemaEntry] {
+    public var indexes: [SchemaEntryInfo] {
         return schemaEntries.filter { $0.isIndex }
     }
     
@@ -85,7 +85,7 @@ public class Schema : NSObject {
     
     /// :param:   tableName The name of a table
     /// :returns: Descriptions of each index for the given table.
-    public func indexesOnTable(tableName: String) -> [SchemaEntry] {
+    public func indexesOnTable(tableName: String) -> [SchemaEntryInfo] {
         return schemaEntries.filter { $0.isIndex && $0.tableName == tableName }
     }
     
@@ -99,8 +99,8 @@ public class Schema : NSObject {
 
 /// Describes a table, index, or other database structure.
 ///
-/// SchemaEntry objects are immutable and will not change when the database is updated.
-public class SchemaEntry : NSObject {
+/// SchemaEntryInfo objects are immutable and will not change when the database is updated.
+public class SchemaEntryInfo : NSObject {
     
     public init(type: String?, name: String?, tableName: String?, rootPage: Int?, sql:String?) {
         self.type       = type      ?? ""
@@ -258,26 +258,26 @@ public extension Database {
     // MARK:  Schema Introspection
     
     /// The database schema. If an error occurs, an empty Schema object is returned.
-    public var schema: Schema {
-        var schemaEntries = [SchemaEntry]()
+    public var schema: SchemaInfo {
+        var schemaEntries = [SchemaEntryInfo]()
         
         do {
             let statement = try prepareStatement("SELECT * FROM sqlite_master")
             while try statement.next() {
-                let schemaEntry = SchemaEntry(type:     statement.stringValue("type"),
+                let SchemaEntryInfo = SchemaEntryInfo(type:     statement.stringValue("type"),
                                               name:     statement.stringValue("name"),
                                               tableName:statement.stringValue("tbl_name"),
                                               rootPage: statement.intValue("rootpage"),
                                               sql:      statement.stringValue("sql"))
                 
-                schemaEntries.append(schemaEntry)
+                schemaEntries.append(SchemaEntryInfo)
             }
         } catch let error {
             NSLog("Error preparing statement to read database schema: \(error)")
-            return Schema()
+            return SchemaInfo()
         }
         
-        return Schema(schemaEntries: schemaEntries)
+        return SchemaInfo(schemaEntries: schemaEntries)
     }
     
     /// Fetches details about a table in the database.
