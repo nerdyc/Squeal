@@ -56,6 +56,36 @@ class DatabaseSchemaSpec: QuickSpec {
                 expect(tableInfo.name).to(equal("contacts"))
                 expect(tableInfo.columns.count).to(equal(3))
                 expect(tableInfo.columnNames).to(equal(["contactId", "firstName", "lastName"]))
+                
+                expect(tableInfo.indexes.count) == 0
+                expect(tableInfo.indexNames) == []
+
+            }
+            
+            context("when an index exists") {
+                
+                beforeEach {
+                    try! database.execute("CREATE INDEX contacts_lastName ON contacts (lastName)")
+                    try! database.execute("CREATE UNIQUE INDEX contacts_fullName ON contacts (firstName, lastName) WHERE firstName IS NOT NULL AND lastName IS NOT NULL")
+                }
+                
+                it("includes info about the indexes") {
+                    var tableInfo:TableInfo?
+                    expect {
+                        tableInfo = try database.tableInfoForTableNamed("contacts")
+                    }.notTo(throwError())
+                    
+                    expect(tableInfo?.indexNames.sort()) == [ "contacts_fullName", "contacts_lastName" ]
+                    
+                    expect(tableInfo?.indexNamed("contacts_lastName")?.columnNames) == [ "lastName" ]
+                    expect(tableInfo?.indexNamed("contacts_lastName")?.isUnique) == false
+                    expect(tableInfo?.indexNamed("contacts_lastName")?.isPartial) == false
+                    
+                    expect(tableInfo?.indexNamed("contacts_fullName")?.columnNames) == [ "firstName", "lastName" ]
+                    expect(tableInfo?.indexNamed("contacts_fullName")?.isUnique) == true
+                    expect(tableInfo?.indexNamed("contacts_fullName")?.isPartial) == true
+                }
+                
             }
             
         }

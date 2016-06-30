@@ -179,9 +179,10 @@ public class SchemaEntryInfo : NSObject {
 /// Describes the structure of a table -- it's columns.
 public class TableInfo : NSObject {
     
-    public init(name:String, columns:[ColumnInfo]) {
+    public init(name:String, columns:[ColumnInfo], indexes:[IndexInfo]) {
         self.name = name
         self.columns = columns
+        self.indexes = indexes
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -210,9 +211,28 @@ public class TableInfo : NSObject {
         return nil
     }
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK: Indexes
+    
+    /// Details about the table's indexes.
+    public let indexes: [IndexInfo]
+
+    /// The names of all indexes in the table.
+    public var indexNames : [String] {
+        return indexes.map { $0.name }
+    }
+    
+    public func indexNamed(name:String) -> IndexInfo? {
+        guard let index = indexes.indexOf({ $0.name == name }) else {
+            return nil
+        }
+        
+        return indexes[index]
+    }
+    
 }
 
-/// Describes a column in a database table.
+/// Describes a column in a database table. Derived from the `table_info` PRAGMA.
 public class ColumnInfo : NSObject {
     
     public init(index:Int, name:String, type:String?, notNull:Bool, defaultValue:String?, primaryKeyIndex:Int) {
@@ -222,6 +242,15 @@ public class ColumnInfo : NSObject {
         self.notNull            = notNull
         self.defaultValue       = defaultValue
         self.primaryKeyIndex    = primaryKeyIndex
+    }
+    
+    public init(row:Statement) {
+        index           = row.intValue("cid")       ?? 0
+        name            = row.stringValue("name")   ?? ""
+        type            = row.stringValue("type")
+        notNull         = row.boolValue("notnull")  ?? false
+        defaultValue    = row.stringValue("dflt_value")
+        primaryKeyIndex = row.intValue("pk")        ?? 0
     }
     
     /// The order of the column in the table.
@@ -247,6 +276,109 @@ public class ColumnInfo : NSObject {
     /// `primaryKeyIndex` of 1, and the 'email_address' column would be 2.
     public let primaryKeyIndex: Int
     
+}
+
+// =====================================================================================================================
+// MARK:- Indexes
+
+/// Information about a column within an index. See the `index_list` PRAGMA in sqlite docs.
+public class IndexInfo : NSObject {
+
+    /// The name of the index.
+    public let name:String
+    
+    /// A sequence number assigned by sqlite.
+    public let sequenceNumber:Int
+    
+    /// Whether the index is UNIQUE.
+    public let isUnique:Bool
+    
+    /// How the index was created.
+    public let origin:IndexOrigin
+    
+    /// Whether the index is partial.
+    public let isPartial:Bool
+    
+    /// The columns covered by the index.
+    public private(set) var columns = [IndexedColumnInfo]()
+    
+    init(row:Statement) {
+        name           = row.stringValueAtIndex(1) ?? ""
+        sequenceNumber = row.intValueAtIndex(0) ?? 0
+        isUnique       = row.boolValueAtIndex(2) ?? false
+        origin         = IndexOrigin(code:row.stringValueAtIndex(3) ?? "")
+        isPartial      = row.boolValueAtIndex(4) ?? false
+    }
+    
+    public var columnNames:[String] {
+        return columns.map { $0.name ?? "" }
+    }
+    
+}
+
+/// Describes how an index was created. See the `index_list` PRAGMA for details.
+public enum IndexOrigin : CustomStringConvertible {
+    
+    /// A CREATE INDEX statement/
+    case CreateIndex
+    
+    /// A UNIQUE constraint on the table.
+    case UniqueConstraint
+    
+    /// A PRIMARY KEY column constraint.
+    case PrimaryKey
+    
+    /// An unknown origin. `code` is the value returned by sqlite.
+    case Other(code:String)
+    
+    init(code:String) {
+        switch code {
+        case "c":
+            self = CreateIndex
+        case "u":
+            self = UniqueConstraint
+        case "pk":
+            self = PrimaryKey
+        default:
+            self = Other(code:code)
+        }
+    }
+    
+    /// Returns the sqlite code for this origin.
+    public var description: String {
+        switch self {
+        case CreateIndex:
+            return "c"
+        case UniqueConstraint:
+            return "u"
+        case PrimaryKey:
+            return "pk"
+        case let Other(code):
+            return code
+        }
+    }
+    
+}
+
+/// Information about a column within an index. See the `index_xinfo` PRAGMA in sqlite docs.
+public class IndexedColumnInfo : NSObject {
+    
+    let positionInIndex:Int
+    let positionInTable:Int?
+    let name:String?
+    let descending:Bool
+    let collatingFunction:String
+    let isKey:Bool
+    
+    init(row:Statement) {
+        positionInIndex     = row.intValueAtIndex(0) ?? 0
+        positionInTable     = row.intValueAtIndex(1)
+        name                = row.stringValueAtIndex(2) ?? ""
+        descending          = row.boolValueAtIndex(3) ?? false
+        collatingFunction   = row.stringValueAtIndex(4) ?? ""
+        isKey               = row.boolValueAtIndex(5) ?? false
+    }
+
 }
 
 // =====================================================================================================================
@@ -289,19 +421,28 @@ public extension Database {
     public func tableInfoForTableNamed(tableName:String) throws -> TableInfo {
         var columns = [ColumnInfo]()
         
-        let statement = try prepareStatement("PRAGMA table_info(" + escapeIdentifier(tableName) + ")")
-        while try statement.next() {
-            let columnInfo = ColumnInfo(index:          statement.intValue("cid") ?? 0,
-                                        name:           statement.stringValue("name") ?? "",
-                                        type:           statement.stringValue("type"),
-                                        notNull:        statement.boolValue("notnull") ?? false,
-                                        defaultValue:   statement.stringValue("dflt_value"),
-                                        primaryKeyIndex:statement.intValue("pk") ?? 0)
+        let columnInfoRow = try prepareStatement("PRAGMA table_info(" + escapeIdentifier(tableName) + ")")
+        while try columnInfoRow.next() {
+            let columnInfo = ColumnInfo(row:columnInfoRow)
             
             columns.append(columnInfo)
         }
-            
-        return TableInfo(name: tableName, columns: columns)
+        
+        var indexes = [IndexInfo]()
+        let indexInfoRow = try prepareStatement("PRAGMA index_list(" + escapeIdentifier(tableName) + ")")
+        while try indexInfoRow.next() {
+            let info = IndexInfo(row:indexInfoRow)
+            indexes.append(info)
+        }
+        
+        for index in indexes {
+            let indexColumnInfoRow = try prepareStatement("PRAGMA index_info(" + escapeIdentifier(index.name) + ")")
+            while try indexColumnInfoRow.next() {
+                index.columns.append(IndexedColumnInfo(row:indexColumnInfoRow))
+            }
+        }
+        
+        return TableInfo(name: tableName, columns: columns, indexes:indexes)
     }
     
     /// Fetches the 'user_version' value, a user-defined version number for the database. This is useful for managing
