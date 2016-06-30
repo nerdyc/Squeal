@@ -264,13 +264,13 @@ public extension Database {
         do {
             let statement = try prepareStatement("SELECT * FROM sqlite_master")
             while try statement.next() {
-                let SchemaEntryInfo = SchemaEntryInfo(type:     statement.stringValue("type"),
-                                              name:     statement.stringValue("name"),
-                                              tableName:statement.stringValue("tbl_name"),
-                                              rootPage: statement.intValue("rootpage"),
-                                              sql:      statement.stringValue("sql"))
+                let schemaEntry = SchemaEntryInfo(type:     statement.stringValue("type"),
+                                                  name:     statement.stringValue("name"),
+                                                  tableName:statement.stringValue("tbl_name"),
+                                                  rootPage: statement.intValue("rootpage"),
+                                                  sql:      statement.stringValue("sql"))
                 
-                schemaEntries.append(SchemaEntryInfo)
+                schemaEntries.append(schemaEntry)
             }
         } catch let error {
             NSLog("Error preparing statement to read database schema: \(error)")
