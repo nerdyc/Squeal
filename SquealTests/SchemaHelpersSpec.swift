@@ -66,7 +66,17 @@ class DatabaseSchemaSpec: QuickSpec {
                 
                 beforeEach {
                     try! database.execute("CREATE INDEX contacts_lastName ON contacts (lastName)")
-                    try! database.execute("CREATE UNIQUE INDEX contacts_fullName ON contacts (firstName, lastName) WHERE firstName IS NOT NULL AND lastName IS NOT NULL")
+                    
+                    try! database.createIndex(
+                        "contacts_fullName",
+                        tableName:"contacts",
+                        columns:[
+                            "firstName",
+                            "lastName"
+                        ],
+                        partialExpr: "firstName IS NOT NULL AND lastName IS NOT NULL",
+                        unique: true
+                    )
                 }
                 
                 it("includes info about the indexes") {
@@ -236,7 +246,7 @@ class DatabaseSchemaSpec: QuickSpec {
         // =================================================================================================================
         // MARK:- Create Index
         
-        describe(".createIndex(name:tableName:columns:error:)") {
+        describe(".createIndex(name:tableName:columns:unique:ifNotExists:partialExpr:error:)") {
             
             beforeEach {
                 try! database.execute("CREATE TABLE contacts (contactId INTEGER, name TEXT)")

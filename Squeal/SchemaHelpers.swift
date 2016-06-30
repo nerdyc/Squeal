@@ -554,10 +554,12 @@ public extension Database {
     /// :param: unique      Whether to create a unique index of not. Defaults to false.
     /// :param: ifNotExists If `true`, don't create the index if it already exists. If `false`, then this method will
     ///                     return an error if the index already exists. Defaults to false.
+    /// :param: partialExpr An expression to create a partial index.
     ///
     public func createIndex(name:String,
                             tableName:String,
                             columns:[String],
+                            partialExpr:String? = nil,
                             unique:Bool = false,
                             ifNotExists:Bool = false) throws {
                                 
@@ -576,6 +578,11 @@ public extension Database {
         createIndexSql.append("(")
         createIndexSql.append(columns.joinWithSeparator(", "))
         createIndexSql.append(")")
+        
+        if let partialExpr = partialExpr {
+            createIndexSql.append("WHERE")
+            createIndexSql.append(partialExpr)
+        }
         
         return try execute(createIndexSql.joinWithSeparator(" "))
     }
