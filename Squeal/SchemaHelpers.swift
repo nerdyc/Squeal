@@ -1,13 +1,13 @@
 import Foundation
 
-/// Escapes a SQL string. For example, escaping `it's it` will produce `'it''s it'`.
+/// Escapes a SQL string. For example, escaping `say "hello"` will produce `"say ""hello"""`.
 public func escapeIdentifier(identifier:String) -> String {
-    let escapedString = identifier.stringByReplacingOccurrencesOfString("'",
-                                                                        withString: "''",
+    let escapedString = identifier.stringByReplacingOccurrencesOfString("\"",
+                                                                        withString: "\"\"",
                                                                         options:    .LiteralSearch,
                                                                         range:      nil)
     
-    return "'\(escapedString)\'"
+    return "\"\(escapedString)\""
 }
 
 // =====================================================================================================================
