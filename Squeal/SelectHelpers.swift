@@ -235,6 +235,33 @@ public extension Database {
         return try statement.select() { $0.int64ValueAtIndex(0) ?? 0 }
     }
     
+    // ---------------------------------------------------------------------------------------------
+    // MARK: Iterate
+    
+    /// Performs a SELECT statement, using the block to iterate through each selected row.
+    func iterateRowsFrom(from:        String,
+                         columns:     [String]? = nil,
+                         whereExpr:   String? = nil,
+                         groupBy:     String? = nil,
+                         having:      String? = nil,
+                         orderBy:     String? = nil,
+                         limit:       Int? = nil,
+                         offset:      Int? = nil,
+                         parameters:  [Bindable?] = [],
+                         @noescape block:(Statement throws -> Void)) throws {
+        
+        let statement = try prepareSelectFrom(from,
+                                              columns:      columns,
+                                              whereExpr:    whereExpr,
+                                              groupBy:      groupBy,
+                                              having:       having,
+                                              orderBy:      orderBy,
+                                              limit:        limit,
+                                              offset:       offset,
+                                              parameters:   parameters)
+        try statement.iterateRows(block)
+    }
+    
 }
 
 public extension Statement {
@@ -260,6 +287,13 @@ public extension Statement {
             rows.append(row)
         }
         return rows
+    }
+    
+    /// Iterates through query results, invoking the block for each row.
+    func iterateRows(@noescape block:(Statement throws -> Void)) throws {
+        while try next() {
+            try block(self)
+        }
     }
     
 }
