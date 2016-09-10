@@ -13,10 +13,10 @@ import sqlite3_osx
 /// Error domain for sqlite errors
 let SQLiteErrorDomain = "sqlite3"
 
-func errorFromSQLiteErrorCode(errorCode:Int32, message:String?) -> NSError {
+func errorFromSQLiteErrorCode(_ errorCode:Int32, message:String?) -> NSError {
     var userInfo: [String:AnyObject]?
     if message != nil {
-        userInfo = [ NSLocalizedDescriptionKey:message! ]
+        userInfo = [ NSLocalizedDescriptionKey:message! as AnyObject ]
     }
     
     return NSError(domain:  SQLiteErrorDomain,
@@ -30,14 +30,14 @@ let SquealErrorDomain = "Squeal"
 /// Enumeration of error codes that may be returned by Squeal methods.
 public enum SquealErrorCode: Int {
     
-    case Success = 0
-    case UnknownBindParameter
+    case success = 0
+    case unknownBindParameter
     
     public var localizedDescription : String {
         switch self {
-            case .Success:
+            case .success:
                 return "Success"
-            case .UnknownBindParameter:
+            case .unknownBindParameter:
                 return "Unknown parameter to bind"
         }
     }

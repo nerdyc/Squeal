@@ -8,32 +8,32 @@ import Foundation
 #else
 import sqlite3_osx
 #endif
-typealias SQLiteStatementPointer = COpaquePointer
+typealias SQLiteStatementPointer = OpaquePointer
 
 ///
 /// Enumeration of all SQLite column types.
 ///
 public enum ColumnType : Int {
-    case Integer
-    case Float
-    case Text
-    case Blob
-    case Null
+    case integer
+    case float
+    case text
+    case blob
+    case null
     
-    static func fromSQLiteColumnType(columnType:Int32) -> ColumnType {
+    static func fromSQLiteColumnType(_ columnType:Int32) -> ColumnType {
         switch columnType {
         case SQLITE_INTEGER:
-            return .Integer
+            return .integer
         case SQLITE_TEXT:
-            return .Text
+            return .text
         case SQLITE_NULL:
-            return .Null
+            return .null
         case SQLITE_FLOAT:
-            return .Float
+            return .float
         case SQLITE_BLOB:
-            return .Blob
+            return .blob
         default:
-            return .Text
+            return .text
         }
     }
 }
@@ -44,11 +44,11 @@ public enum ColumnType : Int {
 ///
 /// Statements are prepared from a Database object.
 ///
-public class Statement : NSObject {
+open class Statement : NSObject {
     
     // We hold a strong reference to the database to ensure it isn't closed before all statements have been finalized.
-    private let database:Database
-    private let sqliteStatement:SQLiteStatementPointer
+    fileprivate let database:Database
+    fileprivate let sqliteStatement:SQLiteStatementPointer?
     
     init(database:Database, sqliteStatement:SQLiteStatementPointer) {
         self.database = database
@@ -61,7 +61,7 @@ public class Statement : NSObject {
         for columnIndex in 0..<columnCount {
             let columnName = sqlite3_column_name(sqliteStatement, columnIndex)
             if columnName != nil {
-                if let columnNameString = NSString(UTF8String: columnName) {
+                if let columnNameString = NSString(utf8String: columnName!) {
                     columnNames.append(columnNameString as String)
                     continue
                 }
@@ -84,18 +84,18 @@ public class Statement : NSObject {
     // MARK:  Parameters
     
     /// The number of parameters accepted by the statement.
-    public let parameterCount : Int
+    open let parameterCount : Int
     
     /// Clears all parameter values bound to the statement. All parameters will be NULL after this call.
-    public func clearParameters() {
+    open func clearParameters() {
         if sqliteStatement != nil {
             sqlite3_clear_bindings(sqliteStatement)
         }
     }
     
     /// :returns: The 1-based index of a named parameter, or `nil` if no parameter is found with the given name.
-    public func indexOfParameterNamed(name:String) -> Int? {
-        if let cString = name.cStringUsingEncoding(NSUTF8StringEncoding) {
+    open func indexOfParameterNamed(_ name:String) -> Int? {
+        if let cString = name.cString(using: String.Encoding.utf8) {
             let index = sqlite3_bind_parameter_index(sqliteStatement, cString)
             if index > 0 {
                 return Int(index)
@@ -105,10 +105,10 @@ public class Statement : NSObject {
         return nil
     }
     
-    private func unknownBindParameterError(name:String) -> NSError {
-        let localizedDescription = SquealErrorCode.UnknownBindParameter.localizedDescription + ": " + name
+    fileprivate func unknownBindParameterError(_ name:String) -> NSError {
+        let localizedDescription = SquealErrorCode.unknownBindParameter.localizedDescription + ": " + name
         return NSError(domain:  SquealErrorDomain,
-                       code:    SquealErrorCode.UnknownBindParameter.rawValue,
+                       code:    SquealErrorCode.unknownBindParameter.rawValue,
                        userInfo:[ NSLocalizedDescriptionKey : localizedDescription ])
         
     }
@@ -121,8 +121,8 @@ public class Statement : NSObject {
     /// :param:     stringValue     The value to bind.
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindStringValue(stringValue:String, atIndex index:Int) throws {
-        let cString = stringValue.cStringUsingEncoding(NSUTF8StringEncoding)
+    open func bindStringValue(_ stringValue:String, atIndex index:Int) throws {
+        let cString = stringValue.cString(using: String.Encoding.utf8)
         
         let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, SQUEAL_TRANSIENT)
         if resultCode != SQLITE_OK {
@@ -135,7 +135,7 @@ public class Statement : NSObject {
     /// :param:     stringValue     The value to bind.
     /// :param:     named           The name of the parameter to bind.
     ///
-    public func bindStringValue(stringValue:String, named name:String) throws {
+    open func bindStringValue(_ stringValue:String, named name:String) throws {
         guard let parameterIndex = indexOfParameterNamed(name) else {
             throw unknownBindParameterError(name)
         }
@@ -151,7 +151,7 @@ public class Statement : NSObject {
     /// :param:     intValue        The value to bind.
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindIntValue(intValue:Int, atIndex index:Int) throws {
+    open func bindIntValue(_ intValue:Int, atIndex index:Int) throws {
         try bindInt64Value(Int64(intValue), atIndex: index)
     }
     
@@ -160,7 +160,7 @@ public class Statement : NSObject {
     /// :param:     intValue        The value to bind.
     /// :param:     named           The name of the parameter to bind.
     ///
-    public func bindIntValue(intValue:Int, named name:String) throws {
+    open func bindIntValue(_ intValue:Int, named name:String) throws {
         try bindInt64Value(Int64(intValue), named: name)
     }
     
@@ -169,7 +169,7 @@ public class Statement : NSObject {
     /// :param:     int64Value      The value to bind.
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindInt64Value(int64Value:Int64, atIndex index:Int) throws {
+    open func bindInt64Value(_ int64Value:Int64, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
             throw database.sqliteError
@@ -181,7 +181,7 @@ public class Statement : NSObject {
     /// :param:     int64Value      The value to bind.
     /// :param:     named           The name of the parameter to bind.
     ///
-    public func bindInt64Value(int64Value:Int64, named name:String) throws {
+    open func bindInt64Value(_ int64Value:Int64, named name:String) throws {
         guard let parameterIndex = indexOfParameterNamed(name) else {
             throw unknownBindParameterError(name)
         }
@@ -198,7 +198,7 @@ public class Statement : NSObject {
     /// :param:     doubleValue     The value to bind.
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindDoubleValue(doubleValue:Double, atIndex index:Int) throws {
+    open func bindDoubleValue(_ doubleValue:Double, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
             throw database.sqliteError
@@ -210,7 +210,7 @@ public class Statement : NSObject {
     /// :param:     doubleValue     The value to bind.
     /// :param:     named           The name of the parameter to bind.
     ///
-    public func bindDoubleValue(doubleValue:Double, named name:String) throws {
+    open func bindDoubleValue(_ doubleValue:Double, named name:String) throws {
         guard let parameterIndex = indexOfParameterNamed(name) else {
             throw unknownBindParameterError(name)
         }
@@ -226,7 +226,7 @@ public class Statement : NSObject {
     /// :param:     boolValue       The value to bind.
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindBoolValue(boolValue:Bool, atIndex index:Int) throws {
+    open func bindBoolValue(_ boolValue:Bool, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
         if resultCode != SQLITE_OK {
             throw database.sqliteError
@@ -238,7 +238,7 @@ public class Statement : NSObject {
     /// :param:     boolValue       The value to bind.
     /// :param:     named           The name of the parameter to bind.
     ///
-    public func bindBoolValue(boolValue:Bool, named name:String) throws {
+    open func bindBoolValue(_ boolValue:Bool, named name:String) throws {
         guard let parameterIndex = indexOfParameterNamed(name) else {
             throw unknownBindParameterError(name)
         }
@@ -255,10 +255,11 @@ public class Statement : NSObject {
     /// :param:     blobValue       The value to bind.
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindBlobValue(blobValue:NSData, atIndex index:Int) throws {
+    open func bindBlobValue(_ blobValue:Data, atIndex index:Int) throws {
+        let dataValue = blobValue as NSData
         var resultCode: Int32
-        if blobValue.bytes != nil {
-            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), blobValue.bytes, Int32(blobValue.length), SQUEAL_TRANSIENT)
+        if dataValue.length > 0 {
+            resultCode = sqlite3_bind_blob(sqliteStatement, Int32(index), dataValue.bytes, Int32(dataValue.length), SQUEAL_TRANSIENT)
         } else {
             resultCode = sqlite3_bind_zeroblob(sqliteStatement, Int32(index), 0);
         }
@@ -273,7 +274,7 @@ public class Statement : NSObject {
     /// :param:     blobValue       The value to bind.
     /// :param:     named           The name of the parameter to bind.
     ///
-    public func bindBlobValue(blobValue:NSData, named name:String) throws {
+    open func bindBlobValue(_ blobValue:Data, named name:String) throws {
         guard let parameterIndex = indexOfParameterNamed(name) else {
             throw unknownBindParameterError(name)
         }
@@ -288,7 +289,7 @@ public class Statement : NSObject {
     ///
     /// :param:     atIndex         The 1-based index of the parameter.
     ///
-    public func bindNullParameter(atIndex index:Int) throws {
+    open func bindNullParameter(atIndex index:Int) throws {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
             throw database.sqliteError
@@ -299,7 +300,7 @@ public class Statement : NSObject {
     ///
     /// :param:     name           The name of the parameter to bind.
     ///
-    public func bindNullParameter(name:String) throws {
+    open func bindNullParameter(_ name:String) throws {
         guard let parameterIndex = indexOfParameterNamed(name) else {
             throw unknownBindParameterError(name)
         }
@@ -317,7 +318,7 @@ public class Statement : NSObject {
     ///
     /// :returns:   `true` if a new result is available, `false` if the end of the result set is reached
     ///
-    public func next() throws -> Bool {
+    open func next() throws -> Bool {
         switch sqlite3_step(sqliteStatement) {
         case SQLITE_DONE:
             // no more steps
@@ -330,13 +331,13 @@ public class Statement : NSObject {
         }
     }
     
-    public typealias StatementBlock = Statement throws -> Void
+    public typealias StatementBlock = (Statement) throws -> Void
     
     /// Executes the statement, optionally calling a block after each step.
     ///
     /// :param:     block  A block to call after each execution step.
     ///
-    public func execute(@noescape block:StatementBlock = { _ in }) throws {
+    open func execute(_ block:StatementBlock = { _ in }) throws {
         while try next() {
             try block(self)
         }
@@ -345,14 +346,14 @@ public class Statement : NSObject {
     /// Resets the statement so it can be executed again. Paramters are NOT cleared. To clear them call
     /// `clearParameters()` after this method.
     ///
-    public func reset() throws {
+    open func reset() throws {
         let resultCode = sqlite3_reset(sqliteStatement)
         if resultCode != SQLITE_OK {
             throw errorFromSQLiteErrorCode(resultCode, message: "Failed to reset statement (resultCode: \(resultCode))")
         }
     }
     
-    public func selectNextRow<T>(@noescape block:Statement->T) throws -> T? {
+    open func selectNextRow<T>(_ block: (Statement)->T) throws -> T? {
         guard try next() else {
             return nil
         }
@@ -360,7 +361,7 @@ public class Statement : NSObject {
         return block(self)
     }
     
-    public func selectRows<T>(@noescape block:Statement->T) throws -> [T] {
+    open func selectRows<T>(_ block: (Statement)->T) throws -> [T] {
         var results = [T]()
         while try next() {
             let value = block(self)
@@ -373,10 +374,10 @@ public class Statement : NSObject {
     // MARK:  Columns
     
     /// The names of each column selected by this statement, or an empty array if the statement is not a SELECT.
-    public let columnNames : [String]
+    open let columnNames : [String]
     
     /// The number of columns in each row selected by this statement.
-    public var columnCount : Int {
+    open var columnCount : Int {
         if sqliteStatement == nil {
             return 0
         }
@@ -389,11 +390,11 @@ public class Statement : NSObject {
     /// :param:     columnName  The name of the column to search for.
     /// :returns:   The index of the column, or nil if it wasn't found.
     ///
-    public func indexOfColumnNamed(columnName:String) -> Int? {
-        return columnNames.indexOf(columnName)
+    open func indexOfColumnNamed(_ columnName:String) -> Int? {
+        return columnNames.index(of: columnName)
     }
     
-    public func nameOfColumnAtIndex(columnIndex:Int) -> String {
+    open func nameOfColumnAtIndex(_ columnIndex:Int) -> String {
         return columnNames[columnIndex]
     }
     
@@ -402,7 +403,7 @@ public class Statement : NSObject {
     /// :param:     columnIndex The index of a column
     /// :returns:   The name of the column at the index
     ///
-    public func columnNameAtIndex(columnIndex:Int) -> String {
+    open func columnNameAtIndex(_ columnIndex:Int) -> String {
         return columnNames[columnIndex]
     }
     
@@ -411,7 +412,7 @@ public class Statement : NSObject {
     /// :param:     columnIndex The index of a column
     /// :returns:   The SQLite type of the column
     ///
-    public func typeOfColumnAtIndex(columnIndex:Int) -> ColumnType {
+    open func typeOfColumnAtIndex(_ columnIndex:Int) -> ColumnType {
         let columnType = sqlite3_column_type(sqliteStatement, Int32(columnIndex))
         return ColumnType.fromSQLiteColumnType(columnType)
     }
@@ -421,7 +422,7 @@ public class Statement : NSObject {
     /// :param:     columnName The name of a column.
     /// :returns:   The SQLite type of the column.
     ///
-    public func typeOfColumnNamed(columnName:String) -> ColumnType {
+    open func typeOfColumnNamed(_ columnName:String) -> ColumnType {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return typeOfColumnAtIndex(columnIndex)
         } else {
@@ -435,7 +436,7 @@ public class Statement : NSObject {
     /// All values of the current row, as a Dictionary. Only non-nil values are included in the Dictionary. This is so
     /// `currentRow["id"]` returns a `Bindable?` value, instead of `Bindable??`.
     ///
-    public var dictionaryValue: [String:Bindable] {
+    open var dictionaryValue: [String:Bindable] {
         var currentRow = [String:Bindable]()
         for columnIndex in 0..<(columnCount) {
             let columnName = nameOfColumnAtIndex(columnIndex)
@@ -445,7 +446,7 @@ public class Statement : NSObject {
     }
     
     /// All values of the current row in an array.
-    public var values: [Bindable?] {
+    open var values: [Bindable?] {
         var currentRowValues = [Bindable?]()
         for columnIndex in 0..<(columnCount) {
             currentRowValues.append(valueAtIndex(columnIndex))
@@ -454,7 +455,7 @@ public class Statement : NSObject {
     }
 
     /// Returns the value of a column by name.
-    public func valueOf(columnName:String) -> Bindable? {
+    open func valueOf(_ columnName:String) -> Bindable? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return valueAtIndex(columnIndex)
         } else {
@@ -462,27 +463,27 @@ public class Statement : NSObject {
         }
     }
     
-    public subscript(columnName:String) -> Bindable? {
+    open subscript(columnName:String) -> Bindable? {
         return valueOf(columnName)
     }
     
     /// Returns the value of a column based on its index
-    public func valueAtIndex(columnIndex:Int) -> Bindable? {
+    open func valueAtIndex(_ columnIndex:Int) -> Bindable? {
         switch typeOfColumnAtIndex(columnIndex) {
-        case .Integer:
+        case .integer:
             return int64ValueAtIndex(columnIndex)
-        case .Text:
+        case .text:
             return stringValueAtIndex(columnIndex)
-        case .Float:
+        case .float:
             return doubleValueAtIndex(columnIndex)
-        case .Blob:
-            return blobValueAtIndex(columnIndex)
-        case .Null:
+        case .blob:
+            return blobValueAtIndex(columnIndex) as Bindable?
+        case .null:
             return nil
         }
     }
     
-    public subscript(columnIndex:Int) -> Bindable? {
+    open subscript(columnIndex:Int) -> Bindable? {
         return valueAtIndex(columnIndex)
     }
     
@@ -493,7 +494,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnName The name of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func intValue(columnName:String) -> Int? {
+    open func intValue(_ columnName:String) -> Int? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return intValueAtIndex(columnIndex)
         } else {
@@ -505,7 +506,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnIndex The 0-based index of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func intValueAtIndex(columnIndex:Int) -> Int? {
+    open func intValueAtIndex(_ columnIndex:Int) -> Int? {
         if sqliteStatement == nil {
             return nil
         }
@@ -517,7 +518,7 @@ public class Statement : NSObject {
         return Int(sqlite3_column_int64(sqliteStatement, Int32(columnIndex)))
     }
     
-    public func selectNextInt() throws -> Int? {
+    open func selectNextInt() throws -> Int? {
         guard try next() else {
             return nil
         }
@@ -529,7 +530,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnName The name of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func int64Value(columnName:String) -> Int64? {
+    open func int64Value(_ columnName:String) -> Int64? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return int64ValueAtIndex(columnIndex)
         } else {
@@ -541,7 +542,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnIndex The 0-based index of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func int64ValueAtIndex(columnIndex:Int) -> Int64? {
+    open func int64ValueAtIndex(_ columnIndex:Int) -> Int64? {
         if sqliteStatement == nil {
             return nil
         }
@@ -553,7 +554,7 @@ public class Statement : NSObject {
         return sqlite3_column_int64(sqliteStatement, Int32(columnIndex))
     }
     
-    public func selectNextInt64() throws -> Int64? {
+    open func selectNextInt64() throws -> Int64? {
         guard try next() else {
             return nil
         }
@@ -565,12 +566,12 @@ public class Statement : NSObject {
     // MARK:  Real
 
     /// Alias for doubleValue(columnName)
-    public func realValue(columnName:String) -> Double? {
+    open func realValue(_ columnName:String) -> Double? {
         return doubleValue(columnName)
     }
 
     /// Alias for realValueAtIndex(columnIndex)
-    public func realValueAtIndex(columnIndex:Int) -> Double? {
+    open func realValueAtIndex(_ columnIndex:Int) -> Double? {
         return doubleValueAtIndex(columnIndex)
     }
 
@@ -578,7 +579,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnName The name of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func doubleValue(columnName:String) -> Double? {
+    open func doubleValue(_ columnName:String) -> Double? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return realValueAtIndex(columnIndex)
         } else {
@@ -590,7 +591,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnIndex The 0-based index of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func doubleValueAtIndex(columnIndex:Int) -> Double? {
+    open func doubleValueAtIndex(_ columnIndex:Int) -> Double? {
         if sqliteStatement == nil {
             return nil
         }
@@ -602,7 +603,7 @@ public class Statement : NSObject {
         return sqlite3_column_double(sqliteStatement, Int32(columnIndex))
     }
     
-    public func selectNextDouble() throws -> Double? {
+    open func selectNextDouble() throws -> Double? {
         guard try next() else {
             return nil
         }
@@ -616,7 +617,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnName The name of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func stringValue(columnName:String) -> String? {
+    open func stringValue(_ columnName:String) -> String? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return stringValueAtIndex(columnIndex)
         } else {
@@ -628,21 +629,20 @@ public class Statement : NSObject {
     ///
     /// :param:     columnIndex The 0-based index of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func stringValueAtIndex(columnIndex:Int) -> String? {
+    open func stringValueAtIndex(_ columnIndex:Int) -> String? {
         if sqliteStatement == nil {
             return nil
         }
         
-        let columnText = sqlite3_column_text(sqliteStatement, Int32(columnIndex))
-        if columnText == nil {
+        guard let columnText = sqlite3_column_text(sqliteStatement, Int32(columnIndex)) else {
             return nil
         }
         
-        let columnTextI = UnsafePointer<Int8>(columnText)
-        return NSString(UTF8String:columnTextI) as String?
+        let columnTextI = UnsafeRawPointer(columnText).assumingMemoryBound(to: Int8.self)
+        return NSString(utf8String:columnTextI) as String?
     }
     
-    public func selectNextString() throws -> String? {
+    open func selectNextString() throws -> String? {
         guard try next() else {
             return nil
         }
@@ -657,7 +657,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnName The name of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func boolValue(columnName:String) -> Bool? {
+    open func boolValue(_ columnName:String) -> Bool? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return boolValueAtIndex(columnIndex)
         } else {
@@ -669,7 +669,7 @@ public class Statement : NSObject {
     ///
     /// :param:     columnIndex The 0-based index of the column to read.
     /// :returns:   The value of the column, or `nil` if is NULL or the column name is unknown.
-    public func boolValueAtIndex(columnIndex:Int) -> Bool? {
+    open func boolValueAtIndex(_ columnIndex:Int) -> Bool? {
         if let intValue = intValueAtIndex(columnIndex) {
             return intValue != 0
         } else {
@@ -677,7 +677,7 @@ public class Statement : NSObject {
         }
     }
     
-    public func selectNextBool() throws -> Bool? {
+    open func selectNextBool() throws -> Bool? {
         guard try next() else {
             return nil
         }
@@ -688,7 +688,7 @@ public class Statement : NSObject {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK: BLOB Parameters
 
-    public func blobValue(columnName:String) -> NSData? {
+    open func blobValue(_ columnName:String) -> Data? {
         if let columnIndex = indexOfColumnNamed(columnName) {
             return blobValueAtIndex(columnIndex)
         } else {
@@ -696,7 +696,7 @@ public class Statement : NSObject {
         }
     }
     
-    public func blobValueAtIndex(columnIndex:Int) -> NSData? {
+    open func blobValueAtIndex(_ columnIndex:Int) -> Data? {
         if sqliteStatement == nil {
             return nil
         }
@@ -708,16 +708,15 @@ public class Statement : NSObject {
             return nil
         }
         
-        let columnBlob = sqlite3_column_blob(sqliteStatement, Int32(columnIndex))
-        if columnBlob == nil {
-            return NSData()
+        guard let columnBlob = sqlite3_column_blob(sqliteStatement, Int32(columnIndex)) else {
+            return Data()
         }
         
         let columnBytes = sqlite3_column_bytes(sqliteStatement, Int32(columnIndex))
-        return NSData(bytes: columnBlob, length: Int(columnBytes))
+        return Data(bytes: columnBlob, count: Int(columnBytes))
     }
     
-    public func selectNextBlob() throws -> NSData? {
+    open func selectNextBlob() throws -> Data? {
         guard try next() else {
             return nil
         }
@@ -730,27 +729,27 @@ public class Statement : NSObject {
 // =================================================================================================
 // MARK:- SequenceType
 
-public class StepSequence : SequenceType {
+open class StepSequence : Sequence {
     
-    private let statement: Statement
+    fileprivate let statement: Statement
     
     init(statement:Statement) {
         self.statement = statement
     }
     
-    public func generate() -> StepGenerator {
+    open func makeIterator() -> StepGenerator {
         return StepGenerator(statement:statement)
     }
     
 }
 
-public struct StepGenerator : GeneratorType {
+public struct StepGenerator : IteratorProtocol {
     
-    private let statement: Statement
-    private var error:NSError?
-    private var isComplete: Bool = false
+    fileprivate let statement: Statement
+    fileprivate var error:NSError?
+    fileprivate var isComplete: Bool = false
     
-    private init(statement:Statement) {
+    fileprivate init(statement:Statement) {
         self.statement = statement
     }
     

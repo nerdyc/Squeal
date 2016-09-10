@@ -143,7 +143,7 @@ class BindableSpec: QuickSpec {
 
             it("binds blob values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
-                try! statement.bind(["image".dataUsingEncoding(NSUTF8StringEncoding)])
+                try! statement.bind(["image".data(using: String.Encoding.utf8)])
                 
                 expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Cara"))
@@ -152,7 +152,7 @@ class BindableSpec: QuickSpec {
             
             it("binds empty blob values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE photo IS ?")
-                try! statement.bind([NSData()] as [Bindable?])
+                try! statement.bind([Data()] as [Bindable?])
                 
                 expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))

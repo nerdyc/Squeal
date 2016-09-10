@@ -83,7 +83,7 @@ class StatementSpec: QuickSpec {
                 expect(statement.dictionaryValue["photo"]).to(beNil())
                 
                 // NULL columns aren't included in resulting dictionary
-                expect(statement.dictionaryValue.keys.sort()).to(equal(["age", "name", "personId"]))
+                expect(statement.dictionaryValue.keys.sorted()).to(equal(["age", "name", "personId"]))
             }
             
         }
@@ -223,8 +223,8 @@ class StatementSpec: QuickSpec {
                 expect(statement.stringValue("name")).to(equal("Brian"))
                 expect(statement.realValueAtIndex(2)).to(equal(43.375))
                 expect(statement.realValue("age")).to(equal(43.375))
-                expect(statement.blobValueAtIndex(3)).to(equal(NSData()))
-                expect(statement.blobValue("photo")).to(equal(NSData()))
+                expect(statement.blobValueAtIndex(3)).to(equal(Data()))
+                expect(statement.blobValue("photo")).to(equal(Data()))
                 
                 // 2: id:3, name:Cara, age:nil, photo:X'696D616765' ("image")
                 expect(try! statement.next()).to(equal(true))
@@ -234,8 +234,8 @@ class StatementSpec: QuickSpec {
                 expect(statement.stringValue("name")).to(equal("Cara"))
                 expect(statement.realValueAtIndex(2)).to(beNil())
                 expect(statement.realValue("age")).to(beNil())
-                expect(statement.blobValueAtIndex(3)).to(equal("image".dataUsingEncoding(NSUTF8StringEncoding)))
-                expect(statement.blobValue("photo")).to(equal("image".dataUsingEncoding(NSUTF8StringEncoding)))
+                expect(statement.blobValueAtIndex(3)).to(equal("image".data(using: String.Encoding.utf8)))
+                expect(statement.blobValue("photo")).to(equal("image".data(using: String.Encoding.utf8)))
                 
                 expect(try! statement.next()).to(equal(false))
             }
@@ -252,7 +252,7 @@ class StatementSpec: QuickSpec {
             beforeEach {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS ?")
                 try! statement.bind(["Brian"])
-                try! statement.next()
+                expect(try! statement.next()) == true
                 try! statement.reset()
             }
             

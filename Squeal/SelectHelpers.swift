@@ -21,7 +21,7 @@ public extension Database {
     ///
     /// :returns:   An array of all values read, or nil if an error occurs.
     ///
-    public func prepareSelectFrom(from:        String,
+    public func prepareSelectFrom(_ from:        String,
                                   columns:     [String]? = nil,
                                   whereExpr:   String? = nil,
                                   groupBy:     String? = nil,
@@ -33,7 +33,7 @@ public extension Database {
         
         var fragments = [ "SELECT" ]
         if columns != nil {
-            fragments.append(columns!.joinWithSeparator(","))
+            fragments.append(columns!.joined(separator: ","))
         } else {
             fragments.append("*")
         }
@@ -71,7 +71,7 @@ public extension Database {
             }
         }
         
-        let statement = try prepareStatement(fragments.joinWithSeparator(" "))
+        let statement = try prepareStatement(fragments.joined(separator: " "))
         if parameters.count > 0 {
             try statement.bind(parameters)
         }
@@ -79,7 +79,7 @@ public extension Database {
         return statement
     }
     
-    public func prepareSelectIdsFrom(from:        String,
+    public func prepareSelectIdsFrom(_ from:        String,
                                      whereExpr:   String? = nil,
                                      groupBy:     String? = nil,
                                      having:      String? = nil,
@@ -112,12 +112,12 @@ public extension Database {
     ///
     /// :returns:   The number of rows counted, or nil if an error occurs.
     ///
-    public func countFrom(from:        String,
+    public func countFrom(_ from:        String,
                           columns:     [String]? = nil,
                           whereExpr:   String? = nil,
                           parameters:  [Bindable?] = []) throws -> Int64 {
 
-        let countExpr = "count(" + (columns ?? ["*"]).joinWithSeparator(",") + ")"
+        let countExpr = "count(" + (columns ?? ["*"]).joined(separator: ",") + ")"
         let statement = try prepareSelectFrom(from,
                                               columns:   [countExpr],
                                               whereExpr: whereExpr,
@@ -138,7 +138,7 @@ public extension Database {
     /// This is great for counting, or getting a single id. Returns nil if no rows matched, or the
     /// first column contained a NULL value.
     ///
-    public func selectInt(sqlString:String, parameters:[Bindable?] = []) throws -> Int? {
+    public func selectInt(_ sqlString:String, parameters:[Bindable?] = []) throws -> Int? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextInt()
     }
 
@@ -146,7 +146,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns the first column of the first row as an
     /// Int64. Returns nil if no rows matched, or the first column contained a NULL value.
     ///
-    public func selectInt64(sqlString:String, parameters:[Bindable?] = []) throws -> Int64? {
+    public func selectInt64(_ sqlString:String, parameters:[Bindable?] = []) throws -> Int64? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextInt64()
     }
 
@@ -154,7 +154,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns the first column of the first row as a
     /// Double. Returns nil if no rows matched, or the first column contained a NULL value.
     ///
-    public func selectDouble(sqlString:String, parameters:[Bindable?] = []) throws -> Double? {
+    public func selectDouble(_ sqlString:String, parameters:[Bindable?] = []) throws -> Double? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextDouble()
     }
 
@@ -162,7 +162,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns the first column of the first row as a
     /// String. Returns nil if no rows matched, or the first column contained a NULL value.
     ///
-    public func selectString(sqlString:String, parameters:[Bindable?] = []) throws -> String? {
+    public func selectString(_ sqlString:String, parameters:[Bindable?] = []) throws -> String? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextString()
     }
 
@@ -170,7 +170,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns the first column of the first row as a
     /// Bool. Returns nil if no rows matched, or the first column contained a NULL value.
     ///
-    public func selectBool(sqlString:String, parameters:[Bindable?] = []) throws -> Bool? {
+    public func selectBool(_ sqlString:String, parameters:[Bindable?] = []) throws -> Bool? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextBool()
     }
 
@@ -178,7 +178,7 @@ public extension Database {
     /// Executes the given SELECT statement and returns the first row, transformed by the given
     /// block. Returns nil if no rows matched.
     ///
-    public func selectFirst<T>(sqlString:String, parameters:[Bindable?] = [], @noescape block:(Statement)->T) throws -> T? {
+    public func selectFirst<T>(_ sqlString:String, parameters:[Bindable?] = [], block: (Statement)->T) throws -> T? {
         return try prepareStatement(sqlString, parameters:parameters).selectNextRow(block)
     }
     
@@ -186,11 +186,11 @@ public extension Database {
     /// Executes the given SELECT statement and returns all matching rows, transformed by the given
     /// block.
     ///
-    public func selectAll<T>(sqlString:String, parameters:[Bindable?] = [], @noescape block:(Statement)->T) throws -> [T] {
+    public func selectAll<T>(_ sqlString:String, parameters:[Bindable?] = [], block: (Statement)->T) throws -> [T] {
         return try prepareStatement(sqlString, parameters:parameters).selectRows(block)
     }
     
-    public func selectFrom<T>(from:        String,
+    public func selectFrom<T>(_ from:        String,
                               columns:     [String]? = nil,
                               whereExpr:   String? = nil,
                               groupBy:     String? = nil,
@@ -199,7 +199,7 @@ public extension Database {
                               limit:       Int? = nil,
                               offset:      Int? = nil,
                               parameters:  [Bindable?] = [],
-                    @noescape block:       ((Statement) throws -> T)) throws -> [T] {
+                    block:       ((Statement) throws -> T)) throws -> [T] {
                                 
         let statement = try prepareSelectFrom(from,
                                               columns:columns,
@@ -214,7 +214,7 @@ public extension Database {
         return try statement.select(block:block)
     }
     
-    public func selectIdsFrom(from:        String,
+    public func selectIdsFrom(_ from:        String,
                               whereExpr:   String? = nil,
                              groupBy:     String? = nil,
                              having:      String? = nil,
@@ -239,7 +239,7 @@ public extension Database {
     // MARK: Iterate
     
     /// Performs a SELECT statement, using the block to iterate through each selected row.
-    func iterateRowsFrom(from:        String,
+    func iterateRowsFrom(_ from:        String,
                          columns:     [String]? = nil,
                          whereExpr:   String? = nil,
                          groupBy:     String? = nil,
@@ -248,7 +248,7 @@ public extension Database {
                          limit:       Int? = nil,
                          offset:      Int? = nil,
                          parameters:  [Bindable?] = [],
-                         @noescape block:(Statement throws -> Void)) throws {
+                         block: ((Statement) throws -> Void)) throws {
         
         let statement = try prepareSelectFrom(from,
                                               columns:      columns,
@@ -266,7 +266,7 @@ public extension Database {
 
 public extension Statement {
     
-    public func selectNext<T>(@noescape block:((Statement) throws -> T)) throws -> T? {
+    public func selectNext<T>(_ block: ((Statement) throws -> T)) throws -> T? {
         guard try next() else {
             return nil
         }
@@ -274,7 +274,7 @@ public extension Statement {
         return try block(self)
     }
     
-    public func select<T>(parameters:[Bindable?]? = nil, @noescape block:((Statement) throws -> T)) throws -> [T] {
+    public func select<T>(_ parameters:[Bindable?]? = nil, block: ((Statement) throws -> T)) throws -> [T] {
         try reset()
         
         if let parametersToBind = parameters {
@@ -290,7 +290,7 @@ public extension Statement {
     }
     
     /// Iterates through query results, invoking the block for each row.
-    func iterateRows(@noescape block:(Statement throws -> Void)) throws {
+    func iterateRows(_ block: ((Statement) throws -> Void)) throws {
         while try next() {
             try block(self)
         }

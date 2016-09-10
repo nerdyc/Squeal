@@ -3,25 +3,23 @@ import Squeal
 
 public extension Database {
     
-    public class func createTemporaryDirectoryURL(prefix:String = "Squeal") throws -> NSURL {
-        let suffix = NSUUID().UUIDString
-        let globalTempDirectoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        guard let tempDirectoryURL = globalTempDirectoryURL.URLByAppendingPathComponent(prefix + "-" + suffix) else {
-            fatalError("unable to construct temp tempDirectoryURL")
-        }
+    public class func createTemporaryDirectoryURL(_ prefix:String = "Squeal") throws -> URL {
+        let suffix = UUID().uuidString
+        let globalTempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let tempDirectoryURL = globalTempDirectoryURL.appendingPathComponent(prefix + "-" + suffix)
         
-        try NSFileManager.defaultManager().createDirectoryAtURL(tempDirectoryURL,
+        try FileManager.default.createDirectory(at: tempDirectoryURL,
                                                                 withIntermediateDirectories: true,
                                                                 attributes:                  nil)
         
         return tempDirectoryURL
     }
 
-    public class func createTemporaryDirectory(prefix:String = "Squeal") throws -> String {
-        return try createTemporaryDirectoryURL(prefix).path!
+    public class func createTemporaryDirectory(_ prefix:String = "Squeal") throws -> String {
+        return try createTemporaryDirectoryURL(prefix).path
     }
     
-    public func queryRows(sqlString:String) throws -> [[String:Bindable]] {
+    public func queryRows(_ sqlString:String) throws -> [[String:Bindable]] {
         let statement = try prepareStatement(sqlString)
         var rows = [[String:Bindable]]()
         while try statement.next() {
