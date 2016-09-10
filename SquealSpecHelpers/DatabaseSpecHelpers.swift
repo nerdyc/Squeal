@@ -6,7 +6,9 @@ public extension Database {
     public class func createTemporaryDirectoryURL(prefix:String = "Squeal") throws -> NSURL {
         let suffix = NSUUID().UUIDString
         let globalTempDirectoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        let tempDirectoryURL = globalTempDirectoryURL.URLByAppendingPathComponent(prefix + "-" + suffix)
+        guard let tempDirectoryURL = globalTempDirectoryURL.URLByAppendingPathComponent(prefix + "-" + suffix) else {
+            fatalError("unable to construct temp tempDirectoryURL")
+        }
         
         try NSFileManager.defaultManager().createDirectoryAtURL(tempDirectoryURL,
                                                                 withIntermediateDirectories: true,

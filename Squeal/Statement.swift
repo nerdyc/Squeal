@@ -330,11 +330,13 @@ public class Statement : NSObject {
         }
     }
     
+    public typealias StatementBlock = Statement throws -> Void
+    
     /// Executes the statement, optionally calling a block after each step.
     ///
     /// :param:     block  A block to call after each execution step.
     ///
-    public func execute(@noescape block:(Statement throws -> Void) = { _ in }) throws {
+    public func execute(@noescape block:StatementBlock = { _ in }) throws {
         while try next() {
             try block(self)
         }
