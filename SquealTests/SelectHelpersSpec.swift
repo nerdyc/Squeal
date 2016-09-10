@@ -86,7 +86,7 @@ class SelectHelpersSpec: QuickSpec {
                 
                 it("provides an error") {
                     do {
-                        try database.prepareSelectFrom("contacts", whereExpr: "sdfsdfsf IS NULL")
+                        _ = try database.prepareSelectFrom("contacts", whereExpr: "sdfsdfsf IS NULL")
                         fail("Expected error")
                     } catch {
                         

@@ -14,7 +14,7 @@ public protocol Bindable {
     ///
     /// This method is called by Statement.bindParameters(parameters:error:), and other methods that bind collections of
     /// parameters en masse.
-    func bindToStatement(statement:Statement, atIndex:Int) throws
+    func bindToStatement(_ statement:Statement, atIndex:Int) throws
     
 }
 
@@ -27,7 +27,7 @@ extension Statement {
     ///
     /// :param:     parameters  The array of parameters to bind.
     ///
-    public func bind<S:SequenceType where S.Generator.Element == Optional<Bindable>>(parameters:S) throws {
+    public func bind<S:Sequence>(_ parameters:S) throws where S.Iterator.Element == Optional<Bindable> {
         var bindIndex = 1 // parameters are 1-based
         for parameter in parameters {
             if let parameter = parameter {
@@ -43,7 +43,7 @@ extension Statement {
     ///
     /// :param:     namedParameters  A dictionary of values to bind.
     ///
-    public func bind(namedParameters namedParameters:[String:Bindable?]) throws {
+    public func bind(namedParameters:[String:Bindable?]) throws {
         for (name, value) in namedParameters {
             try bindParameter(name, value: value)
         }
@@ -54,7 +54,7 @@ extension Statement {
     /// :param:     name    The name of the parameter to bind.
     /// :param:     value   The value to bind.
     ///
-    public func bindParameter(name:String, value:Bindable?) throws {
+    public func bindParameter(_ name:String, value:Bindable?) throws {
         if let bindIndex = indexOfParameterNamed(name) {
             if value != nil {
                 try value!.bindToStatement(self, atIndex: bindIndex)
@@ -71,7 +71,7 @@ extension Statement {
 
 extension String : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindStringValue(self, atIndex: index)
     }
     
@@ -79,7 +79,7 @@ extension String : Bindable {
 
 extension Int : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindIntValue(self, atIndex: index)
     }
     
@@ -87,7 +87,7 @@ extension Int : Bindable {
 
 extension Int64 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindInt64Value(self, atIndex: index)
     }
     
@@ -95,7 +95,7 @@ extension Int64 : Bindable {
 
 extension Int32 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindIntValue(Int(self), atIndex: index)
     }
     
@@ -103,7 +103,7 @@ extension Int32 : Bindable {
 
 extension Int16 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindIntValue(Int(self), atIndex: index)
     }
     
@@ -111,7 +111,7 @@ extension Int16 : Bindable {
 
 extension Int8 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindIntValue(Int(self), atIndex: index)
     }
     
@@ -119,7 +119,7 @@ extension Int8 : Bindable {
 
 extension UInt64 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindInt64Value(Int64(self), atIndex: index)
     }
     
@@ -127,7 +127,7 @@ extension UInt64 : Bindable {
 
 extension UInt32 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindInt64Value(Int64(self), atIndex: index)
     }
     
@@ -135,7 +135,7 @@ extension UInt32 : Bindable {
 
 extension UInt16 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindIntValue(Int(self), atIndex: index)
     }
     
@@ -143,7 +143,7 @@ extension UInt16 : Bindable {
 
 extension UInt8 : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindIntValue(Int(self), atIndex: index)
     }
     
@@ -151,7 +151,7 @@ extension UInt8 : Bindable {
 
 extension Bool : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindBoolValue(self, atIndex: index)
     }
     
@@ -159,7 +159,7 @@ extension Bool : Bindable {
 
 extension Double : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindDoubleValue(self, atIndex: index)
     }
     
@@ -167,22 +167,22 @@ extension Double : Bindable {
 
 extension Float : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindDoubleValue(Double(self), atIndex: index)
     }
     
 }
 
-extension NSData : Bindable {
+extension Data : Bindable {
     
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindBlobValue(self, atIndex: index)
     }
     
 }
 
 extension NSNull : Bindable {
-    public func bindToStatement(statement:Statement, atIndex index:Int) throws {
+    public func bindToStatement(_ statement:Statement, atIndex index:Int) throws {
         try statement.bindNullParameter(atIndex: index)
     }
 }

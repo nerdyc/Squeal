@@ -72,7 +72,7 @@ class DatabaseSpec: QuickSpec {
             
             it("returns a Statement when the sql is valid") {
                 do {
-                    try database.prepareStatement("CREATE TABLE people (personId INTEGER PRIMARY KEY)")
+                    _ = try database.prepareStatement("CREATE TABLE people (personId INTEGER PRIMARY KEY)")
                 } catch let e {
                     fail("Unexpected error thrown when preparing statement: \(e)")
                 }
@@ -80,7 +80,7 @@ class DatabaseSpec: QuickSpec {
             
             it("provides an error when the sql is invalid") {
                 do {
-                    try database.prepareStatement("CREATE TABLE people (personId INTE")
+                    _ = try database.prepareStatement("CREATE TABLE people (personId INTE")
                     fail("Expected an error to be thrown")
                 } catch {
                     

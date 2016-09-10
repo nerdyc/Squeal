@@ -2,18 +2,18 @@ import Foundation
 
 public extension Database {
     
-    public func prepareInsertInto(tableName:String, columns:[String]) throws -> Statement {
+    public func prepareInsertInto(_ tableName:String, columns:[String]) throws -> Statement {
         var sqlFragments = ["INSERT INTO"]
         sqlFragments.append(escapeIdentifier(tableName))
         sqlFragments.append("(")
-        sqlFragments.append(columns.map { escapeIdentifier($0) }.joinWithSeparator(", "))
+        sqlFragments.append(columns.map { escapeIdentifier($0) }.joined(separator: ", "))
         sqlFragments.append(")")
         sqlFragments.append("VALUES")
         sqlFragments.append("(")
-        sqlFragments.append(columns.map { _ in "?" }.joinWithSeparator(","))
+        sqlFragments.append(columns.map { _ in "?" }.joined(separator: ","))
         sqlFragments.append(")")
         
-        return try prepareStatement(sqlFragments.joinWithSeparator(" "))
+        return try prepareStatement(sqlFragments.joined(separator: " "))
     }
     
     /// Inserts a table row. This is a helper for executing an INSERT INTO statement.
@@ -26,7 +26,8 @@ public extension Database {
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
     ///             INTEGER value.
     ///
-    public func insertInto(tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
+    @discardableResult
+    public func insertInto(_ tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
         let statement = try prepareInsertInto(tableName, columns:columns)
         try statement.bind(values)
         try statement.execute()
@@ -42,7 +43,8 @@ public extension Database {
     /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
     ///             INTEGER value.
     ///
-    public func insertInto(tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
+    @discardableResult
+    public func insertInto(_ tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
         var columns = [String]()
         var values = [Bindable?]()
         for (columnName, value) in valuesDictionary {

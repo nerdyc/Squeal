@@ -2,8 +2,8 @@ import Foundation
 
 public protocol DatabasePoolDelegate : class {
     
-    func databaseOpened(database:Database) throws
-    func databaseClosed(database:Database)
+    func databaseOpened(_ database:Database) throws
+    func databaseClosed(_ database:Database)
     
 }
 
@@ -11,29 +11,29 @@ public protocol DatabasePoolDelegate : class {
 /// Manages a pool of Database objects. The pool does not have a maximum size, and will not block. The pool can be
 /// safely accessed from multiple threads concurrently.
 ///
-public class DatabasePool : NSObject {
+open class DatabasePool : NSObject {
     
-    public let databasePath : String
-    public weak var delegate : DatabasePoolDelegate?
-    private let syncQueue : dispatch_queue_t
+    open let databasePath : String
+    open weak var delegate : DatabasePoolDelegate?
+    fileprivate let syncQueue : DispatchQueue
     
     public init(databasePath:String, delegate:DatabasePoolDelegate? = nil) {
         self.databasePath = databasePath
-        self.syncQueue = dispatch_queue_create("DatabasePool-(\(databasePath))", DISPATCH_QUEUE_SERIAL)
+        self.syncQueue = DispatchQueue(label: "DatabasePool-(\(databasePath))", attributes: [])
         self.delegate = delegate
     }
     
     // =================================================================================================================
     // MARK:- Databases
     
-    private var inactiveDatabases   = [Database]()
-    private var activeDatabases     = [Database]()
+    fileprivate var inactiveDatabases   = [Database]()
+    fileprivate var activeDatabases     = [Database]()
     
-    public var inactiveDatabaseCount : Int {
+    open var inactiveDatabaseCount : Int {
         return inactiveDatabases.count
     }
 
-    public var activeDatabaseCount : Int {
+    open var activeDatabaseCount : Int {
         return activeDatabases.count
     }
     
@@ -43,10 +43,10 @@ public class DatabasePool : NSObject {
     ///
     /// :returns: An open Database.
     ///
-    public func dequeueDatabase() throws -> Database {
+    open func dequeueDatabase() throws -> Database {
         var database:Database?
         var error:NSError?
-        dispatch_sync(syncQueue) {
+        syncQueue.sync {
             if self.inactiveDatabases.isEmpty {
                 do {
                     database = try self.openDatabase()
@@ -75,9 +75,9 @@ public class DatabasePool : NSObject {
     ///
     /// :param: database   The Database to return to the pool.
     ///
-    public func enqueueDatabase(database:Database) {
+    open func enqueueDatabase(_ database:Database) {
         deactivateDatabase(database)
-        dispatch_sync(syncQueue) {
+        syncQueue.sync {
             self.inactiveDatabases.append(database)
         }
     }
@@ -87,33 +87,33 @@ public class DatabasePool : NSObject {
     ///
     /// :param: database   The Database to remove.
     ///
-    public func removeDatabase(database:Database) {
+    open func removeDatabase(_ database:Database) {
         deactivateDatabase(database)
     }
     
     ///
     /// Closes and removes all unused Database objects from the pool. Active databases are not affected.
     ///
-    public func drain() {
-        dispatch_sync(syncQueue) {
-            self.inactiveDatabases.removeAll(keepCapacity: false)
+    open func drain() {
+        syncQueue.sync {
+            self.inactiveDatabases.removeAll(keepingCapacity: false)
         }
     }
     
-    private func openDatabase() throws -> Database {
+    fileprivate func openDatabase() throws -> Database {
         let database = try Database(path: databasePath)
         try delegate?.databaseOpened(database)
         return database
     }
     
-    private func deactivateDatabase(database:Database) {
-        dispatch_sync(syncQueue) {
-            if let index = self.activeDatabases.indexOf(database) {
-                self.activeDatabases.removeAtIndex(index)
+    fileprivate func deactivateDatabase(_ database:Database) {
+        syncQueue.sync {
+            if let index = self.activeDatabases.index(of: database) {
+                self.activeDatabases.remove(at: index)
             }
             
-            if let index = self.inactiveDatabases.indexOf(database) {
-                self.inactiveDatabases.removeAtIndex(index)
+            if let index = self.inactiveDatabases.index(of: database) {
+                self.inactiveDatabases.remove(at: index)
             }
             
             self.delegate?.databaseClosed(database)

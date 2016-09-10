@@ -85,7 +85,7 @@ class DatabaseSchemaSpec: QuickSpec {
                         tableInfo = try database.tableInfoForTableNamed("contacts")
                     }.notTo(throwError())
                     
-                    expect(tableInfo?.indexNames.sort()) == [ "contacts_fullName", "contacts_lastName" ]
+                    expect(tableInfo?.indexNames.sorted()) == [ "contacts_fullName", "contacts_lastName" ]
                     
                     expect(tableInfo?.indexNamed("contacts_lastName")?.columnNames) == [ "lastName" ]
                     expect(tableInfo?.indexNamed("contacts_lastName")?.isUnique) == false

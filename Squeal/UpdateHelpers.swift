@@ -2,7 +2,7 @@ import Foundation
 
 public extension Database {
     
-    public func prepareUpdate(tableName: String, setExpr:String, whereExpr:String? = nil, parameters: [Bindable?] = []) throws -> Statement {
+    public func prepareUpdate(_ tableName: String, setExpr:String, whereExpr:String? = nil, parameters: [Bindable?] = []) throws -> Statement {
         var fragments = ["UPDATE", escapeIdentifier(tableName), "SET", setExpr]
         
         if whereExpr != nil {
@@ -10,7 +10,7 @@ public extension Database {
             fragments.append(whereExpr!)
         }
         
-        let statement = try prepareStatement(fragments.joinWithSeparator(" "))
+        let statement = try prepareStatement(fragments.joined(separator: " "))
         if parameters.count > 0 {
             try statement.bind(parameters)
         }
@@ -27,7 +27,8 @@ public extension Database {
     ///
     /// :returns:   The number of rows updated.
     ///
-    public func update(tableName: String, setExpr:String, whereExpr:String? = nil, parameters: [Bindable?] = []) throws -> Int {
+    @discardableResult
+    public func update(_ tableName: String, setExpr:String, whereExpr:String? = nil, parameters: [Bindable?] = []) throws -> Int {
         let statement = try prepareUpdate(tableName,
                                           setExpr:setExpr,
                                           whereExpr:whereExpr,
@@ -37,11 +38,11 @@ public extension Database {
         return self.numberOfChangedRows
     }
     
-    public func prepareUpdate(tableName:   String,
+    public func prepareUpdate(_ tableName:   String,
                               columns:     [String],
                               whereExpr:   String? = nil) throws -> Statement {
         
-        let columnsToSet = columns.map { escapeIdentifier($0) + " = ?" }.joinWithSeparator(", ")
+        let columnsToSet = columns.map { escapeIdentifier($0) + " = ?" }.joined(separator: ", ")
         return try prepareUpdate(tableName, setExpr:columnsToSet, whereExpr:whereExpr)
     }
     
@@ -56,7 +57,8 @@ public extension Database {
     ///
     /// :returns:   The number of rows updated.
     ///
-    public func update(tableName:   String,
+    @discardableResult
+    public func update(_ tableName:   String,
                        columns:     [String],
                        values:      [Bindable?],
                        whereExpr:   String? = nil,
@@ -79,7 +81,8 @@ public extension Database {
     ///
     /// :returns:   The number of rows updated.
     ///
-    public func update(tableName:   String,
+    @discardableResult
+    public func update(_ tableName:   String,
                        set:         [String:Bindable?],
                        whereExpr:   String? = nil,
                        parameters:  [Bindable?] = []) throws -> Int {
@@ -102,7 +105,8 @@ public extension Database {
     ///
     /// :returns:   The number of rows updated.
     ///
-    public func update(tableName: String,
+    @discardableResult
+    public func update(_ tableName: String,
                        rowIds:    [RowId],
                        values:    [String:Bindable?]) throws -> Int {
         if rowIds.count == 0 {
@@ -111,7 +115,7 @@ public extension Database {
         
         let parameters : [Bindable?] = rowIds.map { (rowId:RowId) -> Bindable? in rowId }
         
-        let whereExpr = "_ROWID_ IN (" + rowIds.map { _ -> String in "?" }.joinWithSeparator(",") + ")"
+        let whereExpr = "_ROWID_ IN (" + rowIds.map { _ -> String in "?" }.joined(separator: ",") + ")"
         return try update(tableName, set:values, whereExpr:whereExpr, parameters:parameters)
     }
     
