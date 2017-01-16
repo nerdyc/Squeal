@@ -1,8 +1,9 @@
 # Squeal, a Swift interface to SQLite
 
-Squeal allows [SQLite](http://www.sqlite.org/) databases to be created and accessed from 
-[Swift](https://developer.apple.com/swift/) code. Squeal's goal is to make the most common SQLite tasks easy in Swift, 
-while still providing complete access to SQLite's advanced features.
+Squeal provides access to [SQLite](http://www.sqlite.org/) databases in Swift. Its goal is to provide a
+simple and straight-forward API, without much magic.
+    
+Squeal provides some helpers to generate and execute the most common SQL statements, and take the drudgery out of generating these yourself. However, it's not a goal of this project to hide SQL from the developer, or to provide a generic object-mapping on top of SQLite.
 
 ### Features
 
