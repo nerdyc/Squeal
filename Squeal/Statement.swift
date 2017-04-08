@@ -10,8 +10,8 @@ import sqlite3_osx
 #endif
 typealias SQLiteStatementPointer = OpaquePointer
 
-let SQUEAL_STATIC = unsafeBitCast(0, sqlite3_destructor_type.self)
-let SQUEAL_TRANSIENT = unsafeBitCast(-1, sqlite3_destructor_type.self)
+let SQUEAL_STATIC = unsafeBitCast(0, to: sqlite3_destructor_type.self)
+let SQUEAL_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
 ///
 /// Enumeration of all SQLite column types.
