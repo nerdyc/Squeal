@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "62AC95A81E99C30A00C7E83A"
+               BlueprintIdentifier = "62AC954B1E99A83A00C7E83A"
                BuildableName = "Squeal.framework"
-               BlueprintName = "Squeal-iOS"
+               BlueprintName = "Squeal-macOS"
                ReferencedContainer = "container:Squeal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "62AC95B01E99C30A00C7E83A"
-               BuildableName = "Squeal-iOSTests.xctest"
-               BlueprintName = "Squeal-iOSTests"
+               BlueprintIdentifier = "62AC95541E99A83A00C7E83A"
+               BuildableName = "Squeal-macOSTests.xctest"
+               BlueprintName = "Squeal-macOSTests"
                ReferencedContainer = "container:Squeal.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "62AC95A81E99C30A00C7E83A"
+            BlueprintIdentifier = "62AC954B1E99A83A00C7E83A"
             BuildableName = "Squeal.framework"
-            BlueprintName = "Squeal-iOS"
+            BlueprintName = "Squeal-macOS"
             ReferencedContainer = "container:Squeal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "62AC95A81E99C30A00C7E83A"
+            BlueprintIdentifier = "62AC954B1E99A83A00C7E83A"
             BuildableName = "Squeal.framework"
-            BlueprintName = "Squeal-iOS"
+            BlueprintName = "Squeal-macOS"
             ReferencedContainer = "container:Squeal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -82,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "62AC95A81E99C30A00C7E83A"
+            BlueprintIdentifier = "62AC954B1E99A83A00C7E83A"
             BuildableName = "Squeal.framework"
-            BlueprintName = "Squeal-iOS"
+            BlueprintName = "Squeal-macOS"
             ReferencedContainer = "container:Squeal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

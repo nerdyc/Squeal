@@ -7,648 +7,506 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		628F31091D19A8390020F185 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 628F31021D19A81C0020F185 /* Nimble.framework */; };
-		628F310A1D19A8390020F185 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 628F30E31D19A8110020F185 /* Quick.framework */; };
-		628F310B1D19A8420020F185 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 628F30FE1D19A81C0020F185 /* Nimble.framework */; };
-		628F310C1D19A8420020F185 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 628F30E91D19A8110020F185 /* Quick.framework */; };
-		CD3DE27E19BCD44B00DED437 /* SquealSpecHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
-		CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C2C19B29D27004497BF /* DatabasePool.swift */; };
-		CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
-		CD61584C19BCD74A00E63F56 /* SquealSpecHelpers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */; };
-		CD7247FD1996880300151E1E /* Squeal.h in Headers */ = {isa = PBXBuildFile; fileRef = CD7247FC1996880300151E1E /* Squeal.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CD72481119968D3100151E1E /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
-		CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481219968D4000151E1E /* DatabaseSpec.swift */; };
-		CD72483E1996BC0100151E1E /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CD72483D1996BC0100151E1E /* libsqlite3.dylib */; };
-		CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
-		CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7248431996BE0400151E1E /* Foundation.framework */; };
-		CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
-		CD9CD78719C5FB210038B7B0 /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */; };
-		CD9CD78819C5FB210038B7B0 /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */; };
-		CD9CD78919C5FB210038B7B0 /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481219968D4000151E1E /* DatabaseSpec.swift */; };
-		CD9CD78A19C5FB210038B7B0 /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7248661996D4F700151E1E /* StatementSpec.swift */; };
-		CD9CD78D19C5FB3E0038B7B0 /* SquealSpecHelpers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB7019C5F77900862BFD /* SquealSpecHelpers.framework */; };
-		CD9CD7BD19CA85820038B7B0 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7BC19CA85820038B7B0 /* Errors.swift */; };
-		CD9CD7BE19CA85820038B7B0 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7BC19CA85820038B7B0 /* Errors.swift */; };
-		CD9CD7C819CA86040038B7B0 /* TransactionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7C719CA86040038B7B0 /* TransactionHelpers.swift */; };
-		CD9CD7C919CA86040038B7B0 /* TransactionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7C719CA86040038B7B0 /* TransactionHelpers.swift */; };
-		CD9CD7CB19CA86270038B7B0 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7CA19CA86270038B7B0 /* Statement.swift */; };
-		CD9CD7CC19CA86270038B7B0 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7CA19CA86270038B7B0 /* Statement.swift */; };
-		CD9CD7CE19CA86FE0038B7B0 /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7CD19CA86FE0038B7B0 /* Bindable.swift */; };
-		CD9CD7CF19CA86FE0038B7B0 /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7CD19CA86FE0038B7B0 /* Bindable.swift */; };
-		CD9CD7D119CA88190038B7B0 /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */; };
-		CD9CD7D219CA88190038B7B0 /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */; };
-		CD9F4CD619A12967003CC387 /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */; };
-		CDB05CE219CA88D70085E4AC /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */; };
-		CDB05CE319CA88D70085E4AC /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */; };
-		CDB05CED19CA89110085E4AC /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */; };
-		CDB05CEE19CA89110085E4AC /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */; };
-		CDB05D0319CA93EF0085E4AC /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */; };
-		CDB05D0419CA93EF0085E4AC /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */; };
-		CDB05D0619CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */; };
-		CDB05D0719CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */; };
-		CDB05D0919CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */; };
-		CDB05D0A19CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */; };
-		CDB05D0C19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */; };
-		CDB05D0D19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */; };
-		CDB05D0F19CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */; };
-		CDB05D1019CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */; };
-		CDB05D1219CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
-		CDB05D1319CA97180085E4AC /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */; };
-		CDCBEB5119C5F6F500862BFD /* Squeal.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB5019C5F6F500862BFD /* Squeal.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CDCBEB5719C5F6F500862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
-		CDCBEB6519C5F70800862BFD /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD72481019968D3100151E1E /* Database.swift */; };
-		CDCBEB6619C5F70800862BFD /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */; };
-		CDCBEB6719C5F70800862BFD /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* SchemaHelpers.swift */; };
-		CDCBEB6819C5F70800862BFD /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4B4C2C19B29D27004497BF /* DatabasePool.swift */; };
-		CDCBEB6A19C5F71E00862BFD /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */; };
-		CDCBEB7519C5F77900862BFD /* SquealSpecHelpers-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CDCBEB8D19C5F7C800862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */; };
-		CDCBEB8E19C5F7DB00862BFD /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */; };
-		CDCBEB9019C5F98E00862BFD /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD7247F71996880300151E1E /* Squeal.framework */; };
-		CDD59C26199C69F500FB662D /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C25199C69F500FB662D /* SchemaHelpers.swift */; };
-		CDD59C30199C6A5300FB662D /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */; };
+		62AC95561E99A83A00C7E83A /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC954C1E99A83A00C7E83A /* Squeal.framework */; };
+		62AC955D1E99A83A00C7E83A /* Squeal-macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 62AC954F1E99A83A00C7E83A /* Squeal-macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		62AC956F1E99A8B400C7E83A /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95641E99A8B400C7E83A /* Bindable.swift */; };
+		62AC95701E99A8B400C7E83A /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95651E99A8B400C7E83A /* Database.swift */; };
+		62AC95711E99A8B400C7E83A /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95661E99A8B400C7E83A /* DatabasePool.swift */; };
+		62AC95721E99A8B400C7E83A /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95671E99A8B400C7E83A /* DeleteHelpers.swift */; };
+		62AC95731E99A8B400C7E83A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95681E99A8B400C7E83A /* Errors.swift */; };
+		62AC95741E99A8B400C7E83A /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95691E99A8B400C7E83A /* InsertHelpers.swift */; };
+		62AC95751E99A8B400C7E83A /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956A1E99A8B400C7E83A /* SchemaHelpers.swift */; };
+		62AC95761E99A8B400C7E83A /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956B1E99A8B400C7E83A /* SelectHelpers.swift */; };
+		62AC95771E99A8B400C7E83A /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956C1E99A8B400C7E83A /* Statement.swift */; };
+		62AC95781E99A8B400C7E83A /* TransactionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956D1E99A8B400C7E83A /* TransactionHelpers.swift */; };
+		62AC95791E99A8B400C7E83A /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956E1E99A8B400C7E83A /* UpdateHelpers.swift */; };
+		62AC95891E99B02000C7E83A /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC957F1E99B02000C7E83A /* BindableSpec.swift */; };
+		62AC958A1E99B02000C7E83A /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95801E99B02000C7E83A /* DatabasePoolSpec.swift */; };
+		62AC958B1E99B02000C7E83A /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95811E99B02000C7E83A /* DatabaseSpec.swift */; };
+		62AC958C1E99B02000C7E83A /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95821E99B02000C7E83A /* DeleteHelpersSpec.swift */; };
+		62AC958D1E99B02000C7E83A /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95831E99B02000C7E83A /* InsertHelpersSpec.swift */; };
+		62AC958E1E99B02000C7E83A /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95841E99B02000C7E83A /* SchemaHelpersSpec.swift */; };
+		62AC958F1E99B02000C7E83A /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95851E99B02000C7E83A /* SelectHelpersSpec.swift */; };
+		62AC95901E99B02000C7E83A /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95861E99B02000C7E83A /* StatementSpec.swift */; };
+		62AC95911E99B02000C7E83A /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95871E99B02000C7E83A /* TransactionHelpersSpec.swift */; };
+		62AC95921E99B02000C7E83A /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95881E99B02000C7E83A /* UpdateHelpersSpec.swift */; };
+		62AC95971E99B08F00C7E83A /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95961E99B08F00C7E83A /* DatabaseSpecHelpers.swift */; };
+		62AC959A1E99B1AC00C7E83A /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC95991E99B1AC00C7E83A /* Nimble.framework */; };
+		62AC959C1E99B1AF00C7E83A /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC959B1E99B1AF00C7E83A /* Quick.framework */; };
+		62AC95A21E99B35C00C7E83A /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 62AC959B1E99B1AF00C7E83A /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		62AC95A31E99B35E00C7E83A /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 62AC95991E99B1AC00C7E83A /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		62AC95B21E99C30A00C7E83A /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC95A91E99C30A00C7E83A /* Squeal.framework */; };
+		62AC95B91E99C30A00C7E83A /* Squeal-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 62AC95AB1E99C30A00C7E83A /* Squeal-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		62AC95C01E99C33B00C7E83A /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95641E99A8B400C7E83A /* Bindable.swift */; };
+		62AC95C11E99C33B00C7E83A /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95651E99A8B400C7E83A /* Database.swift */; };
+		62AC95C21E99C33B00C7E83A /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95661E99A8B400C7E83A /* DatabasePool.swift */; };
+		62AC95C31E99C33B00C7E83A /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95671E99A8B400C7E83A /* DeleteHelpers.swift */; };
+		62AC95C41E99C33B00C7E83A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95681E99A8B400C7E83A /* Errors.swift */; };
+		62AC95C51E99C33B00C7E83A /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95691E99A8B400C7E83A /* InsertHelpers.swift */; };
+		62AC95C61E99C33B00C7E83A /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956A1E99A8B400C7E83A /* SchemaHelpers.swift */; };
+		62AC95C71E99C33B00C7E83A /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956B1E99A8B400C7E83A /* SelectHelpers.swift */; };
+		62AC95C81E99C33B00C7E83A /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956C1E99A8B400C7E83A /* Statement.swift */; };
+		62AC95C91E99C33B00C7E83A /* TransactionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956D1E99A8B400C7E83A /* TransactionHelpers.swift */; };
+		62AC95CA1E99C33B00C7E83A /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956E1E99A8B400C7E83A /* UpdateHelpers.swift */; };
+		62AC95CB1E99C34600C7E83A /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95961E99B08F00C7E83A /* DatabaseSpecHelpers.swift */; };
+		62AC95CC1E99C34600C7E83A /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC957F1E99B02000C7E83A /* BindableSpec.swift */; };
+		62AC95CD1E99C34600C7E83A /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95801E99B02000C7E83A /* DatabasePoolSpec.swift */; };
+		62AC95CE1E99C34600C7E83A /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95811E99B02000C7E83A /* DatabaseSpec.swift */; };
+		62AC95CF1E99C34600C7E83A /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95821E99B02000C7E83A /* DeleteHelpersSpec.swift */; };
+		62AC95D01E99C34600C7E83A /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95831E99B02000C7E83A /* InsertHelpersSpec.swift */; };
+		62AC95D11E99C34600C7E83A /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95841E99B02000C7E83A /* SchemaHelpersSpec.swift */; };
+		62AC95D21E99C34600C7E83A /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95851E99B02000C7E83A /* SelectHelpersSpec.swift */; };
+		62AC95D31E99C34600C7E83A /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95861E99B02000C7E83A /* StatementSpec.swift */; };
+		62AC95D41E99C34600C7E83A /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95871E99B02000C7E83A /* TransactionHelpersSpec.swift */; };
+		62AC95D51E99C34600C7E83A /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95881E99B02000C7E83A /* UpdateHelpersSpec.swift */; };
+		62AC95D81E99C4AA00C7E83A /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC95D61E99C4AA00C7E83A /* Nimble.framework */; };
+		62AC95D91E99C4AA00C7E83A /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC95D71E99C4AA00C7E83A /* Quick.framework */; };
+		62AC95DD1E99D0B700C7E83A /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 62AC95D61E99C4AA00C7E83A /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		62AC95DE1E99D0B700C7E83A /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 62AC95D71E99C4AA00C7E83A /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		62AC95ED1E99D1E600C7E83A /* Squeal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC95E41E99D1E600C7E83A /* Squeal.framework */; };
+		62AC95F41E99D1E600C7E83A /* Squeal-tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 62AC95E61E99D1E600C7E83A /* Squeal-tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		62AC95FB1E99D30700C7E83A /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95641E99A8B400C7E83A /* Bindable.swift */; };
+		62AC95FC1E99D30700C7E83A /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95651E99A8B400C7E83A /* Database.swift */; };
+		62AC95FD1E99D30700C7E83A /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95661E99A8B400C7E83A /* DatabasePool.swift */; };
+		62AC95FE1E99D30700C7E83A /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95671E99A8B400C7E83A /* DeleteHelpers.swift */; };
+		62AC95FF1E99D30700C7E83A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95681E99A8B400C7E83A /* Errors.swift */; };
+		62AC96001E99D30700C7E83A /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95691E99A8B400C7E83A /* InsertHelpers.swift */; };
+		62AC96011E99D30700C7E83A /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956A1E99A8B400C7E83A /* SchemaHelpers.swift */; };
+		62AC96021E99D30700C7E83A /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956B1E99A8B400C7E83A /* SelectHelpers.swift */; };
+		62AC96031E99D30700C7E83A /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956C1E99A8B400C7E83A /* Statement.swift */; };
+		62AC96041E99D30700C7E83A /* TransactionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956D1E99A8B400C7E83A /* TransactionHelpers.swift */; };
+		62AC96051E99D30700C7E83A /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956E1E99A8B400C7E83A /* UpdateHelpers.swift */; };
+		62AC96081E99D3F200C7E83A /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC96061E99D3F200C7E83A /* Nimble.framework */; };
+		62AC96091E99D3F200C7E83A /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62AC96071E99D3F200C7E83A /* Quick.framework */; };
+		62AC960B1E99D41500C7E83A /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 62AC96061E99D3F200C7E83A /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		62AC960C1E99D41500C7E83A /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 62AC96071E99D3F200C7E83A /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		62AC960D1E99D63600C7E83A /* DatabaseSpecHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95961E99B08F00C7E83A /* DatabaseSpecHelpers.swift */; };
+		62AC960E1E99D63600C7E83A /* BindableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC957F1E99B02000C7E83A /* BindableSpec.swift */; };
+		62AC960F1E99D63600C7E83A /* DatabasePoolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95801E99B02000C7E83A /* DatabasePoolSpec.swift */; };
+		62AC96101E99D63600C7E83A /* DatabaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95811E99B02000C7E83A /* DatabaseSpec.swift */; };
+		62AC96111E99D63600C7E83A /* DeleteHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95821E99B02000C7E83A /* DeleteHelpersSpec.swift */; };
+		62AC96121E99D63600C7E83A /* InsertHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95831E99B02000C7E83A /* InsertHelpersSpec.swift */; };
+		62AC96131E99D63600C7E83A /* SchemaHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95841E99B02000C7E83A /* SchemaHelpersSpec.swift */; };
+		62AC96141E99D63600C7E83A /* SelectHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95851E99B02000C7E83A /* SelectHelpersSpec.swift */; };
+		62AC96151E99D63600C7E83A /* StatementSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95861E99B02000C7E83A /* StatementSpec.swift */; };
+		62AC96161E99D63600C7E83A /* TransactionHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95871E99B02000C7E83A /* TransactionHelpersSpec.swift */; };
+		62AC96171E99D63600C7E83A /* UpdateHelpersSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95881E99B02000C7E83A /* UpdateHelpersSpec.swift */; };
+		62AC96211E99D69B00C7E83A /* Squeal-watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 62AC961F1E99D69B00C7E83A /* Squeal-watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		62AC96251E99D6B000C7E83A /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95641E99A8B400C7E83A /* Bindable.swift */; };
+		62AC96261E99D6B000C7E83A /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95651E99A8B400C7E83A /* Database.swift */; };
+		62AC96271E99D6B000C7E83A /* DatabasePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95661E99A8B400C7E83A /* DatabasePool.swift */; };
+		62AC96281E99D6B000C7E83A /* DeleteHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95671E99A8B400C7E83A /* DeleteHelpers.swift */; };
+		62AC96291E99D6B000C7E83A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95681E99A8B400C7E83A /* Errors.swift */; };
+		62AC962A1E99D6B000C7E83A /* InsertHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC95691E99A8B400C7E83A /* InsertHelpers.swift */; };
+		62AC962B1E99D6B000C7E83A /* SchemaHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956A1E99A8B400C7E83A /* SchemaHelpers.swift */; };
+		62AC962C1E99D6B000C7E83A /* SelectHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956B1E99A8B400C7E83A /* SelectHelpers.swift */; };
+		62AC962D1E99D6B000C7E83A /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956C1E99A8B400C7E83A /* Statement.swift */; };
+		62AC962E1E99D6B000C7E83A /* TransactionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956D1E99A8B400C7E83A /* TransactionHelpers.swift */; };
+		62AC962F1E99D6B000C7E83A /* UpdateHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC956E1E99A8B400C7E83A /* UpdateHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		628F30E21D19A8110020F185 /* PBXContainerItemProxy */ = {
+		62AC95571E99A83A00C7E83A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DAEB6B8E1943873100289F44;
-			remoteInfo = "Quick-OSX";
-		};
-		628F30E41D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DAEB6B991943873100289F44;
-			remoteInfo = "Quick-OSXTests";
-		};
-		628F30E61D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DA5663E81A4C8D8500193C88;
-			remoteInfo = "QuickFocused-OSXTests";
-		};
-		628F30E81D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5A5D117C19473F2100F6D13D;
-			remoteInfo = "Quick-iOS";
-		};
-		628F30EA1D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5A5D118619473F2100F6D13D;
-			remoteInfo = "Quick-iOSTests";
-		};
-		628F30EC1D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DA9876B21A4C70EB0004AA17;
-			remoteInfo = "QuickFocused-iOSTests";
-		};
-		628F30EE1D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F118CD51BDCA4AB005013A2;
-			remoteInfo = "Quick-tvOS";
-		};
-		628F30F01D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F118CDE1BDCA4AB005013A2;
-			remoteInfo = "Quick-tvOSTests";
-		};
-		628F30F21D19A8110020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F118CF01BDCA4BB005013A2;
-			remoteInfo = "QuickFocused-tvOSTests";
-		};
-		628F30FD1D19A81C0020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F1A74291940169200FFFC47;
-			remoteInfo = "Nimble-iOS";
-		};
-		628F30FF1D19A81C0020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F1A74341940169200FFFC47;
-			remoteInfo = "Nimble-iOSTests";
-		};
-		628F31011D19A81C0020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F925EAD195C0D6300ED456B;
-			remoteInfo = "Nimble-OSX";
-		};
-		628F31031D19A81C0020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F925EB7195C0D6300ED456B;
-			remoteInfo = "Nimble-OSXTests";
-		};
-		628F31051D19A81C0020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F5DF1551BDCA0CE00C3A531;
-			remoteInfo = "Nimble-tvOS";
-		};
-		628F31071D19A81C0020F185 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F5DF15E1BDCA0CE00C3A531;
-			remoteInfo = "Nimble-tvOSTests";
-		};
-		CD61584819BCD74000E63F56 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CD7247EE1996880300151E1E /* Project object */;
+			containerPortal = 62AC95401E99A7C500C7E83A /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CD7247F61996880300151E1E;
-			remoteInfo = Squeal;
+			remoteGlobalIDString = 62AC954B1E99A83A00C7E83A;
+			remoteInfo = "Squeal-macOS";
 		};
-		CD61584A19BCD74000E63F56 /* PBXContainerItemProxy */ = {
+		62AC95B31E99C30A00C7E83A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = CD7247EE1996880300151E1E /* Project object */;
+			containerPortal = 62AC95401E99A7C500C7E83A /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CD3DE27819BCD44B00DED437;
-			remoteInfo = SquealSpecHelpers;
-		};
-		CD61585119BCDC7700E63F56 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CD7247EE1996880300151E1E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CD7247F61996880300151E1E;
-			remoteInfo = Squeal;
-		};
-		CDCBEB5819C5F6F500862BFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CD7247EE1996880300151E1E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CDCBEB4B19C5F6F500862BFD;
+			remoteGlobalIDString = 62AC95A81E99C30A00C7E83A;
 			remoteInfo = "Squeal-iOS";
 		};
-		CDCBEB8B19C5F7C100862BFD /* PBXContainerItemProxy */ = {
+		62AC95EE1E99D1E600C7E83A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = CD7247EE1996880300151E1E /* Project object */;
+			containerPortal = 62AC95401E99A7C500C7E83A /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CDCBEB4B19C5F6F500862BFD;
-			remoteInfo = "Squeal-iOS";
+			remoteGlobalIDString = 62AC95E31E99D1E600C7E83A;
+			remoteInfo = "Squeal-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		62AC959D1E99B27500C7E83A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				62AC95A21E99B35C00C7E83A /* Quick.framework in CopyFiles */,
+				62AC95A31E99B35E00C7E83A /* Nimble.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62AC95DC1E99D0AE00C7E83A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				62AC95DD1E99D0B700C7E83A /* Nimble.framework in CopyFiles */,
+				62AC95DE1E99D0B700C7E83A /* Quick.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62AC960A1E99D40D00C7E83A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				62AC960B1E99D41500C7E83A /* Nimble.framework in CopyFiles */,
+				62AC960C1E99D41500C7E83A /* Quick.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		628F30D61D19A8100020F185 /* Quick.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Quick.xcodeproj; path = Quick/Quick.xcodeproj; sourceTree = "<group>"; };
-		628F30F41D19A81C0020F185 /* Nimble.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Nimble.xcodeproj; path = Nimble/Nimble.xcodeproj; sourceTree = "<group>"; };
-		CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SquealSpecHelpers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD3DE27C19BCD44B00DED437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SquealSpecHelpers.h; sourceTree = "<group>"; };
-		CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpecHelpers.swift; sourceTree = "<group>"; };
-		CD4B4C2C19B29D27004497BF /* DatabasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePool.swift; sourceTree = "<group>"; };
-		CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePoolSpec.swift; sourceTree = "<group>"; };
-		CD7247F71996880300151E1E /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD7247FB1996880300151E1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD7247FC1996880300151E1E /* Squeal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Squeal.h; sourceTree = "<group>"; };
-		CD7248021996880300151E1E /* Squeal-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD7248051996880300151E1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD72481019968D3100151E1E /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
-		CD72481219968D4000151E1E /* DatabaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpec.swift; sourceTree = "<group>"; };
-		CD7248341996A5D100151E1E /* module.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = module.map; path = modules/module.map; sourceTree = SOURCE_ROOT; };
-		CD7248351996A5F700151E1E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
-		CD72483A1996A95C00151E1E /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
-		CD72483D1996BC0100151E1E /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		CD7248431996BE0400151E1E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		CD7248661996D4F700151E1E /* StatementSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpec.swift; sourceTree = "<group>"; };
-		CD9CD7BC19CA85820038B7B0 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		CD9CD7C719CA86040038B7B0 /* TransactionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHelpers.swift; sourceTree = "<group>"; };
-		CD9CD7CA19CA86270038B7B0 /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
-		CD9CD7CD19CA86FE0038B7B0 /* Bindable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bindable.swift; sourceTree = "<group>"; };
-		CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpers.swift; sourceTree = "<group>"; };
-		CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteHelpers.swift; sourceTree = "<group>"; };
-		CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectHelpers.swift; sourceTree = "<group>"; };
-		CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateHelpers.swift; sourceTree = "<group>"; };
-		CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BindableSpec.swift; sourceTree = "<group>"; };
-		CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHelpersSpec.swift; sourceTree = "<group>"; };
-		CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteHelpersSpec.swift; sourceTree = "<group>"; };
-		CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateHelpersSpec.swift; sourceTree = "<group>"; };
-		CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectHelpersSpec.swift; sourceTree = "<group>"; };
-		CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpersSpec.swift; sourceTree = "<group>"; };
-		CDCBEB4C19C5F6F500862BFD /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CDCBEB4F19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDCBEB5019C5F6F500862BFD /* Squeal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Squeal.h; sourceTree = "<group>"; };
-		CDCBEB5619C5F6F500862BFD /* Squeal-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CDCBEB5C19C5F6F500862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.0.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
-		CDCBEB7019C5F77900862BFD /* SquealSpecHelpers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SquealSpecHelpers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CDCBEB7319C5F77900862BFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SquealSpecHelpers-iOS.h"; sourceTree = "<group>"; };
-		CDD59C25199C69F500FB662D /* SchemaHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaHelpers.swift; sourceTree = "<group>"; };
-		CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC954C1E99A83A00C7E83A /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC954F1E99A83A00C7E83A /* Squeal-macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-macOS.h"; sourceTree = "<group>"; };
+		62AC95501E99A83A00C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62AC95551E99A83A00C7E83A /* Squeal-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC955C1E99A83A00C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62AC95641E99A8B400C7E83A /* Bindable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bindable.swift; sourceTree = "<group>"; };
+		62AC95651E99A8B400C7E83A /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		62AC95661E99A8B400C7E83A /* DatabasePool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePool.swift; sourceTree = "<group>"; };
+		62AC95671E99A8B400C7E83A /* DeleteHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteHelpers.swift; sourceTree = "<group>"; };
+		62AC95681E99A8B400C7E83A /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		62AC95691E99A8B400C7E83A /* InsertHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpers.swift; sourceTree = "<group>"; };
+		62AC956A1E99A8B400C7E83A /* SchemaHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaHelpers.swift; sourceTree = "<group>"; };
+		62AC956B1E99A8B400C7E83A /* SelectHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectHelpers.swift; sourceTree = "<group>"; };
+		62AC956C1E99A8B400C7E83A /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
+		62AC956D1E99A8B400C7E83A /* TransactionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHelpers.swift; sourceTree = "<group>"; };
+		62AC956E1E99A8B400C7E83A /* UpdateHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateHelpers.swift; sourceTree = "<group>"; };
+		62AC957F1E99B02000C7E83A /* BindableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BindableSpec.swift; sourceTree = "<group>"; };
+		62AC95801E99B02000C7E83A /* DatabasePoolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabasePoolSpec.swift; sourceTree = "<group>"; };
+		62AC95811E99B02000C7E83A /* DatabaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpec.swift; sourceTree = "<group>"; };
+		62AC95821E99B02000C7E83A /* DeleteHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC95831E99B02000C7E83A /* InsertHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsertHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC95841E99B02000C7E83A /* SchemaHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC95851E99B02000C7E83A /* SelectHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC95861E99B02000C7E83A /* StatementSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementSpec.swift; sourceTree = "<group>"; };
+		62AC95871E99B02000C7E83A /* TransactionHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC95881E99B02000C7E83A /* UpdateHelpersSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateHelpersSpec.swift; sourceTree = "<group>"; };
+		62AC95961E99B08F00C7E83A /* DatabaseSpecHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSpecHelpers.swift; sourceTree = "<group>"; };
+		62AC95991E99B1AC00C7E83A /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
+		62AC959B1E99B1AF00C7E83A /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = ../Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
+		62AC95A91E99C30A00C7E83A /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC95AB1E99C30A00C7E83A /* Squeal-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-iOS.h"; sourceTree = "<group>"; };
+		62AC95AC1E99C30A00C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62AC95B11E99C30A00C7E83A /* Squeal-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC95B81E99C30A00C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62AC95D61E99C4AA00C7E83A /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
+		62AC95D71E99C4AA00C7E83A /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = ../Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
+		62AC95E41E99D1E600C7E83A /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC95E61E99D1E600C7E83A /* Squeal-tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-tvOS.h"; sourceTree = "<group>"; };
+		62AC95E71E99D1E600C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62AC95EC1E99D1E600C7E83A /* Squeal-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Squeal-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC95F31E99D1E600C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62AC96061E99D3F200C7E83A /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../Carthage/Build/tvOS/Nimble.framework; sourceTree = "<group>"; };
+		62AC96071E99D3F200C7E83A /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = ../Carthage/Build/tvOS/Quick.framework; sourceTree = "<group>"; };
+		62AC961D1E99D69B00C7E83A /* Squeal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Squeal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		62AC961F1E99D69B00C7E83A /* Squeal-watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Squeal-watchOS.h"; sourceTree = "<group>"; };
+		62AC96201E99D69B00C7E83A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		CD3DE27519BCD44B00DED437 /* Frameworks */ = {
+		62AC95481E99A83A00C7E83A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB9019C5F98E00862BFD /* Squeal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7247F31996880300151E1E /* Frameworks */ = {
+		62AC95521E99A83A00C7E83A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD7248441996BE0400151E1E /* Foundation.framework in Frameworks */,
-				CD72483E1996BC0100151E1E /* libsqlite3.dylib in Frameworks */,
+				62AC95561E99A83A00C7E83A /* Squeal.framework in Frameworks */,
+				62AC959A1E99B1AC00C7E83A /* Nimble.framework in Frameworks */,
+				62AC959C1E99B1AF00C7E83A /* Quick.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7247FF1996880300151E1E /* Frameworks */ = {
+		62AC95A51E99C30A00C7E83A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				628F31091D19A8390020F185 /* Nimble.framework in Frameworks */,
-				628F310A1D19A8390020F185 /* Quick.framework in Frameworks */,
-				CD61584C19BCD74A00E63F56 /* SquealSpecHelpers.framework in Frameworks */,
-				CD7248421996BC4400151E1E /* Squeal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB4819C5F6F500862BFD /* Frameworks */ = {
+		62AC95AE1E99C30A00C7E83A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB6A19C5F71E00862BFD /* libsqlite3.dylib in Frameworks */,
+				62AC95B21E99C30A00C7E83A /* Squeal.framework in Frameworks */,
+				62AC95D81E99C4AA00C7E83A /* Nimble.framework in Frameworks */,
+				62AC95D91E99C4AA00C7E83A /* Quick.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB5319C5F6F500862BFD /* Frameworks */ = {
+		62AC95E01E99D1E600C7E83A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				628F310B1D19A8420020F185 /* Nimble.framework in Frameworks */,
-				628F310C1D19A8420020F185 /* Quick.framework in Frameworks */,
-				CD9CD78D19C5FB3E0038B7B0 /* SquealSpecHelpers.framework in Frameworks */,
-				CDCBEB5719C5F6F500862BFD /* Squeal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB6C19C5F77900862BFD /* Frameworks */ = {
+		62AC95E91E99D1E600C7E83A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB8D19C5F7C800862BFD /* Squeal.framework in Frameworks */,
+				62AC95ED1E99D1E600C7E83A /* Squeal.framework in Frameworks */,
+				62AC96081E99D3F200C7E83A /* Nimble.framework in Frameworks */,
+				62AC96091E99D3F200C7E83A /* Quick.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62AC96191E99D69B00C7E83A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		628F30D51D19A7DE0020F185 /* Externals */ = {
+		62AC953F1E99A7C500C7E83A = {
 			isa = PBXGroup;
 			children = (
-				628F30F41D19A81C0020F185 /* Nimble.xcodeproj */,
-				628F30D61D19A8100020F185 /* Quick.xcodeproj */,
-			);
-			name = Externals;
-			path = Carthage/Checkouts;
-			sourceTree = "<group>";
-		};
-		628F30D71D19A8100020F185 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				628F30E31D19A8110020F185 /* Quick.framework */,
-				628F30E51D19A8110020F185 /* Quick-OSXTests.xctest */,
-				628F30E71D19A8110020F185 /* QuickFocused-OSXTests.xctest */,
-				628F30E91D19A8110020F185 /* Quick.framework */,
-				628F30EB1D19A8110020F185 /* Quick-iOSTests.xctest */,
-				628F30ED1D19A8110020F185 /* QuickFocused-iOSTests.xctest */,
-				628F30EF1D19A8110020F185 /* Quick.framework */,
-				628F30F11D19A8110020F185 /* Quick-tvOSTests.xctest */,
-				628F30F31D19A8110020F185 /* QuickFocused-tvOSTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		628F30F51D19A81C0020F185 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				628F31021D19A81C0020F185 /* Nimble.framework */,
-				628F31041D19A81C0020F185 /* NimbleTests.xctest */,
-				628F30FE1D19A81C0020F185 /* Nimble.framework */,
-				628F31001D19A81C0020F185 /* NimbleTests.xctest */,
-				628F31061D19A81C0020F185 /* Nimble.framework */,
-				628F31081D19A81C0020F185 /* NimbleTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		CD3DE27A19BCD44B00DED437 /* SquealSpecHelpers */ = {
-			isa = PBXGroup;
-			children = (
-				CD3DE29719BCD50A00DED437 /* DatabaseSpecHelpers.swift */,
-				CD3DE27D19BCD44B00DED437 /* SquealSpecHelpers.h */,
-				CD3DE27B19BCD44B00DED437 /* Supporting Files */,
-			);
-			path = SquealSpecHelpers;
-			sourceTree = "<group>";
-		};
-		CD3DE27B19BCD44B00DED437 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				CD3DE27C19BCD44B00DED437 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		CD715E1619CAA32700602860 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				CDB05D0219CA93EF0085E4AC /* BindableSpec.swift */,
-				CD4B4C3619B2B3AA004497BF /* DatabasePoolSpec.swift */,
-				CD72481219968D4000151E1E /* DatabaseSpec.swift */,
-				CD7248661996D4F700151E1E /* StatementSpec.swift */,
-			);
-			name = Core;
-			sourceTree = "<group>";
-		};
-		CD715E1719CAA33A00602860 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				CDB05D0819CA95100085E4AC /* DeleteHelpersSpec.swift */,
-				CDB05D1119CA97180085E4AC /* InsertHelpersSpec.swift */,
-				CDD59C2F199C6A5300FB662D /* SchemaHelpersSpec.swift */,
-				CDB05D0E19CA96BB0085E4AC /* SelectHelpersSpec.swift */,
-				CDB05D0519CA949B0085E4AC /* TransactionHelpersSpec.swift */,
-				CDB05D0B19CA959B0085E4AC /* UpdateHelpersSpec.swift */,
-			);
-			name = Helpers;
-			sourceTree = "<group>";
-		};
-		CD7247ED1996880300151E1E = {
-			isa = PBXGroup;
-			children = (
-				CD7247F91996880300151E1E /* Squeal */,
-				CD7248031996880300151E1E /* SquealTests */,
-				CD3DE27A19BCD44B00DED437 /* SquealSpecHelpers */,
-				CDCBEB4D19C5F6F500862BFD /* Squeal-iOS */,
-				CDCBEB5A19C5F6F500862BFD /* Squeal-iOSTests */,
-				CDCBEB7119C5F77900862BFD /* SquealSpecHelpers-iOS */,
-				CD7247F81996880300151E1E /* Products */,
-				628F30D51D19A7DE0020F185 /* Externals */,
-				CD72483A1996A95C00151E1E /* LICENSE.txt */,
-				CD7248351996A5F700151E1E /* README.md */,
+				62AC95981E99B1AC00C7E83A /* Frameworks */,
+				62AC954D1E99A83A00C7E83A /* Products */,
+				62AC95461E99A81400C7E83A /* Sources */,
+				62AC95AA1E99C30A00C7E83A /* Squeal-iOS */,
+				62AC95B51E99C30A00C7E83A /* Squeal-iOSTests */,
+				62AC954E1E99A83A00C7E83A /* Squeal-macOS */,
+				62AC95591E99A83A00C7E83A /* Squeal-macOSTests */,
+				62AC95E51E99D1E600C7E83A /* Squeal-tvOS */,
+				62AC95F01E99D1E600C7E83A /* Squeal-tvOSTests */,
+				62AC961E1E99D69B00C7E83A /* Squeal-watchOS */,
+				62AC957E1E99B00A00C7E83A /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
-		CD7247F81996880300151E1E /* Products */ = {
+		62AC95461E99A81400C7E83A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CD7247F71996880300151E1E /* Squeal.framework */,
-				CD7248021996880300151E1E /* Squeal-OSXTests.xctest */,
-				CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */,
-				CDCBEB4C19C5F6F500862BFD /* Squeal.framework */,
-				CDCBEB5619C5F6F500862BFD /* Squeal-iOSTests.xctest */,
-				CDCBEB7019C5F77900862BFD /* SquealSpecHelpers.framework */,
+				62AC95641E99A8B400C7E83A /* Bindable.swift */,
+				62AC95651E99A8B400C7E83A /* Database.swift */,
+				62AC95661E99A8B400C7E83A /* DatabasePool.swift */,
+				62AC95671E99A8B400C7E83A /* DeleteHelpers.swift */,
+				62AC95681E99A8B400C7E83A /* Errors.swift */,
+				62AC95691E99A8B400C7E83A /* InsertHelpers.swift */,
+				62AC956A1E99A8B400C7E83A /* SchemaHelpers.swift */,
+				62AC956B1E99A8B400C7E83A /* SelectHelpers.swift */,
+				62AC956C1E99A8B400C7E83A /* Statement.swift */,
+				62AC956D1E99A8B400C7E83A /* TransactionHelpers.swift */,
+				62AC956E1E99A8B400C7E83A /* UpdateHelpers.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		62AC954D1E99A83A00C7E83A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				62AC954C1E99A83A00C7E83A /* Squeal.framework */,
+				62AC95551E99A83A00C7E83A /* Squeal-macOSTests.xctest */,
+				62AC95A91E99C30A00C7E83A /* Squeal.framework */,
+				62AC95B11E99C30A00C7E83A /* Squeal-iOSTests.xctest */,
+				62AC95E41E99D1E600C7E83A /* Squeal.framework */,
+				62AC95EC1E99D1E600C7E83A /* Squeal-tvOSTests.xctest */,
+				62AC961D1E99D69B00C7E83A /* Squeal.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CD7247F91996880300151E1E /* Squeal */ = {
+		62AC954E1E99A83A00C7E83A /* Squeal-macOS */ = {
 			isa = PBXGroup;
 			children = (
-				CDB05CF019CA899A0085E4AC /* Source */,
-				CDB05CEF19CA89460085E4AC /* Helpers */,
-				CD7247FC1996880300151E1E /* Squeal.h */,
-				CD7247FA1996880300151E1E /* Supporting Files */,
+				62AC954F1E99A83A00C7E83A /* Squeal-macOS.h */,
+				62AC95501E99A83A00C7E83A /* Info.plist */,
 			);
-			path = Squeal;
+			path = "Squeal-macOS";
 			sourceTree = "<group>";
 		};
-		CD7247FA1996880300151E1E /* Supporting Files */ = {
+		62AC95591E99A83A00C7E83A /* Squeal-macOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				CD7248431996BE0400151E1E /* Foundation.framework */,
-				CD72483D1996BC0100151E1E /* libsqlite3.dylib */,
-				CD7248341996A5D100151E1E /* module.map */,
-				CD7247FB1996880300151E1E /* Info.plist */,
+				62AC959B1E99B1AF00C7E83A /* Quick.framework */,
+				62AC95991E99B1AC00C7E83A /* Nimble.framework */,
+				62AC955C1E99A83A00C7E83A /* Info.plist */,
 			);
-			name = "Supporting Files";
+			path = "Squeal-macOSTests";
 			sourceTree = "<group>";
 		};
-		CD7248031996880300151E1E /* SquealTests */ = {
+		62AC957E1E99B00A00C7E83A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				CD715E1619CAA32700602860 /* Core */,
-				CD715E1719CAA33A00602860 /* Helpers */,
-				CD7248041996880300151E1E /* Supporting Files */,
+				62AC95951E99B05F00C7E83A /* Helpers */,
+				62AC957F1E99B02000C7E83A /* BindableSpec.swift */,
+				62AC95801E99B02000C7E83A /* DatabasePoolSpec.swift */,
+				62AC95811E99B02000C7E83A /* DatabaseSpec.swift */,
+				62AC95821E99B02000C7E83A /* DeleteHelpersSpec.swift */,
+				62AC95831E99B02000C7E83A /* InsertHelpersSpec.swift */,
+				62AC95841E99B02000C7E83A /* SchemaHelpersSpec.swift */,
+				62AC95851E99B02000C7E83A /* SelectHelpersSpec.swift */,
+				62AC95861E99B02000C7E83A /* StatementSpec.swift */,
+				62AC95871E99B02000C7E83A /* TransactionHelpersSpec.swift */,
+				62AC95881E99B02000C7E83A /* UpdateHelpersSpec.swift */,
 			);
-			path = SquealTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		CD7248041996880300151E1E /* Supporting Files */ = {
+		62AC95951E99B05F00C7E83A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				CD7248051996880300151E1E /* Info.plist */,
+				62AC95961E99B08F00C7E83A /* DatabaseSpecHelpers.swift */,
 			);
-			name = "Supporting Files";
+			path = Helpers;
 			sourceTree = "<group>";
 		};
-		CDB05CEF19CA89460085E4AC /* Helpers */ = {
+		62AC95981E99B1AC00C7E83A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CD9F4CD519A12967003CC387 /* DeleteHelpers.swift */,
-				CD9CD7D019CA88190038B7B0 /* InsertHelpers.swift */,
-				CDD59C25199C69F500FB662D /* SchemaHelpers.swift */,
-				CDB05CE119CA88D70085E4AC /* SelectHelpers.swift */,
-				CD9CD7C719CA86040038B7B0 /* TransactionHelpers.swift */,
-				CDB05CEC19CA89110085E4AC /* UpdateHelpers.swift */,
 			);
-			name = Helpers;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		CDB05CF019CA899A0085E4AC /* Source */ = {
+		62AC95AA1E99C30A00C7E83A /* Squeal-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				CD9CD7CD19CA86FE0038B7B0 /* Bindable.swift */,
-				CD72481019968D3100151E1E /* Database.swift */,
-				CD4B4C2C19B29D27004497BF /* DatabasePool.swift */,
-				CD9CD7BC19CA85820038B7B0 /* Errors.swift */,
-				CD9CD7CA19CA86270038B7B0 /* Statement.swift */,
-			);
-			name = Source;
-			sourceTree = "<group>";
-		};
-		CDCBEB4D19C5F6F500862BFD /* Squeal-iOS */ = {
-			isa = PBXGroup;
-			children = (
-				CDCBEB5019C5F6F500862BFD /* Squeal.h */,
-				CDCBEB4E19C5F6F500862BFD /* Supporting Files */,
+				62AC95AB1E99C30A00C7E83A /* Squeal-iOS.h */,
+				62AC95AC1E99C30A00C7E83A /* Info.plist */,
 			);
 			path = "Squeal-iOS";
 			sourceTree = "<group>";
 		};
-		CDCBEB4E19C5F6F500862BFD /* Supporting Files */ = {
+		62AC95B51E99C30A00C7E83A /* Squeal-iOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB6919C5F71E00862BFD /* libsqlite3.dylib */,
-				CDCBEB4F19C5F6F500862BFD /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		CDCBEB5A19C5F6F500862BFD /* Squeal-iOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				CDCBEB5B19C5F6F500862BFD /* Supporting Files */,
+				62AC95D61E99C4AA00C7E83A /* Nimble.framework */,
+				62AC95D71E99C4AA00C7E83A /* Quick.framework */,
+				62AC95B81E99C30A00C7E83A /* Info.plist */,
 			);
 			path = "Squeal-iOSTests";
 			sourceTree = "<group>";
 		};
-		CDCBEB5B19C5F6F500862BFD /* Supporting Files */ = {
+		62AC95E51E99D1E600C7E83A /* Squeal-tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB5C19C5F6F500862BFD /* Info.plist */,
+				62AC95E61E99D1E600C7E83A /* Squeal-tvOS.h */,
+				62AC95E71E99D1E600C7E83A /* Info.plist */,
 			);
-			name = "Supporting Files";
+			path = "Squeal-tvOS";
 			sourceTree = "<group>";
 		};
-		CDCBEB7119C5F77900862BFD /* SquealSpecHelpers-iOS */ = {
+		62AC95F01E99D1E600C7E83A /* Squeal-tvOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB7419C5F77900862BFD /* SquealSpecHelpers-iOS.h */,
-				CDCBEB7219C5F77900862BFD /* Supporting Files */,
+				62AC96061E99D3F200C7E83A /* Nimble.framework */,
+				62AC96071E99D3F200C7E83A /* Quick.framework */,
+				62AC95F31E99D1E600C7E83A /* Info.plist */,
 			);
-			path = "SquealSpecHelpers-iOS";
+			path = "Squeal-tvOSTests";
 			sourceTree = "<group>";
 		};
-		CDCBEB7219C5F77900862BFD /* Supporting Files */ = {
+		62AC961E1E99D69B00C7E83A /* Squeal-watchOS */ = {
 			isa = PBXGroup;
 			children = (
-				CDCBEB7319C5F77900862BFD /* Info.plist */,
+				62AC961F1E99D69B00C7E83A /* Squeal-watchOS.h */,
+				62AC96201E99D69B00C7E83A /* Info.plist */,
 			);
-			name = "Supporting Files";
+			path = "Squeal-watchOS";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		CD3DE27619BCD44B00DED437 /* Headers */ = {
+		62AC95491E99A83A00C7E83A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD3DE27E19BCD44B00DED437 /* SquealSpecHelpers.h in Headers */,
+				62AC955D1E99A83A00C7E83A /* Squeal-macOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7247F41996880300151E1E /* Headers */ = {
+		62AC95A61E99C30A00C7E83A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD7247FD1996880300151E1E /* Squeal.h in Headers */,
+				62AC95B91E99C30A00C7E83A /* Squeal-iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB4919C5F6F500862BFD /* Headers */ = {
+		62AC95E11E99D1E600C7E83A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB5119C5F6F500862BFD /* Squeal.h in Headers */,
+				62AC95F41E99D1E600C7E83A /* Squeal-tvOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB6D19C5F77900862BFD /* Headers */ = {
+		62AC961A1E99D69B00C7E83A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB7519C5F77900862BFD /* SquealSpecHelpers-iOS.h in Headers */,
+				62AC96211E99D69B00C7E83A /* Squeal-watchOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		CD3DE27819BCD44B00DED437 /* SquealSpecHelpers-OSX */ = {
+		62AC954B1E99A83A00C7E83A /* Squeal-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD3DE29519BCD44B00DED437 /* Build configuration list for PBXNativeTarget "SquealSpecHelpers-OSX" */;
+			buildConfigurationList = 62AC955E1E99A83A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-macOS" */;
 			buildPhases = (
-				CD3DE27419BCD44B00DED437 /* Sources */,
-				CD3DE27519BCD44B00DED437 /* Frameworks */,
-				CD3DE27619BCD44B00DED437 /* Headers */,
-				CD3DE27719BCD44B00DED437 /* Resources */,
+				62AC95471E99A83A00C7E83A /* Sources */,
+				62AC95481E99A83A00C7E83A /* Frameworks */,
+				62AC95491E99A83A00C7E83A /* Headers */,
+				62AC954A1E99A83A00C7E83A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CD61585219BCDC7700E63F56 /* PBXTargetDependency */,
 			);
-			name = "SquealSpecHelpers-OSX";
-			productName = SquealSpecHelpers;
-			productReference = CD3DE27919BCD44B00DED437 /* SquealSpecHelpers.framework */;
+			name = "Squeal-macOS";
+			productName = "Squeal-macOS";
+			productReference = 62AC954C1E99A83A00C7E83A /* Squeal.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CD7247F61996880300151E1E /* Squeal-OSX */ = {
+		62AC95541E99A83A00C7E83A /* Squeal-macOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD72480A1996880400151E1E /* Build configuration list for PBXNativeTarget "Squeal-OSX" */;
+			buildConfigurationList = 62AC95611E99A83A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-macOSTests" */;
 			buildPhases = (
-				CD7247F21996880300151E1E /* Sources */,
-				CD7247F31996880300151E1E /* Frameworks */,
-				CD7247F41996880300151E1E /* Headers */,
-				CD7247F51996880300151E1E /* Resources */,
+				62AC95511E99A83A00C7E83A /* Sources */,
+				62AC95521E99A83A00C7E83A /* Frameworks */,
+				62AC95531E99A83A00C7E83A /* Resources */,
+				62AC959D1E99B27500C7E83A /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				62AC95581E99A83A00C7E83A /* PBXTargetDependency */,
 			);
-			name = "Squeal-OSX";
-			productName = Squeal;
-			productReference = CD7247F71996880300151E1E /* Squeal.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		CD7248011996880300151E1E /* Squeal-OSXTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CD72480D1996880400151E1E /* Build configuration list for PBXNativeTarget "Squeal-OSXTests" */;
-			buildPhases = (
-				CD7247FE1996880300151E1E /* Sources */,
-				CD7247FF1996880300151E1E /* Frameworks */,
-				CD7248001996880300151E1E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CD61584919BCD74000E63F56 /* PBXTargetDependency */,
-				CD61584B19BCD74000E63F56 /* PBXTargetDependency */,
-			);
-			name = "Squeal-OSXTests";
-			productName = SquealTests;
-			productReference = CD7248021996880300151E1E /* Squeal-OSXTests.xctest */;
+			name = "Squeal-macOSTests";
+			productName = "Squeal-macOSTests";
+			productReference = 62AC95551E99A83A00C7E83A /* Squeal-macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		CDCBEB4B19C5F6F500862BFD /* Squeal-iOS */ = {
+		62AC95A81E99C30A00C7E83A /* Squeal-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CDCBEB5F19C5F6F500862BFD /* Build configuration list for PBXNativeTarget "Squeal-iOS" */;
+			buildConfigurationList = 62AC95BA1E99C30A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-iOS" */;
 			buildPhases = (
-				CDCBEB4719C5F6F500862BFD /* Sources */,
-				CDCBEB4819C5F6F500862BFD /* Frameworks */,
-				CDCBEB4919C5F6F500862BFD /* Headers */,
-				CDCBEB4A19C5F6F500862BFD /* Resources */,
+				62AC95A41E99C30A00C7E83A /* Sources */,
+				62AC95A51E99C30A00C7E83A /* Frameworks */,
+				62AC95A61E99C30A00C7E83A /* Headers */,
+				62AC95A71E99C30A00C7E83A /* Resources */,
 			);
 			buildRules = (
 			);
@@ -656,259 +514,190 @@
 			);
 			name = "Squeal-iOS";
 			productName = "Squeal-iOS";
-			productReference = CDCBEB4C19C5F6F500862BFD /* Squeal.framework */;
+			productReference = 62AC95A91E99C30A00C7E83A /* Squeal.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		CDCBEB5519C5F6F500862BFD /* Squeal-iOSTests */ = {
+		62AC95B01E99C30A00C7E83A /* Squeal-iOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CDCBEB6219C5F6F500862BFD /* Build configuration list for PBXNativeTarget "Squeal-iOSTests" */;
+			buildConfigurationList = 62AC95BD1E99C30A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-iOSTests" */;
 			buildPhases = (
-				CDCBEB5219C5F6F500862BFD /* Sources */,
-				CDCBEB5319C5F6F500862BFD /* Frameworks */,
-				CDCBEB5419C5F6F500862BFD /* Resources */,
+				62AC95AD1E99C30A00C7E83A /* Sources */,
+				62AC95AE1E99C30A00C7E83A /* Frameworks */,
+				62AC95AF1E99C30A00C7E83A /* Resources */,
+				62AC95DC1E99D0AE00C7E83A /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CDCBEB5919C5F6F500862BFD /* PBXTargetDependency */,
+				62AC95B41E99C30A00C7E83A /* PBXTargetDependency */,
 			);
 			name = "Squeal-iOSTests";
 			productName = "Squeal-iOSTests";
-			productReference = CDCBEB5619C5F6F500862BFD /* Squeal-iOSTests.xctest */;
+			productReference = 62AC95B11E99C30A00C7E83A /* Squeal-iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		CDCBEB6F19C5F77900862BFD /* SquealSpecHelpers-iOS */ = {
+		62AC95E31E99D1E600C7E83A /* Squeal-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CDCBEB8319C5F77900862BFD /* Build configuration list for PBXNativeTarget "SquealSpecHelpers-iOS" */;
+			buildConfigurationList = 62AC95F51E99D1E600C7E83A /* Build configuration list for PBXNativeTarget "Squeal-tvOS" */;
 			buildPhases = (
-				CDCBEB6B19C5F77900862BFD /* Sources */,
-				CDCBEB6C19C5F77900862BFD /* Frameworks */,
-				CDCBEB6D19C5F77900862BFD /* Headers */,
-				CDCBEB6E19C5F77900862BFD /* Resources */,
+				62AC95DF1E99D1E600C7E83A /* Sources */,
+				62AC95E01E99D1E600C7E83A /* Frameworks */,
+				62AC95E11E99D1E600C7E83A /* Headers */,
+				62AC95E21E99D1E600C7E83A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CDCBEB8C19C5F7C100862BFD /* PBXTargetDependency */,
 			);
-			name = "SquealSpecHelpers-iOS";
-			productName = "SquealSpecHelpers-iOS";
-			productReference = CDCBEB7019C5F77900862BFD /* SquealSpecHelpers.framework */;
+			name = "Squeal-tvOS";
+			productName = "Squeal-tvOS";
+			productReference = 62AC95E41E99D1E600C7E83A /* Squeal.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		62AC95EB1E99D1E600C7E83A /* Squeal-tvOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62AC95F81E99D1E600C7E83A /* Build configuration list for PBXNativeTarget "Squeal-tvOSTests" */;
+			buildPhases = (
+				62AC95E81E99D1E600C7E83A /* Sources */,
+				62AC95E91E99D1E600C7E83A /* Frameworks */,
+				62AC95EA1E99D1E600C7E83A /* Resources */,
+				62AC960A1E99D40D00C7E83A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				62AC95EF1E99D1E600C7E83A /* PBXTargetDependency */,
+			);
+			name = "Squeal-tvOSTests";
+			productName = "Squeal-tvOSTests";
+			productReference = 62AC95EC1E99D1E600C7E83A /* Squeal-tvOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		62AC961C1E99D69B00C7E83A /* Squeal-watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62AC96221E99D69B00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-watchOS" */;
+			buildPhases = (
+				62AC96181E99D69B00C7E83A /* Sources */,
+				62AC96191E99D69B00C7E83A /* Frameworks */,
+				62AC961A1E99D69B00C7E83A /* Headers */,
+				62AC961B1E99D69B00C7E83A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Squeal-watchOS";
+			productName = "Squeal-watchOS";
+			productReference = 62AC961D1E99D69B00C7E83A /* Squeal.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		CD7247EE1996880300151E1E /* Project object */ = {
+		62AC95401E99A7C500C7E83A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0800;
-				ORGANIZATIONNAME = "Vulpine Labs LLC";
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0830;
 				TargetAttributes = {
-					CD3DE27819BCD44B00DED437 = {
-						CreatedOnToolsVersion = 6.0;
-						LastSwiftMigration = 0800;
+					62AC954B1E99A83A00C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						LastSwiftMigration = 0830;
+						ProvisioningStyle = Automatic;
 					};
-					CD7247F61996880300151E1E = {
-						CreatedOnToolsVersion = 6.0;
-						LastSwiftMigration = 0800;
+					62AC95541E99A83A00C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						ProvisioningStyle = Automatic;
 					};
-					CD7248011996880300151E1E = {
-						CreatedOnToolsVersion = 6.0;
-						LastSwiftMigration = 0800;
+					62AC95A81E99C30A00C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						ProvisioningStyle = Automatic;
 					};
-					CDCBEB4B19C5F6F500862BFD = {
-						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0800;
+					62AC95B01E99C30A00C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						ProvisioningStyle = Automatic;
 					};
-					CDCBEB5519C5F6F500862BFD = {
-						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0800;
+					62AC95E31E99D1E600C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						ProvisioningStyle = Automatic;
 					};
-					CDCBEB6F19C5F77900862BFD = {
-						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0800;
+					62AC95EB1E99D1E600C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						ProvisioningStyle = Automatic;
+					};
+					62AC961C1E99D69B00C7E83A = {
+						CreatedOnToolsVersion = 8.3.1;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = CD7247F11996880300151E1E /* Build configuration list for PBXProject "Squeal" */;
+			buildConfigurationList = 62AC95431E99A7C500C7E83A /* Build configuration list for PBXProject "Squeal" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = CD7247ED1996880300151E1E;
-			productRefGroup = CD7247F81996880300151E1E /* Products */;
+			mainGroup = 62AC953F1E99A7C500C7E83A;
+			productRefGroup = 62AC954D1E99A83A00C7E83A /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 628F30F51D19A81C0020F185 /* Products */;
-					ProjectRef = 628F30F41D19A81C0020F185 /* Nimble.xcodeproj */;
-				},
-				{
-					ProductGroup = 628F30D71D19A8100020F185 /* Products */;
-					ProjectRef = 628F30D61D19A8100020F185 /* Quick.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
-				CD7247F61996880300151E1E /* Squeal-OSX */,
-				CD7248011996880300151E1E /* Squeal-OSXTests */,
-				CDCBEB4B19C5F6F500862BFD /* Squeal-iOS */,
-				CDCBEB5519C5F6F500862BFD /* Squeal-iOSTests */,
-				CD3DE27819BCD44B00DED437 /* SquealSpecHelpers-OSX */,
-				CDCBEB6F19C5F77900862BFD /* SquealSpecHelpers-iOS */,
+				62AC954B1E99A83A00C7E83A /* Squeal-macOS */,
+				62AC95541E99A83A00C7E83A /* Squeal-macOSTests */,
+				62AC95A81E99C30A00C7E83A /* Squeal-iOS */,
+				62AC95B01E99C30A00C7E83A /* Squeal-iOSTests */,
+				62AC95E31E99D1E600C7E83A /* Squeal-tvOS */,
+				62AC95EB1E99D1E600C7E83A /* Squeal-tvOSTests */,
+				62AC961C1E99D69B00C7E83A /* Squeal-watchOS */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		628F30E31D19A8110020F185 /* Quick.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Quick.framework;
-			remoteRef = 628F30E21D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30E51D19A8110020F185 /* Quick-OSXTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Quick-OSXTests.xctest";
-			remoteRef = 628F30E41D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30E71D19A8110020F185 /* QuickFocused-OSXTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "QuickFocused-OSXTests.xctest";
-			remoteRef = 628F30E61D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30E91D19A8110020F185 /* Quick.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Quick.framework;
-			remoteRef = 628F30E81D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30EB1D19A8110020F185 /* Quick-iOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Quick-iOSTests.xctest";
-			remoteRef = 628F30EA1D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30ED1D19A8110020F185 /* QuickFocused-iOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "QuickFocused-iOSTests.xctest";
-			remoteRef = 628F30EC1D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30EF1D19A8110020F185 /* Quick.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Quick.framework;
-			remoteRef = 628F30EE1D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30F11D19A8110020F185 /* Quick-tvOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "Quick-tvOSTests.xctest";
-			remoteRef = 628F30F01D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30F31D19A8110020F185 /* QuickFocused-tvOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "QuickFocused-tvOSTests.xctest";
-			remoteRef = 628F30F21D19A8110020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F30FE1D19A81C0020F185 /* Nimble.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Nimble.framework;
-			remoteRef = 628F30FD1D19A81C0020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F31001D19A81C0020F185 /* NimbleTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = NimbleTests.xctest;
-			remoteRef = 628F30FF1D19A81C0020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F31021D19A81C0020F185 /* Nimble.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Nimble.framework;
-			remoteRef = 628F31011D19A81C0020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F31041D19A81C0020F185 /* NimbleTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = NimbleTests.xctest;
-			remoteRef = 628F31031D19A81C0020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F31061D19A81C0020F185 /* Nimble.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Nimble.framework;
-			remoteRef = 628F31051D19A81C0020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		628F31081D19A81C0020F185 /* NimbleTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = NimbleTests.xctest;
-			remoteRef = 628F31071D19A81C0020F185 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
-		CD3DE27719BCD44B00DED437 /* Resources */ = {
+		62AC954A1E99A83A00C7E83A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7247F51996880300151E1E /* Resources */ = {
+		62AC95531E99A83A00C7E83A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7248001996880300151E1E /* Resources */ = {
+		62AC95A71E99C30A00C7E83A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB4A19C5F6F500862BFD /* Resources */ = {
+		62AC95AF1E99C30A00C7E83A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB5419C5F6F500862BFD /* Resources */ = {
+		62AC95E21E99D1E600C7E83A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB6E19C5F77900862BFD /* Resources */ = {
+		62AC95EA1E99D1E600C7E83A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62AC961B1E99D69B00C7E83A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -918,171 +707,175 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		CD3DE27419BCD44B00DED437 /* Sources */ = {
+		62AC95471E99A83A00C7E83A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD3DE29819BCD50A00DED437 /* DatabaseSpecHelpers.swift in Sources */,
+				62AC95771E99A8B400C7E83A /* Statement.swift in Sources */,
+				62AC95721E99A8B400C7E83A /* DeleteHelpers.swift in Sources */,
+				62AC95761E99A8B400C7E83A /* SelectHelpers.swift in Sources */,
+				62AC95731E99A8B400C7E83A /* Errors.swift in Sources */,
+				62AC95791E99A8B400C7E83A /* UpdateHelpers.swift in Sources */,
+				62AC95781E99A8B400C7E83A /* TransactionHelpers.swift in Sources */,
+				62AC95741E99A8B400C7E83A /* InsertHelpers.swift in Sources */,
+				62AC95701E99A8B400C7E83A /* Database.swift in Sources */,
+				62AC956F1E99A8B400C7E83A /* Bindable.swift in Sources */,
+				62AC95751E99A8B400C7E83A /* SchemaHelpers.swift in Sources */,
+				62AC95711E99A8B400C7E83A /* DatabasePool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7247F21996880300151E1E /* Sources */ = {
+		62AC95511E99A83A00C7E83A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD9CD7CB19CA86270038B7B0 /* Statement.swift in Sources */,
-				CD9CD7C819CA86040038B7B0 /* TransactionHelpers.swift in Sources */,
-				CD9CD7CE19CA86FE0038B7B0 /* Bindable.swift in Sources */,
-				CD4B4C2D19B29D27004497BF /* DatabasePool.swift in Sources */,
-				CDB05CED19CA89110085E4AC /* UpdateHelpers.swift in Sources */,
-				CD9CD7BD19CA85820038B7B0 /* Errors.swift in Sources */,
-				CDB05CE219CA88D70085E4AC /* SelectHelpers.swift in Sources */,
-				CD9F4CD619A12967003CC387 /* DeleteHelpers.swift in Sources */,
-				CD72481119968D3100151E1E /* Database.swift in Sources */,
-				CDD59C26199C69F500FB662D /* SchemaHelpers.swift in Sources */,
-				CD9CD7D119CA88190038B7B0 /* InsertHelpers.swift in Sources */,
+				62AC958F1E99B02000C7E83A /* SelectHelpersSpec.swift in Sources */,
+				62AC95901E99B02000C7E83A /* StatementSpec.swift in Sources */,
+				62AC95971E99B08F00C7E83A /* DatabaseSpecHelpers.swift in Sources */,
+				62AC958D1E99B02000C7E83A /* InsertHelpersSpec.swift in Sources */,
+				62AC958E1E99B02000C7E83A /* SchemaHelpersSpec.swift in Sources */,
+				62AC958B1E99B02000C7E83A /* DatabaseSpec.swift in Sources */,
+				62AC958A1E99B02000C7E83A /* DatabasePoolSpec.swift in Sources */,
+				62AC95921E99B02000C7E83A /* UpdateHelpersSpec.swift in Sources */,
+				62AC95911E99B02000C7E83A /* TransactionHelpersSpec.swift in Sources */,
+				62AC95891E99B02000C7E83A /* BindableSpec.swift in Sources */,
+				62AC958C1E99B02000C7E83A /* DeleteHelpersSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD7247FE1996880300151E1E /* Sources */ = {
+		62AC95A41E99C30A00C7E83A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDD59C30199C6A5300FB662D /* SchemaHelpersSpec.swift in Sources */,
-				CDB05D1219CA97180085E4AC /* InsertHelpersSpec.swift in Sources */,
-				CD4B4C3719B2B3AA004497BF /* DatabasePoolSpec.swift in Sources */,
-				CD7248671996D4F700151E1E /* StatementSpec.swift in Sources */,
-				CDB05D0919CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */,
-				CDB05D0319CA93EF0085E4AC /* BindableSpec.swift in Sources */,
-				CDB05D0C19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */,
-				CDB05D0F19CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */,
-				CDB05D0619CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */,
-				CD72481319968D4000151E1E /* DatabaseSpec.swift in Sources */,
+				62AC95C81E99C33B00C7E83A /* Statement.swift in Sources */,
+				62AC95C31E99C33B00C7E83A /* DeleteHelpers.swift in Sources */,
+				62AC95C71E99C33B00C7E83A /* SelectHelpers.swift in Sources */,
+				62AC95C41E99C33B00C7E83A /* Errors.swift in Sources */,
+				62AC95CA1E99C33B00C7E83A /* UpdateHelpers.swift in Sources */,
+				62AC95C91E99C33B00C7E83A /* TransactionHelpers.swift in Sources */,
+				62AC95C51E99C33B00C7E83A /* InsertHelpers.swift in Sources */,
+				62AC95C11E99C33B00C7E83A /* Database.swift in Sources */,
+				62AC95C01E99C33B00C7E83A /* Bindable.swift in Sources */,
+				62AC95C61E99C33B00C7E83A /* SchemaHelpers.swift in Sources */,
+				62AC95C21E99C33B00C7E83A /* DatabasePool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB4719C5F6F500862BFD /* Sources */ = {
+		62AC95AD1E99C30A00C7E83A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD9CD7CC19CA86270038B7B0 /* Statement.swift in Sources */,
-				CD9CD7C919CA86040038B7B0 /* TransactionHelpers.swift in Sources */,
-				CD9CD7CF19CA86FE0038B7B0 /* Bindable.swift in Sources */,
-				CDCBEB6519C5F70800862BFD /* Database.swift in Sources */,
-				CDB05CEE19CA89110085E4AC /* UpdateHelpers.swift in Sources */,
-				CD9CD7BE19CA85820038B7B0 /* Errors.swift in Sources */,
-				CDB05CE319CA88D70085E4AC /* SelectHelpers.swift in Sources */,
-				CDCBEB6619C5F70800862BFD /* DeleteHelpers.swift in Sources */,
-				CDCBEB6719C5F70800862BFD /* SchemaHelpers.swift in Sources */,
-				CDCBEB6819C5F70800862BFD /* DatabasePool.swift in Sources */,
-				CD9CD7D219CA88190038B7B0 /* InsertHelpers.swift in Sources */,
+				62AC95CC1E99C34600C7E83A /* BindableSpec.swift in Sources */,
+				62AC95D11E99C34600C7E83A /* SchemaHelpersSpec.swift in Sources */,
+				62AC95D31E99C34600C7E83A /* StatementSpec.swift in Sources */,
+				62AC95CE1E99C34600C7E83A /* DatabaseSpec.swift in Sources */,
+				62AC95CF1E99C34600C7E83A /* DeleteHelpersSpec.swift in Sources */,
+				62AC95D21E99C34600C7E83A /* SelectHelpersSpec.swift in Sources */,
+				62AC95D41E99C34600C7E83A /* TransactionHelpersSpec.swift in Sources */,
+				62AC95CB1E99C34600C7E83A /* DatabaseSpecHelpers.swift in Sources */,
+				62AC95CD1E99C34600C7E83A /* DatabasePoolSpec.swift in Sources */,
+				62AC95D01E99C34600C7E83A /* InsertHelpersSpec.swift in Sources */,
+				62AC95D51E99C34600C7E83A /* UpdateHelpersSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB5219C5F6F500862BFD /* Sources */ = {
+		62AC95DF1E99D1E600C7E83A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDB05D1319CA97180085E4AC /* InsertHelpersSpec.swift in Sources */,
-				CD9CD78719C5FB210038B7B0 /* DatabasePoolSpec.swift in Sources */,
-				CD9CD78819C5FB210038B7B0 /* SchemaHelpersSpec.swift in Sources */,
-				CDB05D0A19CA95100085E4AC /* DeleteHelpersSpec.swift in Sources */,
-				CDB05D0419CA93EF0085E4AC /* BindableSpec.swift in Sources */,
-				CDB05D0D19CA959B0085E4AC /* UpdateHelpersSpec.swift in Sources */,
-				CDB05D1019CA96BB0085E4AC /* SelectHelpersSpec.swift in Sources */,
-				CD9CD78919C5FB210038B7B0 /* DatabaseSpec.swift in Sources */,
-				CDB05D0719CA949B0085E4AC /* TransactionHelpersSpec.swift in Sources */,
-				CD9CD78A19C5FB210038B7B0 /* StatementSpec.swift in Sources */,
+				62AC96031E99D30700C7E83A /* Statement.swift in Sources */,
+				62AC95FE1E99D30700C7E83A /* DeleteHelpers.swift in Sources */,
+				62AC96021E99D30700C7E83A /* SelectHelpers.swift in Sources */,
+				62AC95FF1E99D30700C7E83A /* Errors.swift in Sources */,
+				62AC96051E99D30700C7E83A /* UpdateHelpers.swift in Sources */,
+				62AC96041E99D30700C7E83A /* TransactionHelpers.swift in Sources */,
+				62AC96001E99D30700C7E83A /* InsertHelpers.swift in Sources */,
+				62AC95FC1E99D30700C7E83A /* Database.swift in Sources */,
+				62AC95FB1E99D30700C7E83A /* Bindable.swift in Sources */,
+				62AC96011E99D30700C7E83A /* SchemaHelpers.swift in Sources */,
+				62AC95FD1E99D30700C7E83A /* DatabasePool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CDCBEB6B19C5F77900862BFD /* Sources */ = {
+		62AC95E81E99D1E600C7E83A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCBEB8E19C5F7DB00862BFD /* DatabaseSpecHelpers.swift in Sources */,
+				62AC96141E99D63600C7E83A /* SelectHelpersSpec.swift in Sources */,
+				62AC960D1E99D63600C7E83A /* DatabaseSpecHelpers.swift in Sources */,
+				62AC96151E99D63600C7E83A /* StatementSpec.swift in Sources */,
+				62AC96121E99D63600C7E83A /* InsertHelpersSpec.swift in Sources */,
+				62AC96131E99D63600C7E83A /* SchemaHelpersSpec.swift in Sources */,
+				62AC96101E99D63600C7E83A /* DatabaseSpec.swift in Sources */,
+				62AC960F1E99D63600C7E83A /* DatabasePoolSpec.swift in Sources */,
+				62AC96171E99D63600C7E83A /* UpdateHelpersSpec.swift in Sources */,
+				62AC96161E99D63600C7E83A /* TransactionHelpersSpec.swift in Sources */,
+				62AC960E1E99D63600C7E83A /* BindableSpec.swift in Sources */,
+				62AC96111E99D63600C7E83A /* DeleteHelpersSpec.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62AC96181E99D69B00C7E83A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62AC962D1E99D6B000C7E83A /* Statement.swift in Sources */,
+				62AC96281E99D6B000C7E83A /* DeleteHelpers.swift in Sources */,
+				62AC962C1E99D6B000C7E83A /* SelectHelpers.swift in Sources */,
+				62AC96291E99D6B000C7E83A /* Errors.swift in Sources */,
+				62AC962F1E99D6B000C7E83A /* UpdateHelpers.swift in Sources */,
+				62AC962E1E99D6B000C7E83A /* TransactionHelpers.swift in Sources */,
+				62AC962A1E99D6B000C7E83A /* InsertHelpers.swift in Sources */,
+				62AC96261E99D6B000C7E83A /* Database.swift in Sources */,
+				62AC96251E99D6B000C7E83A /* Bindable.swift in Sources */,
+				62AC962B1E99D6B000C7E83A /* SchemaHelpers.swift in Sources */,
+				62AC96271E99D6B000C7E83A /* DatabasePool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CD61584919BCD74000E63F56 /* PBXTargetDependency */ = {
+		62AC95581E99A83A00C7E83A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CD7247F61996880300151E1E /* Squeal-OSX */;
-			targetProxy = CD61584819BCD74000E63F56 /* PBXContainerItemProxy */;
+			target = 62AC954B1E99A83A00C7E83A /* Squeal-macOS */;
+			targetProxy = 62AC95571E99A83A00C7E83A /* PBXContainerItemProxy */;
 		};
-		CD61584B19BCD74000E63F56 /* PBXTargetDependency */ = {
+		62AC95B41E99C30A00C7E83A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CD3DE27819BCD44B00DED437 /* SquealSpecHelpers-OSX */;
-			targetProxy = CD61584A19BCD74000E63F56 /* PBXContainerItemProxy */;
+			target = 62AC95A81E99C30A00C7E83A /* Squeal-iOS */;
+			targetProxy = 62AC95B31E99C30A00C7E83A /* PBXContainerItemProxy */;
 		};
-		CD61585219BCDC7700E63F56 /* PBXTargetDependency */ = {
+		62AC95EF1E99D1E600C7E83A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CD7247F61996880300151E1E /* Squeal-OSX */;
-			targetProxy = CD61585119BCDC7700E63F56 /* PBXContainerItemProxy */;
-		};
-		CDCBEB5919C5F6F500862BFD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CDCBEB4B19C5F6F500862BFD /* Squeal-iOS */;
-			targetProxy = CDCBEB5819C5F6F500862BFD /* PBXContainerItemProxy */;
-		};
-		CDCBEB8C19C5F7C100862BFD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CDCBEB4B19C5F6F500862BFD /* Squeal-iOS */;
-			targetProxy = CDCBEB8B19C5F7C100862BFD /* PBXContainerItemProxy */;
+			target = 62AC95E31E99D1E600C7E83A /* Squeal-tvOS */;
+			targetProxy = 62AC95EE1E99D1E600C7E83A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		CD3DE28919BCD44B00DED437 /* Debug */ = {
+		62AC95441E99A7C500C7E83A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_VERSION = A;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
-				PRODUCT_NAME = SquealSpecHelpers;
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 			};
 			name = Debug;
 		};
-		CD3DE28A19BCD44B00DED437 /* Release */ = {
+		62AC95451E99A7C500C7E83A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = SquealSpecHelpers/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
-				PRODUCT_NAME = SquealSpecHelpers;
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 			};
 			name = Release;
 		};
-		CD7248081996880400151E1E /* Debug */ = {
+		62AC955F1E99A83A00C7E83A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1090,6 +883,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -1098,8 +892,255 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
+				PRODUCT_NAME = Squeal;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "$(SRCROOT)/Clibsqlite3/macOS";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		62AC95601E99A83A00C7E83A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
+				PRODUCT_NAME = Squeal;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "$(SRCROOT)/Clibsqlite3/macOS";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		62AC95621E99A83A00C7E83A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-macOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-macOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		62AC95631E99A83A00C7E83A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-macOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-macOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		62AC95BB1E99C30A00C7E83A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1110,28 +1151,39 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				INFOPLIST_FILE = "Squeal-iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-iOS";
+				PRODUCT_NAME = Squeal;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/Clibsqlite3/iOS";
+				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(SRCROOT)/Clibsqlite3/iOS-Simulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		CD7248091996880400151E1E /* Release */ = {
+		62AC95BC1E99C30A00C7E83A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1139,6 +1191,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -1147,9 +1200,15 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1160,309 +1219,582 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				INFOPLIST_FILE = "Squeal-iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-iOS";
+				PRODUCT_NAME = Squeal;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/Clibsqlite3/iOS";
+				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(SRCROOT)/Clibsqlite3/iOS-Simulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
-		CD72480B1996880400151E1E /* Debug */ = {
+		62AC95BE1E99C30A00C7E83A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Squeal/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
-				PRODUCT_NAME = Squeal;
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-iOSTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
-		CD72480C1996880400151E1E /* Release */ = {
+		62AC95BF1E99C30A00C7E83A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Squeal/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
-				PRODUCT_NAME = Squeal;
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		CD72480E1996880400151E1E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SquealTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Debug;
-		};
-		CD72480F1996880400151E1E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SquealTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		CDCBEB6019C5F6F500862BFD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Squeal-iOS/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
-				PRODUCT_NAME = Squeal;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		CDCBEB6119C5F6F500862BFD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Squeal-iOS/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.Squeal;
-				PRODUCT_NAME = Squeal;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		CDCBEB6319C5F6F500862BFD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Squeal-iOSTests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Debug;
-		};
-		CDCBEB6419C5F6F500862BFD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				INFOPLIST_FILE = "Squeal-iOSTests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		CDCBEB8419C5F77900862BFD /* Debug */ = {
+		62AC95F61E99D1E600C7E83A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "SquealSpecHelpers-iOS/Info.plist";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-tvOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
-				PRODUCT_NAME = SquealSpecHelpers;
-				SDKROOT = iphoneos;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-tvOS";
+				PRODUCT_NAME = Squeal;
+				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "$(SRCROOT)/Clibsqlite3/tvOS";
+				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "$(SRCROOT)/Clibsqlite3/tvOS-Simulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		CDCBEB8519C5F77900862BFD /* Release */ = {
+		62AC95F71E99D1E600C7E83A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 3;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "SquealSpecHelpers-iOS/Info.plist";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-tvOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nerdyc.SquealSpecHelpers;
-				PRODUCT_NAME = SquealSpecHelpers;
-				SDKROOT = iphoneos;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-tvOS";
+				PRODUCT_NAME = Squeal;
+				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/modules";
+				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "$(SRCROOT)/Clibsqlite3/tvOS";
+				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "$(SRCROOT)/Clibsqlite3/tvOS-Simulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		62AC95F91E99D1E600C7E83A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-tvOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-tvOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Debug;
+		};
+		62AC95FA1E99D1E600C7E83A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-tvOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-tvOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TVOS_DEPLOYMENT_TARGET = 10.2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		62AC96231E99D69B00C7E83A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-watchOS";
+				PRODUCT_NAME = Squeal;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "$(SRCROOT)/Clibsqlite3/watchOS";
+				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "$(SRCROOT)/Clibsqlite3/watchOS-Simulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
+			};
+			name = Debug;
+		};
+		62AC96241E99D69B00C7E83A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 10;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 10;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Squeal-watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nerdyc.Squeal-watchOS";
+				PRODUCT_NAME = Squeal;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "$(SRCROOT)/Clibsqlite3/watchOS";
+				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "$(SRCROOT)/Clibsqlite3/watchOS-Simulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CD3DE29519BCD44B00DED437 /* Build configuration list for PBXNativeTarget "SquealSpecHelpers-OSX" */ = {
+		62AC95431E99A7C500C7E83A /* Build configuration list for PBXProject "Squeal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD3DE28919BCD44B00DED437 /* Debug */,
-				CD3DE28A19BCD44B00DED437 /* Release */,
+				62AC95441E99A7C500C7E83A /* Debug */,
+				62AC95451E99A7C500C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD7247F11996880300151E1E /* Build configuration list for PBXProject "Squeal" */ = {
+		62AC955E1E99A83A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD7248081996880400151E1E /* Debug */,
-				CD7248091996880400151E1E /* Release */,
+				62AC955F1E99A83A00C7E83A /* Debug */,
+				62AC95601E99A83A00C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD72480A1996880400151E1E /* Build configuration list for PBXNativeTarget "Squeal-OSX" */ = {
+		62AC95611E99A83A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-macOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD72480B1996880400151E1E /* Debug */,
-				CD72480C1996880400151E1E /* Release */,
+				62AC95621E99A83A00C7E83A /* Debug */,
+				62AC95631E99A83A00C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD72480D1996880400151E1E /* Build configuration list for PBXNativeTarget "Squeal-OSXTests" */ = {
+		62AC95BA1E99C30A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD72480E1996880400151E1E /* Debug */,
-				CD72480F1996880400151E1E /* Release */,
+				62AC95BB1E99C30A00C7E83A /* Debug */,
+				62AC95BC1E99C30A00C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CDCBEB5F19C5F6F500862BFD /* Build configuration list for PBXNativeTarget "Squeal-iOS" */ = {
+		62AC95BD1E99C30A00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-iOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CDCBEB6019C5F6F500862BFD /* Debug */,
-				CDCBEB6119C5F6F500862BFD /* Release */,
+				62AC95BE1E99C30A00C7E83A /* Debug */,
+				62AC95BF1E99C30A00C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CDCBEB6219C5F6F500862BFD /* Build configuration list for PBXNativeTarget "Squeal-iOSTests" */ = {
+		62AC95F51E99D1E600C7E83A /* Build configuration list for PBXNativeTarget "Squeal-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CDCBEB6319C5F6F500862BFD /* Debug */,
-				CDCBEB6419C5F6F500862BFD /* Release */,
+				62AC95F61E99D1E600C7E83A /* Debug */,
+				62AC95F71E99D1E600C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CDCBEB8319C5F77900862BFD /* Build configuration list for PBXNativeTarget "SquealSpecHelpers-iOS" */ = {
+		62AC95F81E99D1E600C7E83A /* Build configuration list for PBXNativeTarget "Squeal-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CDCBEB8419C5F77900862BFD /* Debug */,
-				CDCBEB8519C5F77900862BFD /* Release */,
+				62AC95F91E99D1E600C7E83A /* Debug */,
+				62AC95FA1E99D1E600C7E83A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62AC96221E99D69B00C7E83A /* Build configuration list for PBXNativeTarget "Squeal-watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62AC96231E99D69B00C7E83A /* Debug */,
+				62AC96241E99D69B00C7E83A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = CD7247EE1996880300151E1E /* Project object */;
+	rootObject = 62AC95401E99A7C500C7E83A /* Project object */;
 }

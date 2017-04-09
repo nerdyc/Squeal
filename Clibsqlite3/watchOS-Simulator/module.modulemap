@@ -1,0 +1,5 @@
+module Clibsqlite3 [system] {
+    header "/Applications/Xcode.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator.sdk/usr/include/sqlite3.h"
+    link "sqlite3"
+    export *
+}
