@@ -1,6 +1,6 @@
 import Quick
 import Nimble
-import Squeal
+@testable import Squeal
 
 class DatabasePoolSpec: QuickSpec {
     override func spec() {

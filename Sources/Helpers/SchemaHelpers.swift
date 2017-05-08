@@ -17,13 +17,9 @@ public func escapeIdentifier(_ identifier:String) -> String {
 /// `schema` property of a Database object.
 ///
 /// Schema objects are immutable, and will not change when the database is updated.
-open class SchemaInfo : NSObject {
+public class SchemaInfo {
     
-    public convenience override init() {
-        self.init(schemaEntries: [SchemaEntryInfo]())
-    }
-    
-    public init(schemaEntries:[SchemaEntryInfo]) {
+    init(schemaEntries:[SchemaEntryInfo]) {
         self.schemaEntries = schemaEntries
     }
     
@@ -31,14 +27,19 @@ open class SchemaInfo : NSObject {
     // MARK:  Schema Items
     
     /// The entries in the Schema, each describing a table, index, or other structure.
-    open let schemaEntries: [SchemaEntryInfo]
+    public let schemaEntries: [SchemaEntryInfo]
     
-    open subscript(entryName:String) -> SchemaEntryInfo? {
+    /// Returns the entry with the given name.
+    ///
+    /// - Parameter entryName: An entry (table of index) name.
+    public subscript(entryName:String) -> SchemaEntryInfo? {
         return entryNamed(entryName)
     }
     
-    /// Returns the entry with the given name -- table, index, or trigger.
-    open func entryNamed(_ entryName:String) -> SchemaEntryInfo? {
+    /// Returns the entry with the given name.
+    ///
+    /// - Parameter entryName: An entry (table of index) name.
+    public func entryNamed(_ entryName:String) -> SchemaEntryInfo? {
         for entry in schemaEntries {
             if entry.name == entryName {
                 return entry
@@ -51,17 +52,20 @@ open class SchemaInfo : NSObject {
     // MARK:  Tables
     
     /// All database tables.
-    open var tables: [SchemaEntryInfo] {
+    public var tables: [SchemaEntryInfo] {
         return schemaEntries.filter { $0.isTable }
     }
 
     /// The names of all tables in the database.
-    open var tableNames: [String] {
+    public var tableNames: [String] {
         return tables.map { $0.name }
     }
     
     /// Returns the entry for a particular table.
-    open func tableNamed(_ tableName:String) -> SchemaEntryInfo? {
+    ///
+    /// - Parameter tableName: The name of the table entry to return.
+    /// - Returns: The entry for the table, or nil if not found.
+    public func tableNamed(_ tableName:String) -> SchemaEntryInfo? {
         for entry in schemaEntries {
             if entry.isTable && entry.name == tableName {
                 return entry
@@ -74,24 +78,28 @@ open class SchemaInfo : NSObject {
     // MARK:  Indexes
     
     /// All database indexes.
-    open var indexes: [SchemaEntryInfo] {
+    public var indexes: [SchemaEntryInfo] {
         return schemaEntries.filter { $0.isIndex }
     }
     
     /// The names of all database indexes.
-    open var indexNames: [String] {
+    public var indexNames: [String] {
         return indexes.map { $0.name }
     }
     
-    /// :param:   tableName The name of a table
-    /// :returns: Descriptions of each index for the given table.
-    open func indexesOnTable(_ tableName: String) -> [SchemaEntryInfo] {
+    /// Returns entries for all indexes on the given table.
+    ///
+    /// - Parameter tableName: A table name.
+    /// - Returns: An array of entries for all indexes defined for the table.
+    public func indexesOnTable(_ tableName: String) -> [SchemaEntryInfo] {
         return schemaEntries.filter { $0.isIndex && $0.tableName == tableName }
     }
     
-    /// :param:   tableName The name of a table
-    /// :returns: The name of each index on for a table.
-    open func namesOfIndexesOnTable(_ tableName: String) -> [String] {
+    /// Returns the names of indexes on the given table.
+    ///
+    /// - Parameter tableName: A table name.
+    /// - Returns: An array of index names.
+    public func namesOfIndexesOnTable(_ tableName: String) -> [String] {
         return indexesOnTable(tableName).map { $0.name }
     }
     
@@ -100,9 +108,9 @@ open class SchemaInfo : NSObject {
 /// Describes a table, index, or other database structure.
 ///
 /// SchemaEntryInfo objects are immutable and will not change when the database is updated.
-open class SchemaEntryInfo : NSObject {
+public class SchemaEntryInfo {
     
-    public init(type: String?, name: String?, tableName: String?, rootPage: Int?, sql:String?) {
+    init(type: String?, name: String?, tableName: String?, rootPage: Int?, sql:String?) {
         self.type       = type      ?? ""
         self.name       = name      ?? ""
         self.tableName  = tableName ?? ""
@@ -114,34 +122,34 @@ open class SchemaEntryInfo : NSObject {
     // MARK:  Type
     
     /// The type of structure represented by this entry.
-    open let type: String
+    public let type: String
     
     /// `type` for tables.
-    open let TABLE_TYPE   = "table"
+    public let TABLE_TYPE   = "table"
     /// `type` for indexes.
-    open let INDEX_TYPE   = "index"
+    public let INDEX_TYPE   = "index"
     /// `type` for views.
-    open let VIEW_TYPE    = "view"
+    public let VIEW_TYPE    = "view"
     /// `type` for triggers.
-    open let TRIGGER_TYPE = "trigger"
+    public let TRIGGER_TYPE = "trigger"
     
     /// `true` if this entry describes a table, false otherwise.
-    open var isTable : Bool {
+    public var isTable : Bool {
         return self.type == TABLE_TYPE
     }
     
     /// `true` if this entry describes an index, false otherwise.
-    open var isIndex : Bool {
+    public var isIndex : Bool {
         return self.type == INDEX_TYPE
     }
 
     /// `true` if this entry describes a view, false otherwise.
-    open var isView : Bool {
+    public var isView : Bool {
         return self.type == VIEW_TYPE
     }
 
     /// `true` if this entry describes a trigger, false otherwise.
-    open var isTrigger : Bool {
+    public var isTrigger : Bool {
         return self.type == TRIGGER_TYPE
     }
 
@@ -149,7 +157,7 @@ open class SchemaEntryInfo : NSObject {
     // MARK:  Name
     
     /// The name of the table, index, view, or trigger described by this object.
-    open let name: String
+    public let name: String
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Table Name
@@ -157,19 +165,19 @@ open class SchemaEntryInfo : NSObject {
     /// If this entry describes a table or a view, this is identical to the `name` property. For an index, this is the
     /// name of the table that is indexed by the index. For triggers, this is the name of the table or view that causes
     /// the trigger to fire.
-    open let tableName: String
+    public let tableName: String
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Root Page
     
-    open let rootPage: Int?
+    public let rootPage: Int?
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  SQL
     
     /// The SQL string used to create the table, index, view, or trigger. It will be nil for automatically created
     /// objects, like a unique index created in a CREATE TABLE statement (e.g. "emailAddress TEXT UNIQUE NOT NULL")
-    open let sql: String?
+    public let sql: String?
 
 }
 
@@ -177,9 +185,9 @@ open class SchemaEntryInfo : NSObject {
 // MARK:- Table
 
 /// Describes the structure of a table -- it's columns.
-open class TableInfo : NSObject {
+public class TableInfo {
     
-    public init(name:String, columns:[ColumnInfo], indexes:[IndexInfo]) {
+    init(name:String, columns:[ColumnInfo], indexes:[IndexInfo]) {
         self.name = name
         self.columns = columns
         self.indexes = indexes
@@ -189,20 +197,20 @@ open class TableInfo : NSObject {
     // MARK:  Name
     
     /// The table name.
-    open let name: String
+    public let name: String
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Columns
 
     /// Details about the table's columns.
-    open let columns: [ColumnInfo]
+    public let columns: [ColumnInfo]
 
     /// The names of all columns in the table.
-    open var columnNames : [String] {
+    public var columnNames : [String] {
         return columns.map { $0.name }
     }
     
-    open subscript(columnName:String) -> ColumnInfo? {
+    public subscript(columnName:String) -> ColumnInfo? {
         for column in columns {
             if column.name == columnName {
                 return column
@@ -215,14 +223,19 @@ open class TableInfo : NSObject {
     // MARK: Indexes
     
     /// Details about the table's indexes.
-    open let indexes: [IndexInfo]
+    public let indexes: [IndexInfo]
 
     /// The names of all indexes in the table.
-    open var indexNames : [String] {
+    public var indexNames : [String] {
         return indexes.map { $0.name }
     }
     
-    open func indexNamed(_ name:String) -> IndexInfo? {
+    
+    /// Returns information about an index defined on the table.
+    ///
+    /// - Parameter name: The index name.
+    /// - Returns: An `IndexInfo` describing the index, or `nil` if not found.
+    public func indexNamed(_ name:String) -> IndexInfo? {
         guard let index = indexes.index(where: { $0.name == name }) else {
             return nil
         }
@@ -233,9 +246,9 @@ open class TableInfo : NSObject {
 }
 
 /// Describes a column in a database table. Derived from the `table_info` PRAGMA.
-open class ColumnInfo : NSObject {
+public class ColumnInfo {
     
-    public init(index:Int, name:String, type:String?, notNull:Bool, defaultValue:String?, primaryKeyIndex:Int) {
+    init(index:Int, name:String, type:String?, notNull:Bool, defaultValue:String?, primaryKeyIndex:Int) {
         self.index              = index
         self.name               = name
         self.type               = type
@@ -254,27 +267,27 @@ open class ColumnInfo : NSObject {
     }
     
     /// The order of the column in the table.
-    open let index:           Int
+    public let index:Int
 
     /// The column's name
-    open let name:            String
+    public let name:String
 
     /// The type of the column. Since sqlite is dynamically typed, this value is not well defined. But it will often be
     /// 'INTEGER', 'TEXT', 'REAL', or 'BLOB'. However, it can also be missing, or an arbitrary user type.
-    open let type:            String?
+    public let type:String?
 
     /// Whether the column was created with 'NOT NULL'. `true` means the values of the column cannot be nil, `false`
     /// means that NULL is an allowable value.
-    open let notNull:         Bool
+    public let notNull:Bool
 
     /// The default value for the column.
-    open let defaultValue:    String?
+    public let defaultValue:String?
 
     /// 0 if the column is not part of the primary key, otherwise the 1-based index within the primary key.
     ///
     /// For example, if a table had a compound key of (name, email_address), then the 'name' column would have a
     /// `primaryKeyIndex` of 1, and the 'email_address' column would be 2.
-    open let primaryKeyIndex: Int
+    public let primaryKeyIndex:Int
     
 }
 
@@ -282,27 +295,27 @@ open class ColumnInfo : NSObject {
 // MARK:- Indexes
 
 /// Information about a column within an index. See the `index_list` PRAGMA in sqlite docs.
-open class IndexInfo : NSObject {
+public class IndexInfo {
 
     /// The name of the index.
-    open let name:String
+    public let name:String
     
     /// A sequence number assigned by sqlite.
-    open let sequenceNumber:Int
+    public let sequenceNumber:Int
     
     /// Whether the index is UNIQUE.
-    open let isUnique:Bool
+    public let isUnique:Bool
     
     /// How the index was created.
-    open let origin:IndexOrigin
+    public let origin:IndexOrigin
     
     /// Whether the index is partial.
-    open let isPartial:Bool
+    public let isPartial:Bool
     
     /// The columns covered by the index.
-    open fileprivate(set) var columns = [IndexedColumnInfo]()
+    public fileprivate(set) var columns = [IndexedColumnInfo]()
     
-    init(row:Statement) {
+    public init(row:Statement) {
         name           = row.stringValueAtIndex(1) ?? ""
         sequenceNumber = row.intValueAtIndex(0) ?? 0
         isUnique       = row.boolValueAtIndex(2) ?? false
@@ -310,7 +323,8 @@ open class IndexInfo : NSObject {
         isPartial      = row.boolValueAtIndex(4) ?? false
     }
     
-    open var columnNames:[String] {
+    /// Names of all columns covered by the index.
+    public var columnNames:[String] {
         return columns.map { $0.name ?? "" }
     }
     
@@ -361,16 +375,16 @@ public enum IndexOrigin : CustomStringConvertible {
 }
 
 /// Information about a column within an index. See the `index_xinfo` PRAGMA in sqlite docs.
-open class IndexedColumnInfo : NSObject {
+public class IndexedColumnInfo {
     
-    let positionInIndex:Int
-    let positionInTable:Int?
-    let name:String?
-    let descending:Bool
-    let collatingFunction:String
-    let isKey:Bool
+    public let positionInIndex:Int
+    public let positionInTable:Int?
+    public let name:String?
+    public let descending:Bool
+    public let collatingFunction:String
+    public let isKey:Bool
     
-    init(row:Statement) {
+    public init(row:Statement) {
         positionInIndex     = row.intValueAtIndex(0) ?? 0
         positionInTable     = row.intValueAtIndex(1)
         name                = row.stringValueAtIndex(2) ?? ""
@@ -406,7 +420,7 @@ public extension Database {
             }
         } catch let error {
             NSLog("Error preparing statement to read database schema: \(error)")
-            return SchemaInfo()
+            schemaEntries = []
         }
         
         return SchemaInfo(schemaEntries: schemaEntries)
@@ -414,10 +428,10 @@ public extension Database {
     
     /// Fetches details about a table in the database.
     ///
-    /// :param: tableName   A table name
-    /// :param: error       An error pointer
-    /// :returns: A TableInfo object describing the table and its columns. `nil` if table doesn't exist
-    ///
+    /// - Parameter tableName: The table name.
+    /// - Returns: A `TableInfo` describing the table, or `nil` if the table doesn't exist.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func tableInfoForTableNamed(_ tableName:String) throws -> TableInfo? {
         var columns = [ColumnInfo]()
         
@@ -452,6 +466,9 @@ public extension Database {
     /// Fetches the 'user_version' value, a user-defined version number for the database. This is useful for managing
     /// migrations.
     ///
+    /// - Returns: The version of the database.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func queryUserVersionNumber() throws -> Int {
         let userViewSql = "PRAGMA user_version"
         let statement = try prepareStatement(userViewSql)
@@ -466,8 +483,9 @@ public extension Database {
     /// Sets the 'user_version' value, a user-defined version number for the database. This is useful for managing
     /// migrations.
     ///
-    /// :param: number      The version number to set
-    ///
+    /// - Parameter number: The new version number.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func updateUserVersionNumber(_ number:Int32) throws {
         return try execute("PRAGMA user_version=\(number)")
     }
@@ -475,13 +493,15 @@ public extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  CREATE TABLE
     
-    /// Creates a table. This is a helper for executing a CREATE TABLE statement.
+    /// Creates a table. This is a helper for executing a `CREATE TABLE` statement.
     ///
-    /// :param: tableName   The name of the table.
-    /// :param: definitions Column and constraint definitions. For example, "name TEXT NOT NULL".
-    /// :param: ifNotExists If `true`, don't create the table if it already exists. If `false`, then this method will
-    ///                     return an error if the table exists already. Defaults to false.
-    ///
+    /// - Parameters:
+    ///   - tableName: The name of the table.
+    ///   - definitions: Column and constraint definitions. For example, `name TEXT NOT NULL`.
+    ///   - ifNotExists: If `true`, don't create the table if it already exists. If `false`, then this method will
+    ///                  return an error if the table exists already. Defaults to `false`.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func createTable(_ tableName:String,
                             definitions:[String],
                             ifNotExists:Bool = false) throws {
@@ -500,12 +520,14 @@ public extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  DROP TABLE
     
-    /// Removes a table. This is a helper for executing a DROP TABLE statement.
+    /// Removes a table. This is a helper for executing a `DROP TABLE` statement.
     ///
-    /// :param: tableName   The name of the table.
-    /// :param: ifExists    If `true`, only drop the table if it exists. If `false`, then this method will return an
-    ///                     error if the table doesn't exist. Defaults to false.
-    ///
+    /// - Parameters:
+    ///   - tableName: The name of the table.
+    ///   - ifExists: If `true`, only drop the table if it exists. If `false`, then this method will return an
+    ///               error if the table doesn't exist. Defaults to false.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func dropTable(_ tableName:String, ifExists:Bool = false) throws {
         var dropTableSql = "DROP TABLE "
         if ifExists {
@@ -519,11 +541,13 @@ public extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  ALTER TABLE
     
-    /// Renames a table. This is a helper for executing a ALTER TABLE ... RENAME TO statement.
+    /// Renames a table. This is a helper for executing a `ALTER TABLE ... RENAME TO` statement.
     ///
-    /// :param: tableName   The current name of the table.
-    /// :param: to          The new name of the table.
-    ///
+    /// - Parameters:
+    ///   - tableName: The current name of the table.
+    ///   - to: The new name of the table.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func renameTable(_ tableName:String, to:String) throws {
         let renameTableSql = "ALTER TABLE " + escapeIdentifier(tableName)
                                 + " RENAME TO " + escapeIdentifier(to)
@@ -531,11 +555,13 @@ public extension Database {
         return try execute(renameTableSql)
     }
     
-    /// Adds a column to a table. This is a helper for executing a ALTER TABLE ... ADD COLUMN statement.
+    /// Adds a column to a table. This is a helper for executing a `ALTER TABLE ... ADD COLUMN` statement.
     ///
-    /// :param: tableName   The name of the table.
-    /// :param: column      The column definition, such as "name TEXT NOT NULL DEFAULT ''"
-    ///
+    /// - Parameters:
+    ///   - tableName: The name of the table.
+    ///   - column: The column definition, such as `name TEXT NOT NULL DEFAULT ''`
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func addColumnToTable(_ tableName:String, column:String) throws {
         let addColumnSql = "ALTER TABLE " + escapeIdentifier(tableName)
                                 + " ADD COLUMN " + column
@@ -546,16 +572,18 @@ public extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  CREATE INDEX
     
-    /// Creates a table index. This is a helper for executing a CREATE INDEX statement.
+    /// Creates a table index. This is a helper for executing a `CREATE INDEX` statement.
     ///
-    /// :param: name        The name of the index.
-    /// :param: tableName   The name of the table to index.
-    /// :param: columns     The columns to index.
-    /// :param: unique      Whether to create a unique index of not. Defaults to false.
-    /// :param: ifNotExists If `true`, don't create the index if it already exists. If `false`, then this method will
-    ///                     return an error if the index already exists. Defaults to false.
-    /// :param: partialExpr An expression to create a partial index.
-    ///
+    /// - Parameters:
+    ///   - name:        The name of the index.
+    ///   - tableName:   The name of the table to index.
+    ///   - columns:     The columns to index.
+    ///   - partialExpr: An expression to create a partial index.
+    ///   - unique:      Whether to create a unique index or not. Defaults to `false`.
+    ///   - ifNotExists: If `true`, don't create the index if it already exists. If `false`, then this method will
+    ///                  return an error if the index already exists. Defaults to false.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func createIndex(_ name:String,
                             tableName:String,
                             columns:[String],
@@ -590,12 +618,14 @@ public extension Database {
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  DROP INDEX
     
-    /// Removes a table index. This is a helper for executing a DROP INDEX statement.
+    /// Removes a table index. This is a helper for executing a `DROP INDEX` statement.
     ///
-    /// :param: name        The name of the index.
-    /// :param: ifExists    If `true`, only remove the index if it exists. If `false`, then this method will return an
-    ///                     error if the index doesn't exist. Defaults to false.
-    ///
+    /// - Parameters:
+    ///   - indexName:  The name of the index.
+    ///   - ifExists:   If `true`, only remove the index if it exists. If `false`, then this method will return an
+    ///                 error if the index doesn't exist. Defaults to false.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func dropIndex(_ indexName:String, ifExists:Bool = false) throws {
         var dropIndexSql = "DROP INDEX "
         if ifExists {
@@ -605,4 +635,5 @@ public extension Database {
         
         return try execute(dropIndexSql)
     }
+    
 }

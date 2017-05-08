@@ -9,11 +9,14 @@ import Foundation
 /// yourself. However, it may prove convenient to add this to other types, like dates.
 public protocol Bindable {
 
-    /// Invoked to bind to a Statement. Implementations should use typed methods like
-    /// Statement.bindIntValue(atIndex:error:) to perform the binding.
+    /// Invoked to bind the value to a Statement. Implementations should use typed methods like
+    /// `Statement.bindIntValue(atIndex:error:)` to perform the binding.
     ///
-    /// This method is called by Statement.bindParameters(parameters:error:), and other methods that bind collections of
-    /// parameters en masse.
+    /// - Parameters:
+    ///   - statement: The Statement to bind to.
+    ///   - atIndex: The index at which to bind the value.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     func bindToStatement(_ statement:Statement, atIndex:Int) throws
     
 }
@@ -25,8 +28,10 @@ extension Statement {
     
     /// Binds an array of parameters to the statement.
     ///
-    /// :param:     parameters  The array of parameters to bind.
-    ///
+    /// - Parameters:
+    ///     - parameters: The array of parameters to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func bind<S:Sequence>(_ parameters:S) throws where S.Iterator.Element == Optional<Bindable> {
         var bindIndex = 1 // parameters are 1-based
         for parameter in parameters {
@@ -41,19 +46,23 @@ extension Statement {
 
     /// Binds named parameters using the values from a dictionary.
     ///
-    /// :param:     namedParameters  A dictionary of values to bind.
-    ///
+    /// - Parameters:
+    ///     - namedParameters: A dictionary of values to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func bind(namedParameters:[String:Bindable?]) throws {
         for (name, value) in namedParameters {
             try bindParameter(name, value: value)
         }
     }
     
-    /// Binds a single named parameter.
+    /// Binds a single named parameter to the statement.
     ///
-    /// :param:     name    The name of the parameter to bind.
-    /// :param:     value   The value to bind.
-    ///
+    /// - Parameters:
+    ///   - name: The parameter name.
+    ///   - value: The value to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func bindParameter(_ name:String, value:Bindable?) throws {
         if let bindIndex = indexOfParameterNamed(name) {
             if value != nil {

@@ -4,6 +4,8 @@ import Clibsqlite3
 public typealias RowId = Int64
 typealias SQLiteDBPointer = OpaquePointer
 
+
+/// Generates an NSError from the current sqlite error code and message.
 private func errorFromSQLiteResultCode(_ database:SQLiteDBPointer) -> NSError {
     var userInfo: [String:AnyObject]?
     
@@ -30,33 +32,39 @@ private func errorFromSQLiteResultCode(_ database:SQLiteDBPointer) -> NSError {
 /// Otherwise SQL exectured from one thread may affect the other's. For example, one thread might close a transaction
 /// opened by another.
 ///
-open class Database : NSObject {
+open class Database {
     
     fileprivate let sqliteDatabase : SQLiteDBPointer
 
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Initialization
     
-    /// :returns: A Database whose contents are stored in-memory, and discarded when the Database is released.
+    /// Creates a new, memory-only database.
+    ///
+    /// - Returns: The created database.
     open class func newInMemoryDatabase() -> Database {
         return Database()
     }
-        
-    /// :returns: A Database whose contents are stored in a temporary location on disk, and discarded when the Database
-    ///           is no longer used.
+    
+    /// Creates a new database in a temporary directory on disk.
+    ///
+    /// - Returns: The created database.
     open class func newTemporaryDatabase() -> Database {
         return try! Database(path:"")
     }
     
-    /// :returns: An in-memory Database.
-    public convenience override init() {
+    /// Creates a new, in-memory database.
+    public convenience init() {
         try! self.init(path:":memory:")
     }
     
-    /// :param: path    The location of the database on disk. The empty string will create a temporary Database, and
-    ///                 the special path ':memory:' creates an in-memory database.
+    /// Creates a new database with the given path.
     ///
-    /// :returns: A Database whose contents are stored at the given path on disk.
+    /// - Parameters:
+    ///     - path: The path to the database. An empty path will create a temporary Database, and the special path
+    ///             ':memory:' creates an in-memory database.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public init(path:String) throws {
         self.path = path
         
@@ -65,13 +73,11 @@ open class Database : NSObject {
                                      &sqliteDatabase,
                                      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
                                      nil)
-        self.sqliteDatabase = sqliteDatabase!
-        
-        super.init()
-        
         if result != SQLITE_OK {
             throw errorFromSQLiteResultCode(sqliteDatabase!)
         }
+        
+        self.sqliteDatabase = sqliteDatabase!
     }
     
     deinit {
@@ -88,17 +94,17 @@ open class Database : NSObject {
     /// return ':memory:'
     open let path : String
     
-    /// :returns: `true` if the Database is stored in memory; `false` otherwise.
+    /// Whether the database is stored in memory or not.
     open var isInMemoryDatabase : Bool {
         return path == ":memory:"
     }
 
-    /// :returns: true if the Database is stored in a temporary location; false otherwise.
+    /// Whether the database is a temporary database (on-disk).
     open var isTemporaryDatabase : Bool {
         return path == ""
     }
     
-    /// :returns: true if the Database is persistent -- not stored in memory or in a temporary location.
+    /// Whether the database will persist or not. E.g. Not stored in memory or in a temporary location.
     open var isPersistentDatabase : Bool {
         return !(isInMemoryDatabase || isTemporaryDatabase)
     }
@@ -127,8 +133,13 @@ open class Database : NSObject {
     /// Statement objects can be executed multiple times, and are more efficient when executing the same query or update
     /// multiple times. See the Statement object for details, including providing parameters.
     ///
-    /// :param:     sqlString   A SQL statement to compile.
-    /// :returns:               The compiled SQL as a Statement.
+    /// - Parameters:
+    ///     - sqlString:    A SQL statement to compile.
+    ///     - parameters:   Any parameters to bind to the prepared statement.
+    /// - Returns:
+    ///     The compiled SQL as a Statement.
+    /// - Throws:
+    ///     An NSError with the sqlite3 error code and message.
     ///
     open func prepareStatement(_ sqlString:String, parameters:[Bindable?] = []) throws -> Statement {
         let sqliteStatement = try prepareSQLiteStatement(sqlString)
@@ -141,24 +152,27 @@ open class Database : NSObject {
     
     ///
     /// Compiles and executes a SQL statement. This method is useful for statements that return no
-    /// data. For example, a `CREATE TABLE` statement. For SELECT statements, prepare the statement
+    /// data. For example, a `CREATE TABLE` statement. For `SELECT` statements, prepare the statement
     /// using `prepareStatement` and iterate through rows using the `next` method on the Statement.
     ///
-    /// :param:     sqlString   A SQL statement to execute.
-    /// :param:     parameters  An optional array of parameters to pass to the statement.
+    /// - Parameters:
+    ///     - sqlString:    The SQL statement to execute.
+    ///     - parameters:   Any parameters to bind to the SQL statement.
+    /// - Throws:
+    ///     An NSError with the sqlite3 error code and message.
     ///
     open func execute(_ sqlString:String, parameters:[Bindable?] = []) throws {
         let statement = try prepareStatement(sqlString, parameters:parameters)
         try statement.execute()
     }
 
-    /// Returns the id of the last row inserted into the database via this Database object. This is useful after
-    /// executing an INSERT statement, but undefined at other times.
+    /// The id of the last row inserted into the database via this Database object. This is useful after executing an
+    /// INSERT statement, but undefined at other times.
     open var lastInsertedRowId : RowId {
         return sqlite3_last_insert_rowid(self.sqliteDatabase)
     }
     
-    /// Returns the number of rows changed by the last statement executed via this Database object. This is useful after
+    /// The number of rows changed by the last statement executed via this Database object. This is useful after
     /// executing an UPDATE or DELETE statement, but undefined at other times.
     open var numberOfChangedRows : Int {
         return Int(sqlite3_changes(self.sqliteDatabase))

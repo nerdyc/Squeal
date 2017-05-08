@@ -2,6 +2,14 @@ import Foundation
 
 public extension Database {
     
+    /// Prepares an `INSERT` Statement.
+    ///
+    /// - Parameters:
+    ///   - tableName: The name of the table to insert into.
+    ///   - columns: An array of column names.
+    /// - Returns: The prepared INSERT statement.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     public func prepareInsertInto(_ tableName:String, columns:[String]) throws -> Statement {
         var sqlFragments = ["INSERT INTO"]
         sqlFragments.append(escapeIdentifier(tableName))
@@ -16,16 +24,15 @@ public extension Database {
         return try prepareStatement(sqlFragments.joined(separator: " "))
     }
     
-    /// Inserts a table row. This is a helper for executing an INSERT INTO statement.
+    /// Inserts a new row using an array of column names, and an array of values. Both arrays should have the same size.
     ///
-    /// :param: tableName   The name of the table to insert into.
-    /// :param: columns     The column names of the values to insert.
-    /// :param: values      The values to insert. The values in this array must be in the same order as the respective
-    ///                     `columns`.
-    ///
-    /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
-    ///             INTEGER value.
-    ///
+    /// - Parameters:
+    ///   - tableName: A table name.
+    ///   - columns: An array of column names.
+    ///   - values: Values to insert into the row. The size of this array must match `columns`.
+    /// - Returns: The ID of the inserted row.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     @discardableResult
     public func insertInto(_ tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
         let statement = try prepareInsertInto(tableName, columns:columns)
@@ -35,14 +42,14 @@ public extension Database {
         return lastInsertedRowId
     }
 
-    /// Inserts a table row. This is a helper for executing an INSERT INTO statement.
+    /// Inserts a new row into the database, using a dictionary.
     ///
-    /// :param: tableName   The name of the table to insert into.
-    /// :param: values      The values to insert, keyed by the column name.
-    ///
-    /// :returns:   The id of the inserted row. sqlite assigns each row a 64-bit ID, even if the primary key is not an
-    ///             INTEGER value.
-    ///
+    /// - Parameters:
+    ///   - tableName: A table name.
+    ///   - valuesDictionary: A dictionary whose keys are column names, and values are the column values.
+    /// - Returns: The ID of the inserted row.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
     @discardableResult
     public func insertInto(_ tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
         var columns = [String]()
