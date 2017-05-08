@@ -113,8 +113,61 @@ open class Statement {
         
     }
     
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  String Parameters
+    /// Binds an array of parameters to the statement.
+    ///
+    /// - Parameters:
+    ///     - parameters: An array of parameters to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bind<S:Sequence>(_ parameters:S) throws where S.Iterator.Element == Optional<Bindable> {
+        var bindIndex = 1 // parameters are 1-based
+        for value in parameters {
+            try bind(value, atIndex:bindIndex)
+            bindIndex += 1
+        }
+    }
+    
+    /// Binds named parameters using the values from a dictionary.
+    ///
+    /// - Parameters:
+    ///     - namedParameters: A dictionary of values to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bind(_ namedParameters:[String:Bindable?]) throws {
+        for (name, value) in namedParameters {
+            try bind(name:name, value:value)
+        }
+    }
+    
+    /// Binds a named parameter to the given value.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the parameter to bind.
+    ///   - value: The value to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bind(name:String, value:Bindable?) throws {
+        guard let bindIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bind(value, atIndex:bindIndex)
+    }
+    
+    /// Binds a value to the parameter at the 1-based index.
+    ///
+    /// - Parameters:
+    ///   - value: The value to bind.
+    ///   - index: The index of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bind(_ value:Bindable?, atIndex index:Int) throws {
+        if let value = value {
+            try value.bindToStatement(self, atIndex: index)
+        } else {
+            try bindNullValue(atIndex:index)
+        }
+    }
     
     /// Binds a string to the parameter at the 1-based index.
     ///
@@ -123,7 +176,7 @@ open class Statement {
     ///   - index: The index of the parameter to bind.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    open func bindStringValue(_ stringValue:String, atIndex index:Int) throws {
+    open func bind(stringValue:String, atIndex index:Int) throws {
         let cString = stringValue.cString(using: String.Encoding.utf8)
         
         let resultCode = sqlite3_bind_text(sqliteStatement, Int32(index), cString!, -1, SQUEAL_TRANSIENT)
@@ -132,44 +185,18 @@ open class Statement {
         }
     }
     
-    /// Binds a string value to a named parameter.
+    /// Binds an Int32 value to the parameter at the 1-based index.
     ///
     /// - Parameters:
-    ///   - stringValue: The value to bind.
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindStringValue(_ stringValue:String, named name:String) throws {
-        guard let parameterIndex = indexOfParameterNamed(name) else {
-            throw unknownBindParameterError(name)
-        }
-        
-        try bindStringValue(stringValue, atIndex: parameterIndex)
-    }
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Int Parameters
-    
-    /// Binds an Int to the parameter at the 1-based index.
-    ///
-    /// - Parameters:
-    ///   - intValue: The value to bind.
+    ///   - int32Value: The value to bind.
     ///   - index: The index of the parameter to bind.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    open func bindIntValue(_ intValue:Int, atIndex index:Int) throws {
-        try bindInt64Value(Int64(intValue), atIndex: index)
-    }
-    
-    /// Binds an Int value to a named parameter.
-    ///
-    /// - Parameters:
-    ///   - intValue: The value to bind.
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindIntValue(_ intValue:Int, named name:String) throws {
-        try bindInt64Value(Int64(intValue), named: name)
+    open func bind(int32Value:Int32, atIndex index:Int) throws {
+        let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), int32Value)
+        if resultCode != SQLITE_OK {
+            throw database.sqliteError
+        }
     }
     
     /// Binds an Int64 value to the parameter at the 1-based index.
@@ -179,32 +206,13 @@ open class Statement {
     ///   - index: The index of the parameter to bind.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    open func bindInt64Value(_ int64Value:Int64, atIndex index:Int) throws {
+    open func bind(int64Value:Int64, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_int64(sqliteStatement, Int32(index), int64Value)
         if resultCode != SQLITE_OK {
             throw database.sqliteError
         }
     }
-    
-    /// Binds an Int64 value to a named parameter.
-    ///
-    /// - Parameters:
-    ///   - int64Value: The value to bind.
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindInt64Value(_ int64Value:Int64, named name:String) throws {
-        guard let parameterIndex = indexOfParameterNamed(name) else {
-            throw unknownBindParameterError(name)
-        }
-        
-        try bindInt64Value(int64Value, atIndex: parameterIndex)
-    }
-    
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Double Parameters
-    
+
     /// Binds a Double value to the parameter at the 1-based index.
     ///
     /// - Parameters:
@@ -212,64 +220,12 @@ open class Statement {
     ///   - index: The index of the parameter to bind.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    open func bindDoubleValue(_ doubleValue:Double, atIndex index:Int) throws {
+    open func bind(doubleValue:Double, atIndex index:Int) throws {
         let resultCode = sqlite3_bind_double(sqliteStatement, Int32(index), doubleValue)
         if resultCode != SQLITE_OK {
             throw database.sqliteError
         }
     }
-
-    /// Binds a Double value to a named parameter.
-    ///
-    /// - Parameters:
-    ///   - doubleValue: The value to bind.
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindDoubleValue(_ doubleValue:Double, named name:String) throws {
-        guard let parameterIndex = indexOfParameterNamed(name) else {
-            throw unknownBindParameterError(name)
-        }
-        
-        try bindDoubleValue(doubleValue, atIndex: parameterIndex)
-    }
-    
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Bool Parameters
-    
-    /// Binds a Bool value to the parameter at the 1-based index.
-    ///
-    /// - Parameters:
-    ///   - boolValue: The value to bind.
-    ///   - index: The index of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindBoolValue(_ boolValue:Bool, atIndex index:Int) throws {
-        let resultCode = sqlite3_bind_int(sqliteStatement, Int32(index), Int32(boolValue ? 1 : 0))
-        if resultCode != SQLITE_OK {
-            throw database.sqliteError
-        }
-    }
-    
-    /// Binds a Bool value to a named parameter.
-    ///
-    /// - Parameters:
-    ///   - boolValue: The value to bind.
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindBoolValue(_ boolValue:Bool, named name:String) throws {
-        guard let parameterIndex = indexOfParameterNamed(name) else {
-            throw unknownBindParameterError(name)
-        }
-        
-        try bindBoolValue(boolValue, atIndex: parameterIndex)
-    }
-    
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  BLOB Parameters
     
     /// Binds a BLOB value to the parameter at the 1-based index.
     ///
@@ -278,7 +234,7 @@ open class Statement {
     ///   - index: The index of the parameter to bind.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    open func bindBlobValue(_ blobValue:Data, atIndex index:Int) throws {
+    open func bind(blobValue:Data, atIndex index:Int) throws {
         let dataValue = blobValue as NSData
         var resultCode: Int32
         if dataValue.length > 0 {
@@ -292,52 +248,18 @@ open class Statement {
         }
     }
     
-    /// Binds a BLOB value to a named parameter.
-    ///
-    /// - Parameters:
-    ///   - blobValue: The value to bind.
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindBlobValue(_ blobValue:Data, named name:String) throws {
-        guard let parameterIndex = indexOfParameterNamed(name) else {
-            throw unknownBindParameterError(name)
-        }
-        
-        try bindBlobValue(blobValue, atIndex: parameterIndex)
-    }
-    
-    
-    // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Null Parameters
-    
     /// Binds a NULL value to the parameter at the 1-based index.
     ///
     /// - Parameters:
     ///   - index: The index of the parameter to bind.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    open func bindNullParameter(atIndex index:Int) throws {
+    open func bindNullValue(atIndex index:Int) throws {
         let resultCode = sqlite3_bind_null(sqliteStatement, Int32(index))
         if resultCode != SQLITE_OK {
             throw database.sqliteError
         }
     }
-
-    /// Binds a NULL value to a named parameter.
-    ///
-    /// - Parameters:
-    ///   - name: The name of the parameter to bind.
-    /// - Throws:
-    ///     An NSError with the sqlite error code and message.
-    open func bindNullParameter(_ name:String) throws {
-        guard let parameterIndex = indexOfParameterNamed(name) else {
-            throw unknownBindParameterError(name)
-        }
-        
-        try bindNullParameter(atIndex:parameterIndex)
-    }
-    
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  Execute
@@ -644,7 +566,6 @@ open class Statement {
         return sqlite3_column_double(sqliteStatement, Int32(columnIndex))
     }
     
-    
     // -----------------------------------------------------------------------------------------------------------------
     // MARK:  String
     
@@ -745,6 +666,179 @@ open class Statement {
         return Data(bytes: columnBlob, count: Int(columnBytes))
     }
     
-    
 }
 
+
+@available(*, deprecated:2.0)
+public extension Statement {
+    
+    /// Binds named parameters using the values from a dictionary.
+    ///
+    /// - Parameters:
+    ///     - namedParameters: A dictionary of values to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bind(namedParameters:[String:Bindable?]) throws {
+        try bind(namedParameters)
+    }
+    
+    public func bindParameter(_ name:String, value:Bindable?) throws {
+        try bind(name:name, value:value)
+    }
+
+    public func bindStringValue(_ stringValue:String, atIndex index:Int) throws {
+        try bind(stringValue:stringValue, atIndex:index)
+    }
+    
+    /// Binds a string value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - stringValue: The value to bind.
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindStringValue(_ stringValue:String, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bindStringValue(stringValue, atIndex: parameterIndex)
+    }
+    
+    public func bindIntValue(_ intValue:Int, atIndex index:Int) throws {
+        try bindInt64Value(Int64(intValue), atIndex: index)
+    }
+    
+    /// Binds an Int value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - intValue: The value to bind.
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindIntValue(_ intValue:Int, named name:String) throws {
+        try bindInt64Value(Int64(intValue), named: name)
+    }
+    
+    public func bindInt64Value(_ int64Value:Int64, atIndex index:Int) throws {
+        try bind(int64Value:int64Value, atIndex:index)
+    }
+    
+    /// Binds an Int64 value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - int64Value: The value to bind.
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindInt64Value(_ int64Value:Int64, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bindInt64Value(int64Value, atIndex: parameterIndex)
+    }
+    
+    /// Binds a Double value to the parameter at the 1-based index.
+    ///
+    /// - Parameters:
+    ///   - doubleValue: The value to bind.
+    ///   - index: The index of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindDoubleValue(_ doubleValue:Double, atIndex index:Int) throws {
+        try bind(doubleValue:doubleValue, atIndex:index)
+    }
+    
+    /// Binds a Double value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - doubleValue: The value to bind.
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindDoubleValue(_ doubleValue:Double, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bindDoubleValue(doubleValue, atIndex: parameterIndex)
+    }
+    
+    /// Binds a Bool value to the parameter at the 1-based index.
+    ///
+    /// - Parameters:
+    ///   - boolValue: The value to bind.
+    ///   - index: The index of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindBoolValue(_ boolValue:Bool, atIndex index:Int) throws {
+        try bind(int32Value:Int32(boolValue ? 1 : 0), atIndex:index)
+    }
+    
+    /// Binds a Bool value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - boolValue: The value to bind.
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindBoolValue(_ boolValue:Bool, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bindBoolValue(boolValue, atIndex: parameterIndex)
+    }
+    
+    /// Binds a BLOB value to the parameter at the 1-based index.
+    ///
+    /// - Parameters:
+    ///   - blobValue: The value to bind.
+    ///   - index: The index of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindBlobValue(_ blobValue:Data, atIndex index:Int) throws {
+        try bind(blobValue:blobValue, atIndex:index)
+    }
+    
+    /// Binds a BLOB value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - blobValue: The value to bind.
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindBlobValue(_ blobValue:Data, named name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bindBlobValue(blobValue, atIndex: parameterIndex)
+    }
+
+    /// Binds a NULL value to the parameter at the 1-based index.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindNullParameter(atIndex index:Int) throws {
+        try bindNullValue(atIndex: index)
+    }
+    
+    /// Binds a NULL value to a named parameter.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the parameter to bind.
+    /// - Throws:
+    ///     An NSError with the sqlite error code and message.
+    public func bindNullParameter(_ name:String) throws {
+        guard let parameterIndex = indexOfParameterNamed(name) else {
+            throw unknownBindParameterError(name)
+        }
+        
+        try bindNullParameter(atIndex:parameterIndex)
+    }
+
+}

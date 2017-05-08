@@ -191,7 +191,7 @@ class BindableSpec: QuickSpec {
             
             it("binds named values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE name IS $NAME")
-                try! statement.bind(namedParameters:[ "$NAME": "Brian" ])
+                try! statement.bind([ "$NAME": "Brian" ])
                 
                 expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
@@ -200,7 +200,7 @@ class BindableSpec: QuickSpec {
             
             it("binds multiple values") {
                 statement = try! database.prepareStatement("SELECT * FROM people WHERE personId > $MIN_ID AND personId < $MAX_ID")
-                try! statement.bind(namedParameters:["$MIN_ID": 1, "$MAX_ID": 3])
+                try! statement.bind(["$MIN_ID": 1, "$MAX_ID": 3])
                 
                 expect(try! statement.next()).to(equal(true))
                 expect(statement.stringValue("name")).to(equal("Brian"))
