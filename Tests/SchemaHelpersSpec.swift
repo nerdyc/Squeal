@@ -68,12 +68,12 @@ class DatabaseSchemaSpec: QuickSpec {
                     
                     try! database.createIndex(
                         "contacts_fullName",
-                        tableName:"contacts",
+                        on:"contacts",
                         columns:[
                             "firstName",
                             "lastName"
                         ],
-                        partialExpr: "firstName IS NOT NULL AND lastName IS NOT NULL",
+                        where: "firstName IS NOT NULL AND lastName IS NOT NULL",
                         unique: true
                     )
                 }
@@ -245,7 +245,7 @@ class DatabaseSchemaSpec: QuickSpec {
         // =================================================================================================================
         // MARK:- Create Index
         
-        describe(".createIndex(name:tableName:columns:unique:ifNotExists:partialExpr:error:)") {
+        describe(".createIndex(_:on:columns:unique:ifNotExists:where:)") {
             
             beforeEach {
                 try! database.execute("CREATE TABLE contacts (contactId INTEGER, name TEXT)")
@@ -254,8 +254,8 @@ class DatabaseSchemaSpec: QuickSpec {
             context("when the index doesn't exist") {
                 beforeEach {
                     try! database.createIndex("contacts_name",
-                                              tableName:    "contacts",
-                                              columns:      ["name"])
+                                              on:       "contacts",
+                                              columns:  ["name"])
                 }
             
                 it("creates an index over the given columns") {
@@ -272,8 +272,8 @@ class DatabaseSchemaSpec: QuickSpec {
                 it("returns an error") {
                     do {
                         try database.createIndex("contacts_name",
-                                                 tableName:    "contacts",
-                                                 columns:      ["name"])
+                                                 on:        "contacts",
+                                                 columns:   ["name"])
                         fail("Expected error to be thrown when index already exists")
                     } catch {
                         
@@ -283,9 +283,9 @@ class DatabaseSchemaSpec: QuickSpec {
                 it("doesn't return an error if ifNotExists is true") {
                     do {
                         try database.createIndex("contacts_name",
-                                                 tableName:    "contacts",
-                                                 columns:      ["name"],
-                                                 ifNotExists:  true)
+                                                 on:            "contacts",
+                                                 columns:       ["name"],
+                                                 ifNotExists:   true)
                     } catch let e {
                         fail("Didn't expect error to be thrown: \(e)")
                     }

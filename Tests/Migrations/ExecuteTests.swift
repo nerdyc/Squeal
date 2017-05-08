@@ -17,7 +17,7 @@ class ExecuteTests: SquealMigrationTestCase {
             s.version(2) { v in
                 v.execute { db in
                     // remove whitespace
-                    try db.update("people", setExpr: "name = upper(trim(name))")
+                    try db.update("people", set: "name = upper(trim(name))")
                 }
             }
         }
@@ -44,7 +44,7 @@ class ExecuteTests: SquealMigrationTestCase {
         // VERIFY: Execute step was performed
         var fetchedNames = [String]()
         expect {
-            fetchedNames = try db.selectFrom("people", columns: ["name"]) { $0.stringValue("name") ?? "" }
+            fetchedNames = try db.select(from:"people", columns: ["name"]) { $0.stringValue("name") ?? "" }
         }.notTo(throwError())
         
         expect(fetchedNames) == [

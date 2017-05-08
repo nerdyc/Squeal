@@ -66,21 +66,21 @@ public final class TableAlterer {
     ///   - name: The name of the column to add.
     ///   - type: The column's type (e.g. "TEXT")
     ///   - constraints: An array of constraints to add to the column (e.g. "NOT NULL", "DEFAULT 0").
-    ///   - initialExpr: A SQL expression used to set the value of the column for existing rows in the table. Unlike
+    ///   - valueExpr: A SQL expression used to set the value of the column for existing rows in the table. Unlike
     ///                  a `DEFAULT 0` constraint, this expression is only used to set the value for existing rows. The
     ///                  expression can also reference other columns in the table row (before migration). For example
     ///                  adding a "display_name" column could be set to the name or email with `coalesce(name, email)`.
     ///
-    public func addColumn(_ name:String, type:ColumnType, constraints:[String] = [], initialExpr:String? = nil) {
+    public func addColumn(_ name:String, type:ColumnType, constraints:[String] = [], setValue valueExpr:String? = nil) {
         let column = Column(name: name, type: type, constraints: constraints)
         
         if let lastTransform = transformers.last as? AlterTable {
             // Add the column along with the preceding alteration.
-            transformers[transformers.endIndex-1] = lastTransform.addingColumn(column, initialExpr:initialExpr)
-        } else if let initialExpr = initialExpr {
+            transformers[transformers.endIndex-1] = lastTransform.addingColumn(column, valueExpr:valueExpr)
+        } else if let valueExpr = valueExpr {
             // create a new alteration to handle calculating the initial value
             transformers.append(
-                AlterTable(table).addingColumn(column, initialExpr:initialExpr)
+                AlterTable(table).addingColumn(column, valueExpr:valueExpr)
             )
         } else {
             // Add a transform to add the column using the "ADD COLUMN" form, which is faster than an AlterTable.
@@ -91,6 +91,11 @@ public final class TableAlterer {
                 )
             )
         }
+    }
+    
+    @available(*, deprecated: 2.0)
+    public func addColumn(_ name:String, type:ColumnType, constraints:[String] = [], initialExpr valueExpr:String?) {
+        self.addColumn(name, type: type, constraints: constraints, setValue: valueExpr)
     }
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -271,10 +276,10 @@ private final class AlterTable : TableTransformer {
     // ---------------------------------------------------------------------------------------------
     // MARK: Add Column
     
-    func addingColumn(_ column:Column, initialExpr:String?) -> AlterTable {
+    func addingColumn(_ column:Column, valueExpr:String?) -> AlterTable {
         return AlterTable(
             alteredTable:   alteredTable.addingColumn(column),
-            alteredValues:  alteredValues + [initialExpr ?? "NULL"]
+            alteredValues:  alteredValues + [valueExpr ?? "NULL"]
         )
     }
     

@@ -31,11 +31,11 @@ struct Contact {
     }
 }
 
-let contacts:[Contact] = try db.selectFrom(
-    "contacts",
-    whereExpr:"name IS NOT NULL",
+let contacts:[Contact] = try db.select(
+    from:"contacts",
+    where:"name IS NOT NULL",
     block: Contact.init
 )
 
 // Count:
-let numberOfContacts = try db.countFrom("contacts")
+let numberOfContacts = try db.count(from:"contacts")

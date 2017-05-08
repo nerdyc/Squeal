@@ -13,7 +13,7 @@ class DropIndexTests: SquealMigrationTestCase {
                     people.column("name", .Text, "NOT NULL")
                 }
                 
-                v.createIndex("people_names", on:"people", columns:["name"], partialExpr:"name != ''", unique:true)
+                v.createIndex("people_names", on:"people", columns:["name"], where:"name != ''", unique:true)
             }
             
             s.version(2) { v in

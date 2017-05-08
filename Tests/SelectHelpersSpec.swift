@@ -22,7 +22,7 @@ class SelectHelpersSpec: QuickSpec {
         // -----------------------------------------------------------------------------------------
         // MARK: Select
         
-        describe("Database.selectFrom(_:columns:whereExpr:groupBy:having:orderBy:limit:offset:parameters:)") {
+        describe("Database.select(from:columns:where:groupBy:having:orderBy:limit:offset:parameters:)") {
             
             var values : [String]?
             
@@ -31,7 +31,7 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement is valid") {
                 
                 beforeEach {
-                    values = try! database.selectFrom("contacts") { $0["name"] as! String }
+                    values = try! database.select(from:"contacts") { $0["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -46,10 +46,10 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement has a where clause") {
                 
                 beforeEach {
-                    values = try! database.selectFrom("contacts",
-                                                      whereExpr:  "contactId > ?",
-                                                      orderBy:    "name",
-                                                      parameters: [1]) { $0["name"] as! String }
+                    values = try! database.select(from: "contacts",
+                                                  where: "contactId > ?",
+                                                  orderBy: "name",
+                                                  parameters: [1]) { $0["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -62,12 +62,12 @@ class SelectHelpersSpec: QuickSpec {
             context("when the statement has a limit and offset") {
                 
                 beforeEach {
-                    values = try! database.selectFrom("contacts",
-                                                      whereExpr:  "contactId > ?",
-                                                      orderBy:    "name",
-                                                      limit:      1,
-                                                      offset:     1,
-                                                      parameters: [1]) { $0["name"] as! String }
+                    values = try! database.select(from:"contacts",
+                                                  where:  "contactId > ?",
+                                                  orderBy:    "name",
+                                                  limit:      1,
+                                                  offset:     1,
+                                                  parameters: [1]) { $0["name"] as! String }
                 }
                 
                 it("returns the collected values") {
@@ -85,7 +85,7 @@ class SelectHelpersSpec: QuickSpec {
                 
                 it("provides an error") {
                     do {
-                        _ = try database.prepareSelectFrom("contacts", whereExpr: "sdfsdfsf IS NULL")
+                        _ = try database.prepareSelect(from:"contacts", where: "sdfsdfsf IS NULL")
                         fail("Expected error")
                     } catch {
                         
@@ -99,15 +99,15 @@ class SelectHelpersSpec: QuickSpec {
         // -----------------------------------------------------------------------------------------
         // MARK: Query
         
-        describe("Statement.queryIds()") {
+        describe("Statement.selectIds(from:where:orderBy:parameters:)") {
             
             var rowIds : [RowId]?
             
             beforeEach {
-                rowIds = try! database.selectIdsFrom("contacts",
-                                                     whereExpr:   "name > ?",
-                                                     orderBy:     "name DESC",
-                                                     parameters:  ["B"])
+                rowIds = try! database.selectIds(from:"contacts",
+                                                 where:   "name > ?",
+                                                 orderBy:     "name DESC",
+                                                 parameters:  ["B"])
             }
             
             afterEach {
@@ -123,13 +123,13 @@ class SelectHelpersSpec: QuickSpec {
         // -----------------------------------------------------------------------------------------
         // MARK: Count
 
-        describe("Database.countFrom(_:columns:whereExpr:parameters:)") {
+        describe("Database.count(from:columns:where:parameters:)") {
             
             var count : Int64?
             
-            context("when no whereExpr is provided") {
+            context("when no where clause is provided") {
                 beforeEach {
-                    count = try! database.countFrom("contacts")
+                    count = try! database.count(from:"contacts")
                 }
                 
                 it("counts all rows") {
@@ -139,7 +139,7 @@ class SelectHelpersSpec: QuickSpec {
             
             context("when columns are provided") {
                 beforeEach {
-                    count = try! database.countFrom("contacts", columns:["initials"])
+                    count = try! database.count(from:"contacts", columns:["initials"])
                 }
                 
                 it("counts all rows with non-null values") {
@@ -149,7 +149,7 @@ class SelectHelpersSpec: QuickSpec {
             
             context("when a where clause is provided") {
                 beforeEach {
-                    count = try! database.countFrom("contacts", whereExpr:"contactId > ?", parameters:[2])
+                    count = try! database.count(from:"contacts", where:"contactId > ?", parameters:[2])
                 }
                 
                 it("counts all rows matching the expression") {

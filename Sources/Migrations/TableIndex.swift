@@ -14,16 +14,26 @@ public final class TableIndex {
     public let columns:[String]
     
     /// The expression used to select the rows to index, e.g. "name IS NOT NULL".
-    public let partialExpr:String?
+    public let whereClause:String?
+    
+    @available(*, deprecated: 2.0)
+    public var partialExpr:String? {
+        return whereClause
+    }
     
     /// Whether the index is unique.
     public let unique:Bool
     
-    init(name:String, tableName:String, columns:[String], partialExpr:String?, unique:Bool = false) {
+    @available(*, deprecated: 2.0)
+    convenience init(name:String, tableName:String, columns:[String], partialExpr whereClause:String?, unique:Bool = false) {
+        self.init(name: name, tableName: tableName, columns: columns, whereClause: whereClause, unique: unique)
+    }
+    
+    init(name:String, tableName:String, columns:[String], whereClause:String?, unique:Bool = false) {
         self.name = name
         self.tableName = tableName
         self.columns = columns
-        self.partialExpr = partialExpr
+        self.whereClause = whereClause
         self.unique = unique
     }
     
@@ -32,7 +42,7 @@ public final class TableIndex {
             name:        name,
             tableName:   newTableName,
             columns:     columns,
-            partialExpr: partialExpr,
+            whereClause: whereClause,
             unique:      unique
         )
     }
@@ -42,7 +52,7 @@ public final class TableIndex {
             name:        newName,
             tableName:   tableName,
             columns:     columns,
-            partialExpr: partialExpr,
+            whereClause: whereClause,
             unique:      unique
         )
     }
@@ -59,7 +69,7 @@ public final class TableIndex {
             name:        name,
             tableName:   tableName,
             columns:     renamedColumns,
-            partialExpr: partialExpr,
+            whereClause: whereClause,
             unique:      unique
         )
     }
@@ -67,16 +77,16 @@ public final class TableIndex {
     func createIn(_ db:Database) throws {
         try db.createIndex(
             name,
-            tableName:   tableName,
-            columns:     columns,
-            partialExpr: partialExpr,
-            unique:      unique
+            on:     tableName,
+            columns:columns,
+            where:  whereClause,
+            unique: unique
         )
     }
     
 }
 
-// =================================================================================================
+// =====================================================================================================================
 // MARK:- TableIndexSet
 
 public protocol TableIndexSet {

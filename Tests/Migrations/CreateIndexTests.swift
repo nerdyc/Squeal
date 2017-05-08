@@ -13,7 +13,7 @@ class CreateIndexTests: SquealMigrationTestCase {
                     people.column("name", .Text, "NOT NULL")
                 }
                 
-                v.createIndex("people_names", on:"people", columns:["name"], partialExpr:"name != ''", unique:true)
+                v.createIndex("people_names", on:"people", columns:["name"], where:"name != ''", unique:true)
             }
         }
         
@@ -24,7 +24,7 @@ class CreateIndexTests: SquealMigrationTestCase {
         expect(schemaIndex?.tableName) == "people"
         expect(schemaIndex?.columns) == [ "name" ]
         expect(schemaIndex?.unique) == true
-        expect(schemaIndex?.partialExpr) == "name != ''"
+        expect(schemaIndex?.whereClause) == "name != ''"
         
         // VERIFY: Migration succeeds
         let db = Database()

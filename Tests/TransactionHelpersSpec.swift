@@ -29,7 +29,7 @@ class TransactionHelpersSpec: QuickSpec {
                         try database.insertInto("people", values: ["name":"Cara"])
                     }
                     
-                    expect(try! database.countFrom("people")).to(equal(3))
+                    expect(try! database.count(from:"people")).to(equal(3))
                 }
                 
             }
@@ -51,7 +51,7 @@ class TransactionHelpersSpec: QuickSpec {
                         expect(error.domain).to(equal("TransactionHelpersSpec"))
                     }
                     
-                    expect(try! database.countFrom("people")).to(equal(0))
+                    expect(try! database.count(from:"people")).to(equal(0))
                 }
                 
             }
@@ -73,7 +73,7 @@ class TransactionHelpersSpec: QuickSpec {
                         try database.insertInto("people", values: ["name":"Cara"])
                     }
                     
-                    expect(try! database.countFrom("people")).to(equal(3))
+                    expect(try! database.count(from:"people")).to(equal(3))
                 }
                 
             }
@@ -95,7 +95,7 @@ class TransactionHelpersSpec: QuickSpec {
                         expect(error.domain).to(equal("TransactionHelpersSpec"))
                     }
                     
-                    expect(try! database.countFrom("people")).to(equal(0))
+                    expect(try! database.count(from:"people")).to(equal(0))
                 }
                 
             }

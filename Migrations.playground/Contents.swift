@@ -29,7 +29,7 @@ let AppSchema = Schema(identifier:"contacts") { schema in
         
         // Arbitrary SQL code can be executed.
         v2.execute { db in
-            try db.deleteFrom("contacts", whereExpr: "name IS NULL")
+            try db.delete(from:"contacts", where: "name IS NULL")
         }
         
         // Tables can be altered in many ways.

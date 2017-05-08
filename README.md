@@ -50,14 +50,14 @@ struct Contact {
     }
 }
 
-let contacts:[Contact] = try db.selectFrom(
-    "contacts",
-    whereExpr:"name IS NOT NULL",
+let contacts:[Contact] = try db.select(
+    from:"contacts",
+    where:"name IS NOT NULL",
     block: Contact.init
 )
 
 // Count:
-let numberOfContacts = try db.countFrom("contacts")
+let numberOfContacts = try db.count(from:"contacts")
 ```
 
 The above example can be found in `Squeal.playground` to allow further exploration of Squeal's interface.
@@ -79,38 +79,50 @@ import Squeal
 
 // Define a Schema:
 let AppSchema = Schema(identifier:"contacts") { schema in
+    
     // Version 1:
     schema.version(1) { v1 in
+        
         // Create a Table:
         v1.createTable("contacts") { contacts in
+            
             contacts.primaryKey("id")
             contacts.column("name", type:.Text)
             contacts.column("email", type:.Text, constraints:["NOT NULL"])
+            
         }
 
-        // Add an index
+        // Add Indexes
         v1.createIndex(
             "contacts_email",
             on: "contacts",
             columns: [ "email" ]
         )
+
     }
     
     // Version 2:
-    schema.version(2) { v2 in        
-        // Arbitrary SQL:
+    schema.version(2) { v2 in
+        
+        // Arbitrary SQL code can be executed.
         v2.execute { db in
-            try db.deleteFrom("contacts", whereExpr: "name IS NULL")
-        }        
+            try db.delete(from:"contacts", where: "name IS NULL")
+        }
+        
         // Tables can be altered in many ways.
         v2.alterTable("contacts") { contacts in
+            
             contacts.alterColumn(
                 "name",
                 setConstraints: [ "NOT NULL" ]
             )
-            contacts.addColumn("url", type: .Text)            
+            
+            contacts.addColumn("url", type: .Text)
+            
         }
+        
     }
+    
 }
 
 let db = Database()

@@ -160,7 +160,7 @@ public final class Table : TableIndexSet {
     // ---------------------------------------------------------------------------------------------
     // MARK: Indexes
     
-    func addingIndex(_ indexName:String, columns indexColumns:[String], partialExpr:String? = nil, unique:Bool = false) -> Table {
+    func addingIndex(_ indexName:String, columns indexColumns:[String], where whereClause:String? = nil, unique:Bool = false) -> Table {
         guard indexNamed(name) == nil else {
             fatalError("Unable to create index: '\(indexName)' already exists")
         }
@@ -169,7 +169,7 @@ public final class Table : TableIndexSet {
             name:           indexName,
             tableName:      name,
             columns:        indexColumns,
-            partialExpr:    partialExpr,
+            whereClause:    whereClause,
             unique:         unique
         )
         

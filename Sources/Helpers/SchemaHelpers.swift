@@ -578,16 +578,16 @@ public extension Database {
     ///   - name:        The name of the index.
     ///   - tableName:   The name of the table to index.
     ///   - columns:     The columns to index.
-    ///   - partialExpr: An expression to create a partial index.
+    ///   - whereClause: An expression to create a partial index.
     ///   - unique:      Whether to create a unique index or not. Defaults to `false`.
     ///   - ifNotExists: If `true`, don't create the index if it already exists. If `false`, then this method will
     ///                  return an error if the index already exists. Defaults to false.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
     public func createIndex(_ name:String,
-                            tableName:String,
+                            on tableName:String,
                             columns:[String],
-                            partialExpr:String? = nil,
+                            where whereClause:String? = nil,
                             unique:Bool = false,
                             ifNotExists:Bool = false) throws {
                                 
@@ -607,9 +607,9 @@ public extension Database {
         createIndexSql.append(columns.joined(separator: ", "))
         createIndexSql.append(")")
         
-        if let partialExpr = partialExpr {
+        if let whereClause = whereClause {
             createIndexSql.append("WHERE")
-            createIndexSql.append(partialExpr)
+            createIndexSql.append(whereClause)
         }
         
         return try execute(createIndexSql.joined(separator: " "))
@@ -634,6 +634,21 @@ public extension Database {
         dropIndexSql += escapeIdentifier(indexName)
         
         return try execute(dropIndexSql)
+    }
+    
+}
+
+@available(*, deprecated: 2.0)
+public extension Database {
+    
+    public func createIndex(_ name:String,
+                            tableName:String,
+                            columns:[String],
+                            partialExpr whereClause:String? = nil,
+                            unique:Bool = false,
+                            ifNotExists:Bool = false) throws {
+
+        try self.createIndex(name, on: tableName, columns: columns, where: whereClause, unique: unique, ifNotExists: ifNotExists)
     }
     
 }

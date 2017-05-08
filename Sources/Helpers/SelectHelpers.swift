@@ -12,7 +12,7 @@ public extension Database {
     ///   - from:       The name of the table to select from, including any JOIN clauses.
     ///   - columns:    The columns to select. These are not escaped, and can contain expressions. If nil, all
     ///                 columns are returned (e.g. '*').
-    ///   - whereExpr:  The WHERE clause. If nil, then all rows are returned.
+    ///   - whereClause:  The WHERE clause. If nil, then all rows are returned.
     ///   - groupBy:    The GROUP BY expression.
     ///   - having:     The HAVING clause.
     ///   - orderBy:    The ORDER BY clause.
@@ -22,19 +22,19 @@ public extension Database {
     /// - Returns: The prepared `SELECT` statement.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func prepareSelectFrom(_ from:        String,
-                                  columns:     [String]? = nil,
-                                  whereExpr:   String? = nil,
-                                  groupBy:     String? = nil,
-                                  having:      String? = nil,
-                                  orderBy:     String? = nil,
-                                  limit:       Int? = nil,
-                                  offset:      Int? = nil,
-                                  parameters:  [Bindable?] = []) throws -> Statement {
+    public func prepareSelect(from:             String,
+                              columns:          [String]? = nil,
+                              where whereClause:String? = nil,
+                              groupBy:          String? = nil,
+                              having:           String? = nil,
+                              orderBy:          String? = nil,
+                              limit:            Int? = nil,
+                              offset:           Int? = nil,
+                              parameters:       [Bindable?] = []) throws -> Statement {
         
         var fragments = [ "SELECT" ]
-        if columns != nil {
-            fragments.append(columns!.joined(separator: ","))
+        if let columns = columns {
+            fragments.append(columns.joined(separator: ","))
         } else {
             fragments.append("*")
         }
@@ -42,33 +42,33 @@ public extension Database {
         fragments.append("FROM")
         fragments.append(from)
                             
-        if whereExpr != nil {
+        if let whereClause = whereClause {
             fragments.append("WHERE")
-            fragments.append(whereExpr!)
+            fragments.append(whereClause)
         }
         
-        if groupBy != nil {
+        if let groupBy = groupBy {
             fragments.append("GROUP BY")
-            fragments.append(groupBy!)
+            fragments.append(groupBy)
         }
         
-        if having != nil {
+        if let having = having {
             fragments.append("HAVING")
-            fragments.append(having!)
+            fragments.append(having)
         }
         
-        if orderBy != nil {
+        if let orderBy = orderBy {
             fragments.append("ORDER BY")
-            fragments.append(orderBy!)
+            fragments.append(orderBy)
         }
         
-        if limit != nil {
+        if let limit = limit {
             fragments.append("LIMIT")
-            fragments.append("\(limit!)")
+            fragments.append("\(limit)")
             
-            if offset != nil {
+            if let offset = offset {
                 fragments.append("OFFSET")
-                fragments.append("\(offset!)")
+                fragments.append("\(offset)")
             }
         }
         
@@ -84,7 +84,7 @@ public extension Database {
     ///
     /// - Parameters:
     ///   - from:       The name of the table to select from, including any JOIN clauses.
-    ///   - whereExpr:  The WHERE clause. If nil, then all rows are returned.
+    ///   - whereClause:  The WHERE clause. If nil, then all rows are returned.
     ///   - groupBy:    The GROUP BY expression.
     ///   - having:     The HAVING clause.
     ///   - orderBy:    The ORDER BY clause.
@@ -94,24 +94,24 @@ public extension Database {
     /// - Returns: The prepared `SELECT` statement.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func prepareSelectIdsFrom(_ from:        String,
-                                     whereExpr:   String? = nil,
-                                     groupBy:     String? = nil,
-                                     having:      String? = nil,
-                                     orderBy:     String? = nil,
-                                     limit:       Int? = nil,
-                                     offset:      Int? = nil,
-                                     parameters:  [Bindable?] = []) throws -> Statement {
+    public func prepareSelectIds(from:              String,
+                                 where whereClause: String? = nil,
+                                 groupBy:           String? = nil,
+                                 having:            String? = nil,
+                                 orderBy:           String? = nil,
+                                 limit:             Int? = nil,
+                                 offset:            Int? = nil,
+                                 parameters:        [Bindable?] = []) throws -> Statement {
 
-        return try prepareSelectFrom(from,
-                                     columns:    ["_ROWID_"],
-                                     whereExpr:  whereExpr,
-                                     groupBy:    groupBy,
-                                     having:     having,
-                                     orderBy:    orderBy,
-                                     limit:      limit,
-                                     offset:     offset,
-                                     parameters: parameters)
+        return try prepareSelect(from:       from,
+                                 columns:    ["_ROWID_"],
+                                 where:      whereClause,
+                                 groupBy:    groupBy,
+                                 having:     having,
+                                 orderBy:    orderBy,
+                                 limit:      limit,
+                                 offset:     offset,
+                                 parameters: parameters)
     }
     
     // ---------------------------------------------------------------------------------------------
@@ -123,21 +123,21 @@ public extension Database {
     /// - Parameters:
     ///   - from: The name of the table to select from, including any JOIN clauses.
     ///   - columns: The columns to count. If nil, then 'count(*)' is returned.
-    ///   - whereExpr: The WHERE clause. If nil, then all rows are returned.
+    ///   - whereClause: The WHERE clause. If nil, then all rows are returned.
     ///   - parameters: An array of parameters to bind to the statement.
     /// - Returns: The number of rows counted, or nil if an error occurs.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func countFrom(_ from:      String,
-                          columns:     [String]? = nil,
-                          whereExpr:   String? = nil,
-                          parameters:  [Bindable?] = []) throws -> Int64 {
+    public func count(from:             String,
+                      columns:          [String]? = nil,
+                      where whereClause:String? = nil,
+                      parameters:  [    Bindable?] = []) throws -> Int64 {
 
         let countExpr = "count(" + (columns ?? ["*"]).joined(separator: ",") + ")"
-        let statement = try prepareSelectFrom(from,
-                                              columns:   [countExpr],
-                                              whereExpr: whereExpr,
-                                              parameters:parameters)
+        let statement = try prepareSelect(from: from,
+                                          columns: [countExpr],
+                                          where: whereClause,
+                                          parameters: parameters)
                                     
         var count:Int64 = 0
         if try statement.next() {
@@ -243,7 +243,7 @@ public extension Database {
     ///   - from:       The name of the table to select from, including any JOIN clauses.
     ///   - columns:    The columns to select. These are not escaped, and can contain expressions. If nil, all
     ///                 columns are returned (e.g. '*').
-    ///   - whereExpr:  The WHERE clause. If nil, then all rows are returned.
+    ///   - whereClause:The WHERE clause. If nil, then all rows are returned.
     ///   - groupBy:    The GROUP BY expression.
     ///   - having:     The HAVING clause.
     ///   - orderBy:    The ORDER BY clause.
@@ -255,37 +255,35 @@ public extension Database {
     ///     An array of all the selected values (as returned by the block), or an empty array if no rows were selected.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func selectFrom<T>(_ from:       String,
-                              columns:      [String]? = nil,
-                              whereExpr:    String? = nil,
-                              groupBy:      String? = nil,
-                              having:       String? = nil,
-                              orderBy:      String? = nil,
-                              limit:        Int? = nil,
-                              offset:       Int? = nil,
-                              parameters:   [Bindable?] = [],
-                              block:        ((Statement) throws -> T)) throws -> [T] {
+    public func select<T>(from:             String,
+                          columns:          [String]? = nil,
+                          where whereClause:String? = nil,
+                          groupBy:          String? = nil,
+                          having:           String? = nil,
+                          orderBy:          String? = nil,
+                          limit:            Int? = nil,
+                          offset:           Int? = nil,
+                          parameters:       [Bindable?] = [],
+                          block:            ((Statement) throws -> T)) throws -> [T] {
                                 
-        let statement = try prepareSelectFrom(from,
-                                              columns:columns,
-                                              whereExpr:whereExpr,
-                                              groupBy:groupBy,
-                                              having:having,
-                                              orderBy:orderBy,
-                                              limit:limit,
-                                              offset:offset,
-                                              parameters:parameters)
+        let statement = try prepareSelect(from:from,
+                                          columns:columns,
+                                          where:whereClause,
+                                          groupBy:groupBy,
+                                          having:having,
+                                          orderBy:orderBy,
+                                          limit:limit,
+                                          offset:offset,
+                                          parameters:parameters)
         
         return try statement.select(block:block)
     }
     
-    /// Executes a SELECT statement, and returns all matching rows, transformed by the given block.
-
     /// Prepares a `SELECT` statement that selects row IDs.
     ///
     /// - Parameters:
     ///   - from:       The name of the table to select from, including any JOIN clauses.
-    ///   - whereExpr:  The WHERE clause. If nil, then all rows are returned.
+    ///   - whereClause:  The WHERE clause. If nil, then all rows are returned.
     ///   - groupBy:    The GROUP BY expression.
     ///   - having:     The HAVING clause.
     ///   - orderBy:    The ORDER BY clause.
@@ -295,24 +293,24 @@ public extension Database {
     /// - Returns: The prepared `SELECT` statement.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func selectIdsFrom(_ from:       String,
-                              whereExpr:    String? = nil,
-                              groupBy:      String? = nil,
-                              having:       String? = nil,
-                              orderBy:      String? = nil,
-                              limit:        Int? = nil,
-                              offset:       Int? = nil,
-                              parameters:   [Bindable?] = []) throws -> [RowId] {
+    public func selectIds(from:       String,
+                          where whereClause: String? = nil,
+                          groupBy:      String? = nil,
+                          having:       String? = nil,
+                          orderBy:      String? = nil,
+                          limit:        Int? = nil,
+                          offset:       Int? = nil,
+                          parameters:   [Bindable?] = []) throws -> [RowId] {
 
-        return try selectFrom(from,
-                              columns: ["ROWID"],
-                              whereExpr: whereExpr,
-                              groupBy: groupBy,
-                              having: having,
-                              orderBy: orderBy,
-                              limit: limit,
-                              offset: offset,
-                              parameters: parameters) { $0.int64ValueAtIndex(0) ?? 0 }
+        return try select(from: from,
+                          columns: ["ROWID"],
+                          where: whereClause,
+                          groupBy: groupBy,
+                          having: having,
+                          orderBy: orderBy,
+                          limit: limit,
+                          offset: offset,
+                          parameters: parameters) { $0.int64ValueAtIndex(0) ?? 0 }
     }
     
     // ---------------------------------------------------------------------------------------------
@@ -324,7 +322,7 @@ public extension Database {
     ///   - from:       The name of the table to select from, including any JOIN clauses.
     ///   - columns:    The columns to select. These are not escaped, and can contain expressions. If nil, all
     ///                 columns are returned (e.g. '*').
-    ///   - whereExpr:  The WHERE clause. If nil, then all rows are returned.
+    ///   - whereClause:The WHERE clause. If nil, then all rows are returned.
     ///   - groupBy:    The GROUP BY expression.
     ///   - having:     The HAVING clause.
     ///   - orderBy:    The ORDER BY clause.
@@ -334,26 +332,26 @@ public extension Database {
     ///   - block:      A block to process the selected rows.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    func iterateRowsFrom(_ from:        String,
-                         columns:     [String]? = nil,
-                         whereExpr:   String? = nil,
-                         groupBy:     String? = nil,
-                         having:      String? = nil,
-                         orderBy:     String? = nil,
-                         limit:       Int? = nil,
-                         offset:      Int? = nil,
-                         parameters:  [Bindable?] = [],
-                         block: ((Statement) throws -> Void)) throws {
+    func iterateRows(from:        String,
+                     columns:     [String]? = nil,
+                     where whereClause:String? = nil,
+                     groupBy:     String? = nil,
+                     having:      String? = nil,
+                     orderBy:     String? = nil,
+                     limit:       Int? = nil,
+                     offset:      Int? = nil,
+                     parameters:  [Bindable?] = [],
+                     block: ((Statement) throws -> Void)) throws {
         
-        let statement = try prepareSelectFrom(from,
-                                              columns:      columns,
-                                              whereExpr:    whereExpr,
-                                              groupBy:      groupBy,
-                                              having:       having,
-                                              orderBy:      orderBy,
-                                              limit:        limit,
-                                              offset:       offset,
-                                              parameters:   parameters)
+        let statement = try prepareSelect(from:     from,
+                                          columns:  columns,
+                                          where:    whereClause,
+                                          groupBy:  groupBy,
+                                          having:   having,
+                                          orderBy:  orderBy,
+                                          limit:    limit,
+                                          offset:   offset,
+                                          parameters:   parameters)
         try statement.iterateRows(block)
     }
     
@@ -496,4 +494,93 @@ public extension Statement {
         
         return blobValueAtIndex(0)
     }
+}
+
+
+// =====================================================================================================================
+// MARK:- Deprecated Methods
+//
+// These method signatures pre-date Swift 3 and have been replaced with signatures that match Swift-3 guidelines.
+
+@available(*, deprecated: 2.0)
+public extension Database {
+
+    public func prepareSelectFrom(_ from:        String,
+                                  columns:     [String]? = nil,
+                                  whereExpr whereClause:   String? = nil,
+                                  groupBy:     String? = nil,
+                                  having:      String? = nil,
+                                  orderBy:     String? = nil,
+                                  limit:       Int? = nil,
+                                  offset:      Int? = nil,
+                                  parameters:  [Bindable?] = []) throws -> Statement {
+        
+        return try self.prepareSelect(from:from, columns:columns, where:whereClause, groupBy:groupBy, having:having, orderBy:orderBy, limit:limit, offset:offset, parameters:parameters)
+        
+    }
+    
+    public func prepareSelectIdsFrom(_ from:        String,
+                                     whereExpr whereClause:   String? = nil,
+                                     groupBy:     String? = nil,
+                                     having:      String? = nil,
+                                     orderBy:     String? = nil,
+                                     limit:       Int? = nil,
+                                     offset:      Int? = nil,
+                                     parameters:  [Bindable?] = []) throws -> Statement {
+        
+        return try self.prepareSelectIds(from:from, where:whereClause, groupBy:groupBy, having:having, orderBy:orderBy, limit:limit, offset:offset, parameters:parameters)
+        
+    }
+    
+    public func countFrom(_ from:      String,
+                          columns:     [String]? = nil,
+                          whereExpr whereClause:   String? = nil,
+                          parameters:  [Bindable?] = []) throws -> Int64 {
+        
+        return try self.count(from:from, columns:columns, where:whereClause, parameters:parameters)
+    }
+
+    public func selectFrom<T>(_ from:       String,
+                           columns:      [String]? = nil,
+                           whereExpr whereClause:    String? = nil,
+                           groupBy:      String? = nil,
+                           having:       String? = nil,
+                           orderBy:      String? = nil,
+                           limit:        Int? = nil,
+                           offset:       Int? = nil,
+                           parameters:   [Bindable?] = [],
+                           block:        ((Statement) throws -> T)) throws -> [T] {
+
+        return try self.select(from: from, columns: columns, where: whereClause, groupBy: groupBy, having: having, orderBy: orderBy, limit: limit, offset: offset, parameters: parameters, block: block)
+        
+    }
+    
+    public func selectIdsFrom(_ from:       String,
+                              whereExpr whereClause:    String? = nil,
+                              groupBy:      String? = nil,
+                              having:       String? = nil,
+                              orderBy:      String? = nil,
+                              limit:        Int? = nil,
+                              offset:       Int? = nil,
+                              parameters:   [Bindable?] = []) throws -> [RowId] {
+        
+        return try selectIds(from:from, where:whereClause, groupBy: groupBy, having: having, orderBy: orderBy, limit: limit, offset: offset, parameters: parameters)
+        
+    }
+    
+    func iterateRowsFrom(_ from:        String,
+                         columns:     [String]? = nil,
+                         whereExpr whereClause:   String? = nil,
+                         groupBy:     String? = nil,
+                         having:      String? = nil,
+                         orderBy:     String? = nil,
+                         limit:       Int? = nil,
+                         offset:      Int? = nil,
+                         parameters:  [Bindable?] = [],
+                         block: ((Statement) throws -> Void)) throws {
+        
+        return try self.iterateRows(from: from, columns: columns, where: whereClause, groupBy: groupBy, having: having, orderBy: orderBy, limit: limit, offset: offset, parameters: parameters, block: block)
+        
+    }
+    
 }

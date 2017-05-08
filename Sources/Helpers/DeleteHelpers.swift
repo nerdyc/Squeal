@@ -6,17 +6,17 @@ public extension Database {
     ///
     /// - Parameters:
     ///   - tableName: The name of the table to delete rows from.
-    ///   - whereExpr: A SQL expression string (the part following `WHERE`).
+    ///   - whereClause: A SQL expression string (the part following `WHERE`).
     /// - Returns: A prepared DELETE Statement.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func prepareDeleteFrom(_ tableName:   String,
-                                  whereExpr:   String? = nil) throws -> Statement {
+    public func prepareDelete(from tableName:String,
+                              where whereClause:String? = nil) throws -> Statement {
         
         var fragments = ["DELETE FROM", escapeIdentifier(tableName)]
-        if whereExpr != nil {
+        if let whereClause = whereClause {
             fragments.append("WHERE")
-            fragments.append(whereExpr!)
+            fragments.append(whereClause)
         }
 
         return try prepareStatement(fragments.joined(separator: " "))
@@ -27,17 +27,17 @@ public extension Database {
     ///
     /// - Parameters:
     ///   - tableName: The table to delete rows from.
-    ///   - whereExpr: An expression that selects rows to delete. If nil, all rows are deleted.
+    ///   - whereClause: An expression that selects rows to delete. If nil, all rows are deleted.
     ///   - parameters: Parameters to bind to the where expression.
     /// - Returns: The number of rows removed.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
     @discardableResult
-    public func deleteFrom(_ tableName:   String,
-                           whereExpr:   String? = nil,
-                           parameters:  [Bindable?] = []) throws -> Int {
+    public func delete(from tableName:   String,
+                       where whereClause:   String? = nil,
+                       parameters:  [Bindable?] = []) throws -> Int {
             
-        let statement = try prepareDeleteFrom(tableName, whereExpr: whereExpr)
+        let statement = try prepareDelete(from:tableName, where: whereClause)
         try statement.bind(parameters)
         try statement.execute()
                             
@@ -53,14 +53,46 @@ public extension Database {
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
     @discardableResult
-    public func deleteFrom(_ tableName: String,
-                           rowIds:    [RowId]) throws -> Int {
+    public func delete(from tableName: String,
+                       rowIds:[RowId]) throws -> Int {
         if rowIds.count == 0 {
             return 0
         }
         
-        let whereExpr = "_ROWID_ IN (" + rowIds.map { String($0) }.joined(separator: ",") + ")"
-        return try deleteFrom(tableName, whereExpr: whereExpr)
+        let whereClause = "_ROWID_ IN (" + rowIds.map { String($0) }.joined(separator: ",") + ")"
+        return try delete(from:tableName, where: whereClause)
     }
     
+}
+
+
+// =====================================================================================================================
+// MARK:- Deprecated Methods
+//
+// These method signatures pre-date Swift 3 and have been replaced with signatures that match Swift-3 guidelines.
+
+@available(*, deprecated: 2.0)
+public extension Database {
+    
+    @discardableResult
+    public func prepareDeleteFrom(_ tableName:String,
+                                  whereExpr whereClause:String? = nil) throws -> Statement {
+        
+        return try self.prepareDelete(from:tableName, where:whereClause)
+    }
+    
+    @discardableResult
+    public func deleteFrom(_ tableName: String,
+                           whereExpr whereClause:   String? = nil,
+                           parameters:  [Bindable?] = []) throws -> Int {
+        return try self.delete(from:tableName, where:whereClause, parameters:parameters)
+    }
+    
+
+    @discardableResult
+    public func deleteFrom(_ tableName: String,
+                           rowIds:    [RowId]) throws -> Int {
+        return try self.delete(from:tableName, rowIds:rowIds)
+        
+    }
 }

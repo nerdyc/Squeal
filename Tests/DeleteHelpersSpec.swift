@@ -16,7 +16,7 @@ class DeleteHelpersSpec: QuickSpec {
             database = nil
         }
         
-        describe(".deleteFrom(tableName:whereExpr:parameters:error:)") {
+        describe(".deleteFrom(from:where:parameters:)") {
             
             beforeEach {
                 try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
@@ -24,13 +24,13 @@ class DeleteHelpersSpec: QuickSpec {
                 try! database.insertInto("contacts", values:["name": "Brian"])
                 try! database.insertInto("contacts", values:["name": "Cara"])
                 
-                result = try! database.deleteFrom("contacts",
-                                                  whereExpr: "name IS ?",
-                                                  parameters:["Brian"])
+                result = try! database.delete(from:"contacts",
+                                              where: "name IS ?",
+                                              parameters:["Brian"])
             }
             
             it("deletes the matching values in the database") {
-                let values = try! database.selectFrom("contacts") { $0["name"] as! String }
+                let values = try! database.select(from:"contacts") { $0["name"] as! String }
                 
                 expect(result).to(equal(1))
                 expect(values).to(equal(["Amelia", "Cara"]))
@@ -46,12 +46,11 @@ class DeleteHelpersSpec: QuickSpec {
                 try! database.insertInto("contacts", values:["name": "Brian"])
                 try! database.insertInto("contacts", values:["name": "Cara"])
                 
-                result = try! database.deleteFrom("contacts",
-                                                  rowIds: [2])
+                result = try! database.delete(from:"contacts", rowIds: [2])
             }
             
             it("deletes the matching values in the database") {
-                let values = try! database.selectFrom("contacts") { $0["name"] as! String }
+                let values = try! database.select(from:"contacts") { $0["name"] as! String }
                 
                 expect(result).to(equal(1))
                 expect(values).to(equal(["Amelia", "Cara"]))

@@ -54,7 +54,7 @@ class AlterTableTests: SquealMigrationTestCase {
                         "email",
                         type:.Text,
                         constraints: ["NOT NULL"],
-                        initialExpr: "printf(\"%s@domain.com\", lower(name))"
+                        setValue: "printf(\"%s@domain.com\", lower(name))"
                     )
                     
                 }
