@@ -182,4 +182,12 @@ open class Database {
         return errorFromSQLiteResultCode(sqliteDatabase)
     }
     
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK: Transactions
+
+    /// Whether the database is currently within a transaction or not.
+    public var isInTransaction:Bool {
+        return sqlite3_get_autocommit(self.sqliteDatabase) != 0
+    }
 }
