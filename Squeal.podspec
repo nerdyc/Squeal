@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Squeal"
-  s.version      = "1.1.3"
+  s.version      = "1.2.0"
   s.summary      = "A Swift wrapper for SQLite databases"
 
   s.description  = <<-DESC
@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/nerdyc/Squeal.git", :tag => "v#{s.version}" }
 
-  s.source_files  = "Sources/*.swift"
+  s.source_files  = "Sources/**/*.swift"
   s.module_name = "Squeal"
   s.library = "sqlite3"
 
