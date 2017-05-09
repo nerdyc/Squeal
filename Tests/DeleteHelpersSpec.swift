@@ -20,9 +20,9 @@ class DeleteHelpersSpec: QuickSpec {
             
             beforeEach {
                 try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                try! database.insertInto("contacts", values:["name": "Amelia"])
-                try! database.insertInto("contacts", values:["name": "Brian"])
-                try! database.insertInto("contacts", values:["name": "Cara"])
+                try! database.insert(into:"contacts", values:["name": "Amelia"])
+                try! database.insert(into:"contacts", values:["name": "Brian"])
+                try! database.insert(into:"contacts", values:["name": "Cara"])
                 
                 result = try! database.delete(from:"contacts",
                                               where: "name IS ?",
@@ -42,9 +42,9 @@ class DeleteHelpersSpec: QuickSpec {
             
             beforeEach {
                 try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                try! database.insertInto("contacts", values:["name": "Amelia"])
-                try! database.insertInto("contacts", values:["name": "Brian"])
-                try! database.insertInto("contacts", values:["name": "Cara"])
+                try! database.insert(into:"contacts", values:["name": "Amelia"])
+                try! database.insert(into:"contacts", values:["name": "Brian"])
+                try! database.insert(into:"contacts", values:["name": "Cara"])
                 
                 result = try! database.delete(from:"contacts", rowIds: [2])
             }

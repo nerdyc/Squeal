@@ -69,20 +69,20 @@ class AlterTableTests: SquealMigrationTestCase {
         // SETUP: A database with existing values
         let db = newDatabaseAtVersion(1, ofSchema:schema)
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Abby",
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Bill"
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Clara"
                 ]
@@ -160,16 +160,16 @@ class AlterTableTests: SquealMigrationTestCase {
         // SETUP: A database
         let db = newDatabaseAtVersion(1, ofSchema: schema)
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Abby",
                     "email": "abby@gastrobot.xyz",
                     "age": 8
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Bill",
                     "email": "bill@gastrobot.xyz",
@@ -214,15 +214,15 @@ class AlterTableTests: SquealMigrationTestCase {
         
         let db = newDatabaseAtVersion(1, ofSchema:schema)
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Abby",
                     "email": "abby@gastrobot.xyz",
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values: [
                     "name": "Bill",
                     "email": "bill@gastrobot.xyz"
@@ -281,16 +281,16 @@ class AlterTableTests: SquealMigrationTestCase {
         
         let db = newDatabaseAtVersion(1, ofSchema: schema)
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values: [
                     "name": "Abby",
                     "email": "abby@gastrobot.xyz",
                     "age": 8
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values: [
                     "name": "Bill",
                     "email": "bill@gastrobot.xyz",
@@ -347,15 +347,15 @@ class AlterTableTests: SquealMigrationTestCase {
         
         let db = newDatabaseAtVersion(1, ofSchema:schema)
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values: [
                     "name": "Abby",
                     "email": "abby@gastrobot.xyz",
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values: [
                     "name": "Bill",
                     "email": "bill@gastrobot.xyz"
@@ -546,8 +546,8 @@ class AlterTableTests: SquealMigrationTestCase {
         
         // VERIFY: Constraints are added when migrated.
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values:[
                     "name": "  "
                 ]
@@ -555,8 +555,8 @@ class AlterTableTests: SquealMigrationTestCase {
         }.to(throwError())
         
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into:"people",
                 values:[
                     "name": "Abby"
                 ]
@@ -601,8 +601,8 @@ class AlterTableTests: SquealMigrationTestCase {
 
         // VERIFY: Constraints are removed by the migration
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values:[
                     "name": ""
                 ]
@@ -610,14 +610,14 @@ class AlterTableTests: SquealMigrationTestCase {
         }.notTo(throwError())
         
         expect {
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values:[
                     "name": "Abby"
                 ]
             )
-            try db.insertInto(
-                "people",
+            try db.insert(
+                into: "people",
                 values:[
                     "name": "Abby"
                 ]

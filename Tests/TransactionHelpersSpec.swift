@@ -24,9 +24,9 @@ class TransactionHelpersSpec: QuickSpec {
                 
                 it("persists all changes") {
                     try! database.transaction {
-                        try database.insertInto("people", values: ["name":"Amelia"])
-                        try database.insertInto("people", values: ["name":"Brian"])
-                        try database.insertInto("people", values: ["name":"Cara"])
+                        try database.insert(into:"people", values: ["name":"Amelia"])
+                        try database.insert(into:"people", values: ["name":"Brian"])
+                        try database.insert(into:"people", values: ["name":"Cara"])
                     }
                     
                     expect(try! database.count(from:"people")).to(equal(3))
@@ -39,9 +39,9 @@ class TransactionHelpersSpec: QuickSpec {
                 it("discards changes") {
                     do {
                         try database.transaction {
-                            try database.insertInto("people", values: ["name":"Amelia"])
-                            try database.insertInto("people", values: ["name":"Brian"])
-                            try database.insertInto("people", values: ["name":"Cara"])
+                            try database.insert(into:"people", values: ["name":"Amelia"])
+                            try database.insert(into:"people", values: ["name":"Brian"])
+                            try database.insert(into:"people", values: ["name":"Cara"])
                             
                             throw NSError(domain: "TransactionHelpersSpec", code: 1, userInfo: nil)
                         }
@@ -68,9 +68,9 @@ class TransactionHelpersSpec: QuickSpec {
                 
                 it("persists all changes") {
                     try! database.savepoint("insert_people") {
-                        try database.insertInto("people", values: ["name":"Amelia"])
-                        try database.insertInto("people", values: ["name":"Brian"])
-                        try database.insertInto("people", values: ["name":"Cara"])
+                        try database.insert(into:"people", values: ["name":"Amelia"])
+                        try database.insert(into:"people", values: ["name":"Brian"])
+                        try database.insert(into:"people", values: ["name":"Cara"])
                     }
                     
                     expect(try! database.count(from:"people")).to(equal(3))
@@ -83,9 +83,9 @@ class TransactionHelpersSpec: QuickSpec {
                 it("discards changes") {
                     do {
                         try database.savepoint("insert_people") {
-                            try database.insertInto("people", values: ["name":"Amelia"])
-                            try database.insertInto("people", values: ["name":"Brian"])
-                            try database.insertInto("people", values: ["name":"Cara"])
+                            try database.insert(into:"people", values: ["name":"Amelia"])
+                            try database.insert(into:"people", values: ["name":"Brian"])
+                            try database.insert(into:"people", values: ["name":"Cara"])
                             
                             throw NSError(domain: "TransactionHelpersSpec", code: 1, userInfo: nil)
                         }

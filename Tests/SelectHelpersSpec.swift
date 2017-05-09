@@ -10,9 +10,9 @@ class SelectHelpersSpec: QuickSpec {
             database = Database.newTemporaryDatabase()
             
             try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, initials TEXT)")
-            try! database.insertInto("contacts", values:["name": "Amelia", "initials": "A"])
-            try! database.insertInto("contacts", values:["name": "Brian",  "initials": NSNull()])
-            try! database.insertInto("contacts", values:["name": "Cara",   "initials": "C"])
+            try! database.insert(into:"contacts", values:["name": "Amelia", "initials": "A"])
+            try! database.insert(into:"contacts", values:["name": "Brian",  "initials": NSNull()])
+            try! database.insert(into:"contacts", values:["name": "Cara",   "initials": "C"])
         }
         
         afterEach {

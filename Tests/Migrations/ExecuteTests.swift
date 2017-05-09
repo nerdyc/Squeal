@@ -32,8 +32,8 @@ class ExecuteTests: SquealMigrationTestCase {
             "  Clara Bow",
         ]
         for name in names {
-            try! db.insertInto(
-                "people",
+            try! db.insert(
+                into: "people",
                 values: [ "name": name ]
             )
         }

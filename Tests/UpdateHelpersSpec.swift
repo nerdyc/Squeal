@@ -11,9 +11,9 @@ class UpdateHelpersSpec: QuickSpec {
             database = Database()
             
             try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT, email TEXT)")
-            try! database.insertInto("contacts", values:["name": "Amelia",  "email":"amelia@squeal.test"])
-            try! database.insertInto("contacts", values:["name": "Brian",   "email":"brian@squeal.test"])
-            try! database.insertInto("contacts", values:["name": "Cara",    "email":"cara@squeal.test"])
+            try! database.insert(into:"contacts", values:["name": "Amelia",  "email":"amelia@squeal.test"])
+            try! database.insert(into:"contacts", values:["name": "Brian",   "email":"brian@squeal.test"])
+            try! database.insert(into:"contacts", values:["name": "Cara",    "email":"cara@squeal.test"])
         }
         
         afterEach {

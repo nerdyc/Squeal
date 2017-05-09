@@ -54,7 +54,7 @@ class SchemaTests: SquealMigrationTestCase {
                 }
                 v.execute { db in
                     // this will fail since the column name is wrong
-                    try db.insertInto("people", values: [ "full_name": "Heidi"])
+                    try db.insert(into:"people", values: [ "full_name": "Heidi"])
                 }
             }
         }
@@ -210,10 +210,10 @@ class SchemaTests: SquealMigrationTestCase {
         migrate(db, schema: schema)
         
         expect {
-            try db.insertInto("people", values: [ "name": "Alice" ])
-            try db.insertInto("people", values: [ "name": "Bob" ])
+            try db.insert(into:"people", values: [ "name": "Alice" ])
+            try db.insert(into:"people", values: [ "name": "Bob" ])
             
-            try db.insertInto("emails", values: [
+            try db.insert(into:"emails", values: [
                 "address": "alice@example.com",
                 "person_id": 1
             ])

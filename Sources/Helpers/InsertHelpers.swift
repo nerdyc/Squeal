@@ -10,7 +10,7 @@ public extension Database {
     /// - Returns: The prepared INSERT statement.
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
-    public func prepareInsertInto(_ tableName:String, columns:[String]) throws -> Statement {
+    public func prepareInsert(into tableName:String, columns:[String]) throws -> Statement {
         var sqlFragments = ["INSERT INTO"]
         sqlFragments.append(escapeIdentifier(tableName))
         sqlFragments.append("(")
@@ -23,7 +23,7 @@ public extension Database {
         
         return try prepareStatement(sqlFragments.joined(separator: " "))
     }
-    
+
     /// Inserts a new row using an array of column names, and an array of values. Both arrays should have the same size.
     ///
     /// - Parameters:
@@ -34,14 +34,15 @@ public extension Database {
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
     @discardableResult
-    public func insertInto(_ tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
-        let statement = try prepareInsertInto(tableName, columns:columns)
+    public func insert(into tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
+        let statement = try prepareInsert(into:tableName, columns:columns)
         try statement.bind(values)
         try statement.execute()
         
         return lastInsertedRowId
     }
 
+    
     /// Inserts a new row into the database, using a dictionary.
     ///
     /// - Parameters:
@@ -51,7 +52,7 @@ public extension Database {
     /// - Throws:
     ///     An NSError with the sqlite error code and message.
     @discardableResult
-    public func insertInto(_ tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
+    public func insert(into tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
         var columns = [String]()
         var values = [Bindable?]()
         for (columnName, value) in valuesDictionary {
@@ -59,7 +60,25 @@ public extension Database {
             values.append(value)
         }
         
-        return try insertInto(tableName, columns:columns, values:values)
+        return try insert(into:tableName, columns:columns, values:values)
+    }
+
+}
+
+@available(*, deprecated: 2.0.0)
+public extension Database {
+
+    public func prepareInsertInto(_ tableName:String, columns:[String]) throws -> Statement {
+        return try prepareInsert(into:tableName, columns:columns)
     }
     
+    @discardableResult
+    public func insertInto(_ tableName:String, columns:[String], values:[Bindable?]) throws -> Int64 {
+        return try insert(into:tableName, columns:columns, values:values)
+    }
+    
+    public func insertInto(_ tableName:String, values valuesDictionary:[String:Bindable?]) throws -> Int64 {
+        return try insert(into: tableName, values:valuesDictionary)
+    }
+
 }

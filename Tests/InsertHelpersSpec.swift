@@ -20,9 +20,9 @@ class InsertHelpersSpec: QuickSpec {
             
             beforeEach {
                 try! database.execute("CREATE TABLE contacts (contactId INTEGER PRIMARY KEY, name TEXT)")
-                result = try! database.insertInto("contacts",
-                                                  columns:["name"],
-                                                  values:["Amelia"])
+                result = try! database.insert(into:"contacts",
+                                              columns:["name"],
+                                              values:["Amelia"])
             }
             
             it("inserts the row into the table, and returns its row id") {
@@ -48,7 +48,7 @@ class InsertHelpersSpec: QuickSpec {
             describe("when all values are non-nil") {
             
                 beforeEach {
-                    result = try! database.insertInto("contacts", values:["name":"Amelia"])
+                    result = try! database.insert(into:"contacts", values:["name":"Amelia"])
                 }
                 
                 it("inserts the row into the table, and returns its row id") {
@@ -66,7 +66,7 @@ class InsertHelpersSpec: QuickSpec {
             describe("when a value is nil") {
                 
                 beforeEach {
-                    result = try! database.insertInto("contacts", values:["title": nil, "name":"Amelia"])
+                    result = try! database.insert(into:"contacts", values:["title": nil, "name":"Amelia"])
                 }
                 
                 it("inserts the row into the table, and returns its row id") {

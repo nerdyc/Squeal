@@ -10,13 +10,11 @@ try db.createTable("contacts", definitions: [
 ])
 
 // Insert:
-let contactId = try db.insertInto(
-    "contacts",
-    values: [
-        "name": "Amelia Grey",
-        "email": "amelia@gastrobot.xyz"
-    ]
-)
+let contactId = try db.insert(into:"contacts",
+                              values: [
+                                  "name": "Amelia Grey",
+                                  "email": "amelia@gastrobot.xyz"
+                              ])
 
 // Select:
 struct Contact {
