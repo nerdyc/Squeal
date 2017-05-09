@@ -364,7 +364,7 @@ open class Statement {
     ///
     /// - Parameter columnName: The name of the column
     /// - Returns: The 0-based index of the column in each row, or nil if not found.
-    open func indexOfColumnNamed(_ columnName:String) -> Int? {
+    open func indexOfColumn(named columnName:String) -> Int? {
         return columnNames.index(of: columnName)
     }
     
@@ -372,15 +372,7 @@ open class Statement {
     ///
     /// - Parameter columnIndex: The column index.
     /// - Returns: The column name.
-    open func nameOfColumnAtIndex(_ columnIndex:Int) -> String {
-        return columnNames[columnIndex]
-    }
-    
-    /// Returns the name of the column at the given 0-based index.
-    ///
-    /// - Parameter columnIndex: The column index.
-    /// - Returns: The column name.
-    open func columnNameAtIndex(_ columnIndex:Int) -> String {
+    open func nameOfColumn(atIndex columnIndex:Int) -> String {
         return columnNames[columnIndex]
     }
     
@@ -388,103 +380,81 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A column index.
     /// - Returns: The column type.
-    open func typeOfColumnAtIndex(_ columnIndex:Int) -> SQLiteColumnType {
+    open func typeOfColumn(atIndex columnIndex:Int) -> SQLiteColumnType {
         let columnType = sqlite3_column_type(sqliteStatement, Int32(columnIndex))
         return SQLiteColumnType.fromSQLiteColumnType(columnType)
     }
-    
+
     /// Returns the type of the column with the given name.
     ///
     /// - Parameter columnName: The column name
     /// - Returns: The column type.
-    open func typeOfColumnNamed(_ columnName:String) -> SQLiteColumnType {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return typeOfColumnAtIndex(columnIndex)
+    open func typeOfColumn(named columnName:String) -> SQLiteColumnType {
+        if let columnIndex = indexOfColumn(named:columnName) {
+            return typeOfColumn(atIndex:columnIndex)
         } else {
             fatalError("Column named '\(columnName)' not found")
         }
     }
-    
+
     
     // -----------------------------------------------------------------------------------------------------------------
     // MARK: Current Row
     
-    /// All values of the current row, as a Dictionary.
+    /// All values of the current row, as a Dictionary. The types of each value is based on the type stored in sqlite.
     open var dictionaryValue: [String:Bindable] {
         var currentRow = [String:Bindable]()
         for columnIndex in 0..<(columnCount) {
-            let columnName = nameOfColumnAtIndex(columnIndex)
-            currentRow[columnName] = valueAtIndex(columnIndex)
+            let columnName = nameOfColumn(atIndex:columnIndex)
+            currentRow[columnName] = bindableValue(atIndex:columnIndex)
         }
         return currentRow
     }
     
-    /// All values of the current row in an array.
-    open var values: [Bindable?] {
+    /// All values of the current row in an array. The types of each value is based on the type stored in sqlite.
+    open var arrayValue: [Bindable?] {
         var currentRowValues = [Bindable?]()
         for columnIndex in 0..<(columnCount) {
-            currentRowValues.append(valueAtIndex(columnIndex))
+            currentRowValues.append(bindableValue(atIndex:columnIndex))
         }
         return currentRowValues
     }
 
-    /// Returns the value of a column by name. The SQLite column type is used to determine how to read the value.
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK: Type-Inferred Column Values
+    // These methods take advantage of type-inference to automatically return the right type of data based on context.
+
+    /// The type-inferred value of the named column.
     ///
-    /// - Parameter columnName: The name of the column whose value is returned.
-    /// - Returns: The value of the column (as determined by SQLite).
-    open func valueOf(_ columnName:String) -> Bindable? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return valueAtIndex(columnIndex)
+    /// - Parameter columnName: The name of the column.
+    /// - Returns: The type-inferred value of the column, or nil if the column doesn't exist, or has a NULL value.
+    open func value<T:Bindable>(_ columnName:String) -> T? {
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return value(atIndex: columnIndex)
         } else {
-            return nil;
-        }
-    }
-    
-    
-    /// Returns the value of the column with the given name.
-    ///
-    /// - Parameter columnName: A column name.
-    open subscript(columnName:String) -> Bindable? {
-        return valueOf(columnName)
-    }
-    
-    /// Return the value of the column at the given 0-based index.
-    ///
-    /// - Parameter columnIndex: The column's 0-based index.
-    /// - Returns: The value of the column, based on the type determined by sqlite.
-    open func valueAtIndex(_ columnIndex:Int) -> Bindable? {
-        switch typeOfColumnAtIndex(columnIndex) {
-        case .integer:
-            return int64ValueAtIndex(columnIndex)
-        case .text:
-            return stringValueAtIndex(columnIndex)
-        case .float:
-            return doubleValueAtIndex(columnIndex)
-        case .blob:
-            return blobValueAtIndex(columnIndex) as Bindable?
-        case .null:
             return nil
         }
     }
     
-    /// The value of the column at the given 0-based index.
+    /// The type-inferred value of the column at the given 0-based index.
     ///
-    /// - Parameter columnIndex: The column's 0-based index.
-    open subscript(columnIndex:Int) -> Bindable? {
-        return valueAtIndex(columnIndex)
+    /// - Parameter index: The index of the column.
+    /// - Returns: The type-inferred value of the column, or nil if the column doesn't exist, or has a NULL value.
+    open func value<T:Bindable>(atIndex index:Int) -> T? {
+        return T.readColumnValue(self, atIndex: index)
     }
-    
-    
+
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Integer
+    // MARK:  Integer Column Values
     
     /// Returns the Int value of a column by name.
     ///
     /// - Parameter columnName: A column name.
     /// - Returns: The Int value of the column, or `nil` if the column is NULL or doesn't exist.
     open func intValue(_ columnName:String) -> Int? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return intValueAtIndex(columnIndex)
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return intValue(atIndex:columnIndex)
         } else {
             return nil
         }
@@ -494,7 +464,27 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A 0-based column index.
     /// - Returns: The Int value of the column, or `nil` if the column is NULL or doesn't exist.
-    open func intValueAtIndex(_ columnIndex:Int) -> Int? {
+    open func intValue(atIndex columnIndex:Int) -> Int? {
+        return Int.readColumnValue(self, atIndex: columnIndex)
+    }
+    
+    /// Returns the Int32 value of a column by name.
+    ///
+    /// - Parameter columnName: A column name.
+    /// - Returns: The Int32 value of the column, or `nil` if the column is NULL or doesn't exist.
+    open func int32Value(_ columnName:String) -> Int32? {
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return int32Value(atIndex:columnIndex)
+        } else {
+            return nil
+        }
+    }
+    
+    /// Returns the Int32 value of the column at the given 0-based index.
+    ///
+    /// - Parameter columnIndex: A 0-based column index.
+    /// - Returns: The Int64 value of the column, or `nil` if the column is NULL or doesn't exist.
+    open func int32Value(atIndex columnIndex:Int) -> Int32? {
         if sqliteStatement == nil {
             return nil
         }
@@ -503,16 +493,16 @@ open class Statement {
             return nil
         }
         
-        return Int(sqlite3_column_int64(sqliteStatement, Int32(columnIndex)))
+        return sqlite3_column_int(sqliteStatement, Int32(columnIndex))
     }
-
+    
     /// Returns the Int64 value of a column by name.
     ///
     /// - Parameter columnName: A column name.
     /// - Returns: The Int64 value of the column, or `nil` if the column is NULL or doesn't exist.
     open func int64Value(_ columnName:String) -> Int64? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return int64ValueAtIndex(columnIndex)
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return int64Value(atIndex:columnIndex)
         } else {
             return nil
         }
@@ -522,7 +512,7 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A 0-based column index.
     /// - Returns: The Int64 value of the column, or `nil` if the column is NULL or doesn't exist.
-    open func int64ValueAtIndex(_ columnIndex:Int) -> Int64? {
+    open func int64Value(atIndex columnIndex:Int) -> Int64? {
         if sqliteStatement == nil {
             return nil
         }
@@ -534,17 +524,16 @@ open class Statement {
         return sqlite3_column_int64(sqliteStatement, Int32(columnIndex))
     }
     
-    
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Real
+    // MARK:  Double Column Values
     
     /// Returns the Double value of a column by name.
     ///
     /// - Parameter columnName: A column name.
     /// - Returns: The Double value of the column, or `nil` if the column is NULL or doesn't exist.
     open func doubleValue(_ columnName:String) -> Double? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return realValueAtIndex(columnIndex)
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return doubleValue(atIndex:columnIndex)
         } else {
             return nil
         }
@@ -554,7 +543,7 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A 0-based column index.
     /// - Returns: The Double value of the column, or `nil` if the column is NULL or doesn't exist.
-    open func doubleValueAtIndex(_ columnIndex:Int) -> Double? {
+    open func doubleValue(atIndex columnIndex:Int) -> Double? {
         if sqliteStatement == nil {
             return nil
         }
@@ -567,15 +556,15 @@ open class Statement {
     }
     
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  String
+    // MARK:  String Column Values
     
     /// Returns the String value of a column by name.
     ///
     /// - Parameter columnName: A column name.
     /// - Returns: The String value of the column, or `nil` if the column is NULL or doesn't exist.
     open func stringValue(_ columnName:String) -> String? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return stringValueAtIndex(columnIndex)
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return stringValue(atIndex:columnIndex)
         } else {
             return nil
         }
@@ -585,7 +574,7 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A 0-based column index.
     /// - Returns: The String value of the column, or `nil` if the column is NULL or doesn't exist.
-    open func stringValueAtIndex(_ columnIndex:Int) -> String? {
+    open func stringValue(atIndex columnIndex:Int) -> String? {
         if sqliteStatement == nil {
             return nil
         }
@@ -598,17 +587,16 @@ open class Statement {
         return NSString(utf8String:columnTextI) as String?
     }
     
-    
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK:  Boolean
+    // MARK:  Boolean Column Values
     
     /// Returns the Bool value of a column by name.
     ///
     /// - Parameter columnName: A column name.
     /// - Returns: The Bool value of the column, or `nil` if the column is NULL or doesn't exist.
     open func boolValue(_ columnName:String) -> Bool? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return boolValueAtIndex(columnIndex)
+        if let columnIndex = indexOfColumn(named:columnName) {
+            return boolValue(atIndex:columnIndex)
         } else {
             return nil
         }
@@ -618,25 +606,21 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A 0-based column index.
     /// - Returns: The Bool value of the column, or `nil` if the column is NULL or doesn't exist.
-    open func boolValueAtIndex(_ columnIndex:Int) -> Bool? {
-        if let intValue = intValueAtIndex(columnIndex) {
-            return intValue != 0
-        } else {
-            return nil
-        }
+    open func boolValue(atIndex columnIndex:Int) -> Bool? {
+        return Bool.readColumnValue(self, atIndex: columnIndex)
     }
-    
+
     
     // -----------------------------------------------------------------------------------------------------------------
-    // MARK: BLOB Parameters
+    // MARK: BLOB Column Values
 
     /// Returns the BLOB value of a column by name.
     ///
     /// - Parameter columnName: A column name.
     /// - Returns: The BLOB value of the column, or `nil` if the column is NULL or doesn't exist.
     open func blobValue(_ columnName:String) -> Data? {
-        if let columnIndex = indexOfColumnNamed(columnName) {
-            return blobValueAtIndex(columnIndex)
+        if let columnIndex = indexOfColumn(named:columnName) {
+            return blobValue(atIndex:columnIndex)
         } else {
             return nil
         }
@@ -646,7 +630,7 @@ open class Statement {
     ///
     /// - Parameter columnIndex: A 0-based column index.
     /// - Returns: The BLOB value of the column, or `nil` if the column is NULL or doesn't exist.
-    open func blobValueAtIndex(_ columnIndex:Int) -> Data? {
+    open func blobValue(atIndex columnIndex:Int) -> Data? {
         if sqliteStatement == nil {
             return nil
         }
@@ -665,6 +649,57 @@ open class Statement {
         let columnBytes = sqlite3_column_bytes(sqliteStatement, Int32(columnIndex))
         return Data(bytes: columnBlob, count: Int(columnBytes))
     }
+    
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // MARK: Raw Column Values
+    // These methods return a value of a column based on the type stored in SQLite.
+
+    /// Returns the value of a column by name. The SQLite column type is used to determine how to read the value.
+    ///
+    /// - Parameter columnName: The name of the column whose value is returned.
+    /// - Returns: The value of the column (as determined by SQLite).
+    open func bindableValue(_ columnName:String) -> Bindable? {
+        if let columnIndex = indexOfColumn(named: columnName) {
+            return bindableValue(atIndex:columnIndex)
+        } else {
+            return nil;
+        }
+    }
+    
+    /// Return the value of the column at the given 0-based index.
+    ///
+    /// - Parameter columnIndex: The column's 0-based index.
+    /// - Returns: The value of the column, based on the type determined by sqlite.
+    open func bindableValue(atIndex columnIndex:Int) -> Bindable? {
+        switch typeOfColumn(atIndex:columnIndex) {
+        case .integer:
+            return int64Value(atIndex:columnIndex)
+        case .text:
+            return stringValue(atIndex:columnIndex)
+        case .float:
+            return doubleValue(atIndex:columnIndex)
+        case .blob:
+            return blobValue(atIndex:columnIndex) as Bindable?
+        case .null:
+            return nil
+        }
+    }
+    
+    /// Returns the value of the column with the given name.
+    ///
+    /// - Parameter columnName: A column name.
+    open subscript(columnName:String) -> Bindable? {
+        return bindableValue(columnName)
+    }
+    
+    /// The value of the column at the given 0-based index.
+    ///
+    /// - Parameter columnIndex: The column's 0-based index.
+    open subscript(columnIndex:Int) -> Bindable? {
+        return bindableValue(atIndex:columnIndex)
+    }
+
     
 }
 
@@ -839,6 +874,73 @@ public extension Statement {
         }
         
         try bindNullParameter(atIndex:parameterIndex)
+    }
+    
+    
+    public func indexOfColumnNamed(_ columnName:String) -> Int? {
+        return indexOfColumn(named:columnName)
+    }
+    
+    public func nameOfColumnAtIndex(_ columnIndex:Int) -> String {
+        return nameOfColumn(atIndex:columnIndex)
+    }
+
+    public func columnNameAtIndex(_ columnIndex:Int) -> String {
+        return nameOfColumn(atIndex:columnIndex)
+    }
+
+    public func typeOfColumnAtIndex(_ columnIndex:Int) -> SQLiteColumnType {
+        return typeOfColumn(atIndex:columnIndex)
+    }
+
+    public func typeOfColumnNamed(_ columnName:String) -> SQLiteColumnType {
+        return typeOfColumn(named:columnName)
+    }
+    
+    public func intValueAtIndex(_ columnIndex:Int) -> Int? {
+        return intValue(atIndex:columnIndex)
+    }
+    
+    public func int64ValueAtIndex(_ columnIndex:Int) -> Int64? {
+        return int64Value(atIndex:columnIndex)
+    }
+    
+    public func doubleValueAtIndex(_ columnIndex:Int) -> Double? {
+        return doubleValue(atIndex:columnIndex)
+    }
+    
+    public func stringValueAtIndex(_ columnIndex:Int) -> String? {
+        return stringValue(atIndex:columnIndex)
+    }
+
+    public func boolValueAtIndex(_ columnIndex:Int) -> Bool? {
+        return boolValue(atIndex:columnIndex)
+    }
+
+    public func blobValueAtIndex(_ columnIndex:Int) -> Data? {
+        return blobValue(atIndex:columnIndex)
+    }
+    
+    /// Alias for doubleValue(columnName)
+    public func realValue(_ columnName:String) -> Double? {
+        return doubleValue(columnName)
+    }
+    
+    /// Alias for realValueAtIndex(columnIndex)
+    public func realValueAtIndex(_ columnIndex:Int) -> Double? {
+        return doubleValue(atIndex:columnIndex)
+    }
+    
+    public func valueAtIndex(_ columnIndex:Int) -> Bindable? {
+        return bindableValue(atIndex:columnIndex)
+    }
+    
+    public func valueOf(_ columnName:String) -> Bindable? {
+        return bindableValue(columnName)
+    }
+    
+    public var values: [Bindable?] {
+        return arrayValue
     }
 
 }

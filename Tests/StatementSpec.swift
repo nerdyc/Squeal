@@ -50,15 +50,15 @@ class StatementSpec: QuickSpec {
                 expect(statement.columnCount).to(equal(4))
                 expect(statement.columnNames).to(equal(["personId", "name", "age", "photo"]))
                 
-                expect(statement.indexOfColumnNamed("personId")).to(equal(0))
-                expect(statement.indexOfColumnNamed("name")).to(equal(1))
-                expect(statement.indexOfColumnNamed("age")).to(equal(2))
-                expect(statement.indexOfColumnNamed("photo")).to(equal(3))
+                expect(statement.indexOfColumn(named: "personId")).to(equal(0))
+                expect(statement.indexOfColumn(named: "name")).to(equal(1))
+                expect(statement.indexOfColumn(named: "age")).to(equal(2))
+                expect(statement.indexOfColumn(named: "photo")).to(equal(3))
                 
-                expect(statement.nameOfColumnAtIndex(0)).to(equal("personId"));
-                expect(statement.nameOfColumnAtIndex(1)).to(equal("name"));
-                expect(statement.nameOfColumnAtIndex(2)).to(equal("age"));
-                expect(statement.nameOfColumnAtIndex(3)).to(equal("photo"));
+                expect(statement.nameOfColumn(atIndex:0)).to(equal("personId"));
+                expect(statement.nameOfColumn(atIndex:1)).to(equal("name"));
+                expect(statement.nameOfColumn(atIndex:2)).to(equal("age"));
+                expect(statement.nameOfColumn(atIndex:3)).to(equal("photo"));
             }
             
         }
@@ -87,17 +87,17 @@ class StatementSpec: QuickSpec {
             
         }
         
-        describe(".valueOf()") {
+        describe(".bindableValue()") {
             beforeEach {
                 statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
                 expect(try! statement.next()).to(equal(true))
-                expect(statement.valueOf("personId") as? Int64).to(equal(1))
-                expect(statement.valueOf("name") as? String).to(equal("Amelia"))
-                expect(statement.valueOf("age") as? Double).to(equal(1.5))
-                expect(statement.valueOf("photo")).to(beNil())
+                expect(statement.bindableValue("personId") as? Int64).to(equal(1))
+                expect(statement.bindableValue("name") as? String).to(equal("Amelia"))
+                expect(statement.bindableValue("age") as? Double).to(equal(1.5))
+                expect(statement.bindableValue("photo")).to(beNil())
             }
             
         }
@@ -116,7 +116,7 @@ class StatementSpec: QuickSpec {
             }
         }
 
-        describe(".values") {
+        describe(".arrayValue") {
             
             beforeEach {
                 statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
@@ -126,25 +126,25 @@ class StatementSpec: QuickSpec {
                 expect(try! statement.next()).to(equal(true))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
-                expect(statement.values[0] as? Int64).to(equal(1))
-                expect(statement.values[1] as? String).to(equal("Amelia"))
-                expect(statement.values[2] as? Double).to(equal(1.5))
-                expect(statement.values[3]).to(beNil())
+                expect(statement.arrayValue[0] as? Int64).to(equal(1))
+                expect(statement.arrayValue[1] as? String).to(equal("Amelia"))
+                expect(statement.arrayValue[2] as? Double).to(equal(1.5))
+                expect(statement.arrayValue[3]).to(beNil())
             }
             
         }
         
-        describe(".valueAtIndex(columnIndex:)") {
+        describe(".bindableValue(atIndex:)") {
             beforeEach {
                 statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people")
             }
             
             it("returns the value at the index") {
                 expect(try! statement.next()).to(equal(true))
-                expect(statement.valueAtIndex(0) as? Int64).to(equal(1))
-                expect(statement.valueAtIndex(1) as? String).to(equal("Amelia"))
-                expect(statement.valueAtIndex(2) as? Double).to(equal(1.5))
-                expect(statement.valueAtIndex(3)).to(beNil())
+                expect(statement.bindableValue(atIndex:0) as? Int64).to(equal(1))
+                expect(statement.bindableValue(atIndex:1) as? String).to(equal("Amelia"))
+                expect(statement.bindableValue(atIndex:2) as? Double).to(equal(1.5))
+                expect(statement.bindableValue(atIndex:3)).to(beNil())
             }
             
         }
@@ -166,18 +166,18 @@ class StatementSpec: QuickSpec {
         // =============================================================================================================
         // MARK:- STEPS
         
-        describe(".query()") {
+        describe(".select()") {
             beforeEach {
                 statement = try! database.prepareStatement("SELECT personId, name, age, photo FROM people WHERE personId > ?")
                 try! statement.bind([1])
             }
             
             it("iterates through each row of the statement") {
-                let ids = try! statement.select { $0.int64ValueAtIndex(0) ?? 0 }
+                let ids = try! statement.select { $0.int64Value(atIndex:0) ?? 0 }
                 expect(ids).to(equal([2, 3]))
                 
                 // now prove that it resets the statement
-                let sameIds = try! statement.select { $0.int64ValueAtIndex(0) ?? 0 }
+                let sameIds = try! statement.select { $0.int64Value(atIndex:0) ?? 0 }
                 expect(sameIds).to(equal([2, 3]))
             }
         }
@@ -190,7 +190,7 @@ class StatementSpec: QuickSpec {
             it("clears parameters and iterates through each step of the statement") {
                 try! statement.bind([3]) // bind another value to prove the value is cleared
                 
-                let ids = try! statement.select([1]) { $0.int64ValueAtIndex(0) ?? 0 }
+                let ids = try! statement.select([1]) { $0.int64Value(atIndex:0) ?? 0 }
                 expect(ids).to(equal([2, 3]))
             }
         }
@@ -205,35 +205,35 @@ class StatementSpec: QuickSpec {
                 expect(try! statement.next()).to(equal(true))
                 
                 // 0: id:1, name:Amelia, age:1.5, photo:NULL
-                expect(statement.intValueAtIndex(0)).to(equal(1))
+                expect(statement.intValue(atIndex:0)).to(equal(1))
                 expect(statement.intValue("personId")).to(equal(1))
-                expect(statement.stringValueAtIndex(1)).to(equal("Amelia"))
+                expect(statement.stringValue(atIndex:1)).to(equal("Amelia"))
                 expect(statement.stringValue("name")).to(equal("Amelia"))
-                expect(statement.realValueAtIndex(2)).to(equal(1.5))
-                expect(statement.realValue("age")).to(equal(1.5))
-                expect(statement.blobValueAtIndex(3)).to(beNil())
+                expect(statement.doubleValue(atIndex:2)).to(equal(1.5))
+                expect(statement.doubleValue("age")).to(equal(1.5))
+                expect(statement.blobValue(atIndex:3)).to(beNil())
                 expect(statement.blobValue("photo")).to(beNil())
                 
                 // 1: id:2, Brian, age:43.375, photo:''
                 expect(try! statement.next()).to(equal(true))
-                expect(statement.intValueAtIndex(0)).to(equal(2))
+                expect(statement.intValue(atIndex:0)).to(equal(2))
                 expect(statement.intValue("personId")).to(equal(2))
-                expect(statement.stringValueAtIndex(1)).to(equal("Brian"))
+                expect(statement.stringValue(atIndex:1)).to(equal("Brian"))
                 expect(statement.stringValue("name")).to(equal("Brian"))
-                expect(statement.realValueAtIndex(2)).to(equal(43.375))
-                expect(statement.realValue("age")).to(equal(43.375))
-                expect(statement.blobValueAtIndex(3)).to(equal(Data()))
+                expect(statement.doubleValue(atIndex:2)).to(equal(43.375))
+                expect(statement.doubleValue("age")).to(equal(43.375))
+                expect(statement.blobValue(atIndex:3)).to(equal(Data()))
                 expect(statement.blobValue("photo")).to(equal(Data()))
                 
                 // 2: id:3, name:Cara, age:nil, photo:X'696D616765' ("image")
                 expect(try! statement.next()).to(equal(true))
-                expect(statement.intValueAtIndex(0)).to(equal(3))
+                expect(statement.intValue(atIndex:0)).to(equal(3))
                 expect(statement.intValue("personId")).to(equal(3))
-                expect(statement.stringValueAtIndex(1)).to(equal("Cara"))
+                expect(statement.stringValue(atIndex:1)).to(equal("Cara"))
                 expect(statement.stringValue("name")).to(equal("Cara"))
-                expect(statement.realValueAtIndex(2)).to(beNil())
-                expect(statement.realValue("age")).to(beNil())
-                expect(statement.blobValueAtIndex(3)).to(equal("image".data(using: String.Encoding.utf8)))
+                expect(statement.doubleValue(atIndex:2)).to(beNil())
+                expect(statement.doubleValue("age")).to(beNil())
+                expect(statement.blobValue(atIndex:3)).to(equal("image".data(using: String.Encoding.utf8)))
                 expect(statement.blobValue("photo")).to(equal("image".data(using: String.Encoding.utf8)))
                 
                 expect(try! statement.next()).to(equal(false))

@@ -97,7 +97,7 @@ class AlterTableTests: SquealMigrationTestCase {
         expect(tableInfoWithName("people", inDatabase: db)).to(haveColumns("id", "name", "email"))
         
         // VERIFY: Column is populated with initial values
-        let emails = try! db.selectAll("SELECT email FROM people ORDER BY email") { $0.stringValueAtIndex(0) ?? "" }
+        let emails = try! db.selectAll("SELECT email FROM people ORDER BY email") { $0.stringValue(atIndex:0) ?? "" }
         expect(emails) == [ "abby@domain.com", "bill@domain.com", "clara@domain.com" ]
     }
 
@@ -241,7 +241,7 @@ class AlterTableTests: SquealMigrationTestCase {
         expect(peopleInfo?["name"]?.defaultValue) == "'anonymous'"
         
         // VERIFY: Data is correct
-        let names = try! db.selectAll("SELECT name FROM people") { $0.stringValueAtIndex(0) ?? "" }
+        let names = try! db.selectAll("SELECT name FROM people") { $0.stringValue(atIndex:0) ?? "" }
         expect(names) == [ "ABBY", "BILL" ]
     }
 
@@ -311,7 +311,7 @@ class AlterTableTests: SquealMigrationTestCase {
         expect(tableInfo?["ageISODuration"]?.defaultValue) == "'0s'"
         
         // VERIFY: Values are transformed
-        let ages = try! db.selectAll("SELECT ageISODuration FROM people") { $0.stringValueAtIndex(0) ?? "" }
+        let ages = try! db.selectAll("SELECT ageISODuration FROM people") { $0.stringValue(atIndex:0) ?? "" }
         expect(ages) == [ "P96M", "P192M" ]
     }
 
@@ -377,10 +377,10 @@ class AlterTableTests: SquealMigrationTestCase {
         expect(peopleInfo?["email_address"]?.defaultValue).to(beNil())
 
         // VERIFY: Data is correct
-        let names = try! db.selectAll("SELECT name FROM people") { $0.stringValueAtIndex(0) ?? "" }
+        let names = try! db.selectAll("SELECT name FROM people") { $0.stringValue(atIndex:0) ?? "" }
         expect(names) == [ "Abby", "Bill" ]
         
-        let emails = try! db.selectAll("SELECT email_address FROM people") { $0.stringValueAtIndex(0) ?? "" }
+        let emails = try! db.selectAll("SELECT email_address FROM people") { $0.stringValue(atIndex:0) ?? "" }
         expect(emails) == [ "ABBY@GASTROBOT.XYZ", "BILL@GASTROBOT.XYZ" ]
     }
     

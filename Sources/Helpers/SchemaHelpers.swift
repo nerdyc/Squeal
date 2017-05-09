@@ -316,11 +316,11 @@ public class IndexInfo {
     public fileprivate(set) var columns = [IndexedColumnInfo]()
     
     public init(row:Statement) {
-        name           = row.stringValueAtIndex(1) ?? ""
-        sequenceNumber = row.intValueAtIndex(0) ?? 0
-        isUnique       = row.boolValueAtIndex(2) ?? false
-        origin         = IndexOrigin(code:row.stringValueAtIndex(3) ?? "")
-        isPartial      = row.boolValueAtIndex(4) ?? false
+        sequenceNumber = row.value(atIndex:0) ?? 0
+        name           = row.value(atIndex:1) ?? ""
+        isUnique       = row.value(atIndex:2) ?? false
+        origin         = IndexOrigin(code:row.value(atIndex:3) ?? "")
+        isPartial      = row.value(atIndex:4) ?? false
     }
     
     /// Names of all columns covered by the index.
@@ -385,12 +385,12 @@ public class IndexedColumnInfo {
     public let isKey:Bool
     
     public init(row:Statement) {
-        positionInIndex     = row.intValueAtIndex(0) ?? 0
-        positionInTable     = row.intValueAtIndex(1)
-        name                = row.stringValueAtIndex(2) ?? ""
-        descending          = row.boolValueAtIndex(3) ?? false
-        collatingFunction   = row.stringValueAtIndex(4) ?? ""
-        isKey               = row.boolValueAtIndex(5) ?? false
+        positionInIndex     = row.value(atIndex:0) ?? 0
+        positionInTable     = row.value(atIndex:1)
+        name                = row.value(atIndex:2) ?? ""
+        descending          = row.value(atIndex:3) ?? false
+        collatingFunction   = row.value(atIndex:4) ?? ""
+        isKey               = row.value(atIndex:5) ?? false
     }
 
 }
@@ -475,7 +475,7 @@ public extension Database {
 
         var userVersionNumber = 0
         if try statement.next() {
-            userVersionNumber = statement.intValueAtIndex(0) ?? 0
+            userVersionNumber = statement.value(atIndex:0) ?? 0
         }
         return userVersionNumber
     }

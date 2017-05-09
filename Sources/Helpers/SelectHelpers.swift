@@ -141,7 +141,7 @@ public extension Database {
                                     
         var count:Int64 = 0
         if try statement.next() {
-            count = statement.int64ValueAtIndex(0) ?? 0
+            count = statement.int64Value(atIndex:0) ?? 0
         }
         return count
     }
@@ -310,7 +310,7 @@ public extension Database {
                           orderBy: orderBy,
                           limit: limit,
                           offset: offset,
-                          parameters: parameters) { $0.int64ValueAtIndex(0) ?? 0 }
+                          parameters: parameters) { $0.int64Value(atIndex:0) ?? 0 }
     }
     
     // ---------------------------------------------------------------------------------------------
@@ -405,18 +405,7 @@ public extension Statement {
         while try next() {
             try block(self)
         }
-    }
-    
-    /// Alias for doubleValue(columnName)
-    public func realValue(_ columnName:String) -> Double? {
-        return doubleValue(columnName)
-    }
-    
-    /// Alias for realValueAtIndex(columnIndex)
-    public func realValueAtIndex(_ columnIndex:Int) -> Double? {
-        return doubleValueAtIndex(columnIndex)
-    }
-    
+    }    
     
     /// Advances to the next row and returns the Int value of the first column.
     ///
@@ -428,7 +417,7 @@ public extension Statement {
             return nil
         }
         
-        return intValueAtIndex(0)
+        return intValue(atIndex:0)
     }
     
     /// Advances to the next row and returns the Int64 value of the first column.
@@ -441,7 +430,7 @@ public extension Statement {
             return nil
         }
         
-        return int64ValueAtIndex(0)
+        return int64Value(atIndex:0)
     }
     
     /// Advances to the next row and returns the Double value of the first column.
@@ -453,7 +442,7 @@ public extension Statement {
         guard try next() else {
             return nil
         }
-        return doubleValueAtIndex(0)
+        return doubleValue(atIndex:0)
     }
     
     /// Advances to the next row and returns the String value of the first column.
@@ -466,7 +455,7 @@ public extension Statement {
             return nil
         }
         
-        return stringValueAtIndex(0)
+        return stringValue(atIndex:0)
     }
     
     /// Advances to the next row and returns the Bool value of the first column.
@@ -479,7 +468,7 @@ public extension Statement {
             return nil
         }
         
-        return boolValueAtIndex(0)
+        return boolValue(atIndex:0)
     }
     
     /// Advances to the next row and returns the BLOB value of the first column.
@@ -492,7 +481,7 @@ public extension Statement {
             return nil
         }
         
-        return blobValueAtIndex(0)
+        return blobValue(atIndex:0)
     }
 }
 

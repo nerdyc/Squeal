@@ -371,10 +371,10 @@ public final class ForeignKeyViolation {
     let foreignKeyIndex:Int
     
     init(row:Statement) {
-        fromTable       = row.stringValueAtIndex(0) ?? ""
-        fromRowId       = row.intValueAtIndex(0)    ?? 0
-        toTable         = row.stringValueAtIndex(0) ?? ""
-        foreignKeyIndex = row.intValueAtIndex(0)    ?? 0
+        fromTable       = row.value(atIndex:0) ?? ""
+        fromRowId       = row.value(atIndex:1) ?? 0
+        toTable         = row.value(atIndex:2) ?? ""
+        foreignKeyIndex = row.value(atIndex:3) ?? 0
     }
     
 }

@@ -25,9 +25,9 @@ struct Contact {
     let email:String
     
     init(row:Statement) throws {
-        id = row.intValue("id") ?? 0
-        name = row.stringValue("name")
-        email = row.stringValue("email") ?? ""
+        id = row.value("id") ?? 0
+        name = row.value("name")
+        email = row.value("email") ?? ""
     }
 }
 
