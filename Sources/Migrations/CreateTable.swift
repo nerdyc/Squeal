@@ -18,7 +18,7 @@ extension VersionBuilder {
     }
 
     func didCreateTable(_ name:String) -> Bool {
-        for createTable in transformers.flatMap({ $0 as? CreateTable }) {
+        for createTable in transformers.compactMap({ $0 as? CreateTable }) {
             if createTable.table.name == name {
                 return true
             }

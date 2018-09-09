@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "container:Squeal.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Squeal.playground">
+   </FileRef>
+   <FileRef
+      location = "group:Migrations.playground">
+   </FileRef>
+   <FileRef
+      location = "group:Squeal.podspec">
+   </FileRef>
+   <FileRef
+      location = "group:Cartfile.private">
+   </FileRef>
+   <FileRef
+      location = "group:LICENSE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:README.md">
+   </FileRef>
+</Workspace>
