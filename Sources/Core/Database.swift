@@ -188,6 +188,10 @@ open class Database {
 
     /// Whether the database is currently within a transaction or not.
     public var isInTransaction:Bool {
-        return sqlite3_get_autocommit(self.sqliteDatabase) != 0
+        // Auto-Commit mode is enabled by default. So if auto-commit has been disabled it is because
+        // there is a transaction active:
+        //
+        // https://sqlite.org/c3ref/get_autocommit.html
+        return sqlite3_get_autocommit(self.sqliteDatabase) == 0
     }
 }
