@@ -27,7 +27,7 @@ public protocol DatabasePoolDelegate : class {
 open class DatabasePool {
     
     /// The path of the database being pooled.
-    open let databasePath : String
+    public let databasePath : String
     
     /// The pool's delegate.
     open weak var delegate : DatabasePoolDelegate?

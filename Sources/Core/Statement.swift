@@ -80,7 +80,7 @@ open class Statement {
     // MARK:  Parameters
     
     /// The number of parameters accepted by the statement.
-    open let parameterCount : Int
+    public let parameterCount : Int
     
     /// Clears all parameter values bound to the statement. All parameters will be NULL after this call.
     open func clearParameters() {
@@ -427,7 +427,7 @@ open class Statement {
     // MARK:  Columns
     
     /// The names of each column selected by this statement, or an empty array if the statement is not a SELECT.
-    open let columnNames : [String]
+    public let columnNames : [String]
     
     /// The number of columns in each row selected by this statement.
     open var columnCount : Int {

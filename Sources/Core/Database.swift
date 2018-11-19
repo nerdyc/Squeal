@@ -92,7 +92,7 @@ open class Database {
     
     /// The location of the database on disk. Temporary databases will return an empty string, and in-memory databases
     /// return ':memory:'
-    open let path : String
+    public let path : String
     
     /// Whether the database is stored in memory or not.
     open var isInMemoryDatabase : Bool {
